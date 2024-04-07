@@ -1,0 +1,78 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    :root {
+        --page-x-padding: 40px;
+
+        --nav-z-index: 30;
+        --nav-height: 60px;
+        --nav-item-height: 44px;
+
+        --admin-sidebar-width: 260px;
+
+        --skin-ten: #0c8f63;
+        --skin-thirty: rgb(16, 185, 129);
+        --color-background: 210deg 40% 98%;
+        --color-content: 217deg 32% 17%;
+        --color-accent1: 288deg 95% 90%;
+        --color-accent2: 168deg 83% 78%;
+    }
+
+    @media (prefers-color-scheme:dark) {
+        :root {
+            --color-background: 217deg 32% 17%;
+            --color-content: 210deg 40% 98%;
+            --color-accent1: 288deg 95% 60%;
+            --color-accent2: 168deg 83% 48%;
+        }
+    }
+}
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    overflow-x: hidden;
+    user-select: none;
+    min-height: 100vh;
+}
+
+.card {
+    border-radius: 10px;
+    padding: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.input {
+    font-family: var(--font-quicksand);
+    border-radius: 0.25rem;
+    outline: none;
+    padding: 8px;
+    line-height: 1.2;
+}
+
+.button {
+    border-radius: 0.25rem;
+    font-weight: bold;
+    font-size: medium;
+    font-family: var(--font-exo), monospace;
+    padding: 18px;
+    background-color: rgb(6 78 59 / var(--tw-bg-opacity));
+    line-height: 0;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.res-grid-cont-250 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}

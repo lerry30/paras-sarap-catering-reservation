@@ -1,0 +1,93 @@
+'use client';
+import Card from '@/components/dishes/Card';
+import Link from 'next/link';
+import { Plus } from '@/components/icons/All';
+import { useEffect, useState } from 'react';
+import { deleteWithJSON, getData } from '@/utils/send';
+import { Prompt, SuccessModal } from '@/components/Modal';
+import { useRouter } from 'next/navigation';
+
+const Dishes = () => {
+    const [ dishes, setDishes ] = useState([]);
+    const [ dishesObject, setDishesObject ] = useState({});
+    const [ deletionPrompt, setDeletionPrompt ] = useState(false);
+    const [ selectedDish, setSelectedDish ] = useState(undefined);
+
+    const [ actionSuccessMessage, setActionSuccessMessage ] = useState('');
+    const router = useRouter();
+
+    const onDeleteDish = async () => {
+        if(!selectedDish) return;
+        setDeletionPrompt(false);
+
+        const response = await deleteWithJSON('/api/dishes', { _k: selectedDish });
+        if(response?.success) {
+            setActionSuccessMessage('Dish removed successfully.');
+            setTimeout(() => setActionSuccessMessage(''), 2000); // to hide modal
+            router.refresh();
+        }
+    }
+
+    const onUpdateDish = () => {
+        if(!selectedDish) return;
+
+        console.log(dishesObject[ selectedDish ]);
+    }
+
+    const getDishes = async () => {
+        const { data } = (await getData('/api/dishes')) || { data: [] };
+        console.log(data);
+        setDishes(data);
+
+        for(const dish of data) {
+            setDishesObject(prev => ({ ...prev, [ dish?._k ]: dish }));
+        }
+    }
+
+    useEffect(() => {
+        getDishes();
+    }, []);
+
+    return (
+        <>
+            <section className="flex flex-col gap-2 p-4 ">
+                <div className="flex justify-between items-center p-1 rounded-lg">
+                    <h2 className="font-headings font-semibold">Dishes</h2>
+                    <Link href="/admin?display=adddish" className="flex gap-2 bg-green-600/40 rounded-full px-2 py-1 hover:bg-green-400 transition-colors">
+                        <Plus size={20} />
+                        <span className="text-sm font-medium">Add New Dish</span>
+                    </Link>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                    {
+                        dishes.map((item, index) => (
+                            <Card 
+                                key={ index } 
+                                dishData={ item } 
+                                onDelete={ (_k) => { 
+                                        setDeletionPrompt(true) 
+                                        setSelectedDish(_k);
+                                    }
+                                } 
+                                onUpdate={ (_k) => {
+                                        setSelectedDish(_k);
+                                        onUpdateDish(_k);
+                                    } 
+                                }
+                            />
+                        ))
+                    }
+                </div>
+            </section>
+            {
+                deletionPrompt && <Prompt callback={ onDeleteDish } onClose={ () => setDeletionPrompt(false) } header="Confirm Dish Removal" message="Are you sure you want to remove this dish? Removing it will completely erase all data associated with it and cannot be undone."/>
+            }
+
+            {
+                !!actionSuccessMessage && <SuccessModal message={ actionSuccessMessage } callback={ () => setActionSuccessMessage('') } />
+            }
+        </>
+    );
+}
+
+export default Dishes;
