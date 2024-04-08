@@ -5,9 +5,9 @@ import { useRef, useState, useEffect } from 'react';
 
 const imageMimeType = /image\/(png|jpg|jpeg)/i;
 
-const UploadButton = ({ fileData: [ file, setFile ] }) => {
+const UploadButton = ({ fileData: [ file, setFile ], initialImageSrc=undefined }) => {
     const inputFileRef = useRef();
-    const [ fileDataURL, setFileDataURL ] = useState(null);
+    const [ imageSrc, setImageSrc ] = useState(null);
 
     // tooltip
     const uploadBtn = useRef(null);
@@ -41,7 +41,7 @@ const UploadButton = ({ fileData: [ file, setFile ] }) => {
             fileReader.onload = (e) => {
                 const { result } = e.target;
                 if (result && !isCancel) {
-                    setFileDataURL(result)
+                    setImageSrc(result)
                 }
             }
 
@@ -57,6 +57,9 @@ const UploadButton = ({ fileData: [ file, setFile ] }) => {
     }, [ file ]);
 
     useEffect(() => {
+        // initial image source
+        if(initialImageSrc)
+            setImageSrc(initialImageSrc);
         // tooltip
         uploadBtn?.current?.addEventListener('mousemove', toolTipOverMouse);
         return () => uploadBtn?.current?.removeEventListener('mousemove', toolTipOverMouse);
@@ -71,9 +74,9 @@ const UploadButton = ({ fileData: [ file, setFile ] }) => {
                 className="size-96 flex justify-center items-center rounded-md shadow-lg cursor-pointer border border-neutral-500/40 relative group"
             >
                 {
-                    fileDataURL ? 
+                    imageSrc ? 
                         <Image 
-                            src={ fileDataURL }
+                            src={ imageSrc }
                             alt='recipelistcious logo'
                             width={ 400 }
                             height={ 400 }
@@ -83,7 +86,7 @@ const UploadButton = ({ fileData: [ file, setFile ] }) => {
                                 height: '100%',
                                 objectFit: 'cover',
                                 borderRadius: '8px',
-                                opacity: fileDataURL ? '1' : '0.3'
+                                opacity: imageSrc ? '1' : '0.3'
                             }}
                             priority
                         />

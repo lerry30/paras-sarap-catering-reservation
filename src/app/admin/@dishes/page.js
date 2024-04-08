@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { deleteWithJSON, getData } from '@/utils/send';
 import { Prompt, SuccessModal } from '@/components/Modal';
 import { useRouter } from 'next/navigation';
+import { zDish } from '@/stores/dish';
 
 const Dishes = () => {
     const [ dishes, setDishes ] = useState([]);
@@ -15,6 +16,7 @@ const Dishes = () => {
 
     const [ actionSuccessMessage, setActionSuccessMessage ] = useState('');
     const router = useRouter();
+    const saveDishData = zDish(state => state.saveDishData);
 
     const onDeleteDish = async () => {
         if(!selectedDish) return;
@@ -28,16 +30,34 @@ const Dishes = () => {
         }
     }
 
-    const onUpdateDish = () => {
-        if(!selectedDish) return;
+    // for updating the dish I dont use the selectedDish useState since this function is not invoke immediately
+    // because if I would set value into setSelectedDish at first it doesn't mount immediately or not reflec to selectedDish.
+    const onUpdateDish = (_k) => {
+        if(!_k) return;
+        const dish = dishesObject[ _k ];
+        const savingStatus = saveDishData({ 
+            id: _k,
+            name: dish?.name || '',
+            description: dish?.description || '',
+            allergens: dish?.allergens || [],
+            filename: dish?.filename || '',
+            costperhead: dish?.costperhead || 0 
+        });
 
-        console.log(dishesObject[ selectedDish ]);
+        // console.log(zDish.getState().name);
+        if(savingStatus) {
+            router.push('/admin?display=updatedish');
+            return;
+        }
+
+        // error modal
     }
 
     const getDishes = async () => {
         const { data } = (await getData('/api/dishes')) || { data: [] };
-        console.log(data);
         setDishes(data);
+
+        console.log(data);
 
         for(const dish of data) {
             setDishesObject(prev => ({ ...prev, [ dish?._k ]: dish }));
@@ -70,7 +90,6 @@ const Dishes = () => {
                                     }
                                 } 
                                 onUpdate={ (_k) => {
-                                        setSelectedDish(_k);
                                         onUpdateDish(_k);
                                     } 
                                 }

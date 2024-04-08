@@ -18,7 +18,7 @@ const ASidebar = () => {
                 Item 1
             </Option>
             <ParentOption text="Foods & Beverages" className="px-4">
-                <Option href="/admin?display=dishes" className={ `!rounded-full px-4 ${ pages.dishes && 'bg-emerald-600'}` }>Dishes</Option>
+                <Option href="/admin?display=dishes" className={ `!rounded-full px-4` }>Dishes</Option>
                 <Option href="" className="!rounded-full px-4">Menus</Option>
                 <Option href="" className="!rounded-full px-4">Drinks</Option>
             </ParentOption>
