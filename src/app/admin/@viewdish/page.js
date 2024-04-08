@@ -1,0 +1,171 @@
+'use client';
+import UploadButton from '@/components/UploadButton';
+import Loading from '@/components/Loading';
+import Checkbox from '@/components/Checkbox';
+import { useState, useEffect, useRef } from 'react';
+import { emptyDishFields } from '@/utils/admin/emptyValidation';
+import { sendFormUpdate } from '@/utils/send';
+import { handleError } from '@/utils/auth/backendError';
+import { useRouter } from 'next/navigation';
+import { toNumber } from '@/utils/number';
+import { zDish } from '@/stores/dish';
+
+zDish.getState().init();
+
+const ViewDish = () => {
+    const [ dishName, setDishName ] = useState('');
+    const [ description, setDescription ] = useState('');
+    const [ file, setFile ] = useState(undefined);
+    const [ allergensCheckbox, setAllergensCheckbox ] = useState([]);
+    const [ costPerHead, setCostPerHead ] = useState(0);
+    const [ loading, setLoading ] = useState(false);
+    const [ isImageChange, setImageChange ] = useState(false);
+    const router = useRouter();
+
+    const checkboxAllergens = [ 'nuts', 'seafood', 'milk', 'eggs', 'soybeans', 'grains' ];
+    const checkBoxes = useRef({});
+
+    const initCheckBox = () => {
+        const prevDishAllergens = zDish.getState().allergens;
+        setAllergensCheckbox(prevDishAllergens);
+        // get the checkbox elements
+        const checkedBoxes = prevDishAllergens.map(box => checkBoxes.current[box]);
+        for(const checkbox of checkedBoxes)
+            checkbox.checked = true;
+    }
+
+    const checkboxHandler = (ev) => {  
+        const checkBox = ev.target;
+        const allergen = (checkBox.value || '').trim();
+        if(checkBox.checked) {
+            if(checkboxAllergens.includes(allergen))
+                setAllergensCheckbox(item => ( [...new Set([ ...item, allergen ])] ));
+            return;
+        }
+
+        setAllergensCheckbox(sAllergens => ( sAllergens.filter(item => item !== allergen )));
+    }
+
+    const handleSubmit = async (ev) => {
+        ev.preventDefault();
+
+        setInvalidFieldsValue({});
+        setLoading(true);
+
+        const img = true; // I passed an object of Image since the image can't be empty unless admin remove it in devtool or something
+        const invalidFields = emptyDishFields(dishName, description, img);
+        for(const [field, message] of Object.entries(invalidFields))
+            setInvalidFieldsValue(prev => ({ ...prev, [field]: message }));
+
+        if(!costPerHead) setInvalidFieldsValue(prev => ({ ...prev, costperhead: 'Enter a numerical value greater than zero for the cost per head' }));
+
+        if(Object.values(invalidFields).length === 0) {
+            try {
+                const form = new FormData(ev.target);
+                form.append('id', zDish.getState().id);
+                form.append('allergens', allergensCheckbox); // form will convert this array in to string
+                form.append('is-image-change', Number(isImageChange)); // Number convert true - 1, false - 0, but still it will be converted to string '1' and '0'
+                const createDishResponse = await sendFormUpdate('/api/dishes', form);
+                if(createDishResponse?.success) {
+                    router.push('/admin?display=dishes');
+                }
+            } catch(error) {
+                const backendError = handleError(error);
+                setInvalidFieldsValue(prev => ({ ...prev, ...backendError }));
+            }
+        }
+
+        setLoading(false);
+    }
+
+    const costPerHeadInput = (ev) => {
+        const value = ev.target.value;
+        const cost = toNumber(value);
+        setCostPerHead(cost);
+
+        if(isNaN(Number(value))) setInvalidFieldsValue(prev => ({ ...prev, costperhead: 'Please enter a numerical value for the cost per head.' }));
+    }
+
+    useEffect(() => {
+        setDishName(zDish.getState().name);
+        setDescription(zDish.getState().description);
+        setCostPerHead(zDish.getState().costperhead);
+
+        initCheckBox();
+        // if store doesn't have value
+        // if(!prevDishId)
+        //     router.push('/admin?display=dishes');
+    }, []);
+
+    useEffect(() => {
+        // to make sure image update would not happen
+        // if user didn't change it so it's unnecessary
+        if(file)
+            setImageChange(true);
+    }, [ file ]);
+
+    return (
+        <section className="flex flex-col gap-2 p-4">
+            { loading && <Loading customStyle="size-full" /> }
+            <div className="w-full flex flex-col justify-center items-center p-1 rounded-lg">
+                <h2 className="font-headings font-semibold">{ dishName }</h2>
+                <span className="w-40 h-[1px] bg-gradient-to-r from-neutral-100 via-neutral-800 to-neutral-100 mt-1"></span>
+            </div>
+            <form onSubmit={ handleSubmit } className="flex gap-4 font-paragraphs">
+                <div className="flex flex-col gap-4">
+                    <Image 
+                        src={ zDish.getState().filename }
+                        alt=''
+                        width={ 400 }
+                        height={ 400 }
+                        sizes='100%'
+                        style={{
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'cover',
+                            borderRadius: '8px',
+                        }}
+                        priority
+                    />
+                </div>
+                <div className="grow flex flex-col gap-4 py-6">
+                    <div className="w-full flex gap-4">
+                        <div className="w-1/2">
+                            <input value={ dishName } name="dishname" onChange={(e) => setDishName(e.target.value)} className="input w-full border border-neutral-500/40" placeholder="Dish Name" />
+                        </div>
+                        <div className="w-1/2">
+                            <input value={ costPerHead } name="costperhead" onChange={ costPerHeadInput } className="input w-full border border-neutral-500/40" placeholder="Cost Per Head" />
+                        </div>
+                    </div>
+                    <div>
+                        <textarea value={ description } name="description" onChange={(e) => setDescription(e.target.value)} className="input w-full h-40 border border-neutral-500/40" placeholder="Description"></textarea>
+                    </div>
+                    <div className="flex flex-col gap-4">
+                        <p className="text-sm">Is it contains ingredients that can cause an allergic reaction (peanuts and other nuts, seafood, fish, milk, eggs, soybeans, wheat and other gluten containing grains)? It must be declared, however small the amount.</p>
+                        <Checkbox ref={ checkbox => checkBoxes.current['nuts'] = checkbox } value="nuts" onChange={ checkboxHandler } text="Peanuts or tree nuts (such as almonds, cashews, walnuts)" />
+                        <Checkbox ref={ checkbox => checkBoxes.current['seafood'] = checkbox } value="seafood" onChange={ checkboxHandler } text="Seafood (including fish and shellfish)" />
+                        <Checkbox ref={ checkbox => checkBoxes.current['milk'] = checkbox } value="milk" onChange={ checkboxHandler } text="Milk" />
+                        <Checkbox ref={ checkbox => checkBoxes.current['eggs'] = checkbox } value="eggs" onChange={ checkboxHandler } text="Eggs" />
+                        <Checkbox ref={ checkbox => checkBoxes.current['soybeans'] = checkbox } value="soybeans" onChange={ checkboxHandler } text="Soybeans" />
+                        <Checkbox ref={ checkbox => checkBoxes.current['grains'] = checkbox } value="grains" onChange={ checkboxHandler } text="Wheat and other gluten-containing grains" />
+                    </div>
+                    <div className="w-full flex gap-4">
+                        <button onClick={ (ev) => {
+                            ev.preventDefault();
+                            router.push('/admin?display=dishes')
+                        }} className="w-1/2 button shadow-md border border-neutral-500/40">
+                            Cancel
+                        </button>
+                        <button type="submit" className="w-1/2 button shadow-md border border-neutral-500/40 bg-emerald-500/40">Update</button>
+                    </div>
+                </div>
+            </form>
+        </section>
+    );
+}
+
+export default ViewDish;
+
+// Is it contains ingredients that can cause an allergic reaction (peanuts and other nuts, 
+// seafood, fish, milk, eggs, soybeans, wheat and other gluten containing 
+// grains)? It must be declared, however small the amount.

@@ -3,7 +3,8 @@ import ANavbar from '@/components/nav/admin/ANavbar';
 import { useSearchParams } from 'next/navigation';
 
 export default function AdminLayout({ 
-        children, dishes, adddish, updatedish, drinks, adddrink, updatedrink 
+        children, dishes, adddish, updatedish, viewdish, 
+        drinks, adddrink, updatedrink 
     }) {
     const searchParams = useSearchParams();
     const param = searchParams?.get('display');
@@ -12,6 +13,7 @@ export default function AdminLayout({
         dishes: dishes,
         adddish: adddish,
         updatedish: updatedish,
+        viewdish: viewdish,
         drinks: drinks,
         adddrink: adddrink,
         updatedrink: updatedrink,

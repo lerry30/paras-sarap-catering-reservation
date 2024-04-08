@@ -10,7 +10,7 @@ export const zDish = create(set => ({
 
     init: () => {
         try {
-            set(state => !state.id ? JSON.parse(localStorage.getItem('dish-update-data')) : state);
+            set(state => !state.id ? JSON.parse(localStorage.getItem('dish-update-data')) || {} : state);
         } catch(error) {}
     },
 

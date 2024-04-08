@@ -11,7 +11,7 @@ const Card = ({ drinkData, onDelete, onUpdate }) => {
     const pesoFormatter = new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' });
 
     return (
-        <div className="flex flex-col w-full max-w-[258px] h-[440px] rounded-lg shadow-xl hover:scale-[1.01] hover:shadow-2xl transition-transform">
+        <div className="flex flex-col w-full max-w-[258px] h-[380px] rounded-lg shadow-xl hover:scale-[1.01] hover:shadow-2xl transition-transform">
             <Image 
                 src={ image }
                 alt={ name }
@@ -37,7 +37,7 @@ const Card = ({ drinkData, onDelete, onUpdate }) => {
                 <span className="text-sm text-neutral-600">{ pesoFormatter.format(costPerHead) } / head</span>
             </article>
             <div className="flex gap-2 justify-end px-4 pb-6 mt-auto">
-                <button className="rounded-full bg-neutral-500/40 font-medium py-1 px-2 cursor-pointer text-sm hover:bg-neutral-400 transition-colors">More Details</button>
+                <button className="rounded-full bg-neutral-500/40 font-medium py-1 px-2 cursor-pointer text-sm hover:bg-neutral-400 transition-colors">See Details</button>
                 <button onClick={ () => onUpdate(drinkData?._k) } className="group relative rounded-full bg-blue-600/40 p-1 cursor-pointer hover:bg-blue-400 transition-colors"><Pen size={20} stroke="#00f9" />
                     <div className="absolute top-full mt-2 bg-neutral-700 px-2 py-1 rounded-md text-white hidden group-hover:flex">
                         <span className="text-sm">Edit</span>

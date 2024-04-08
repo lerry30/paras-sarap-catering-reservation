@@ -26,7 +26,7 @@ const Drinks = () => {
         if(response?.success) {
             setActionSuccessMessage('Drink removed successfully.');
             setTimeout(() => setActionSuccessMessage(''), 2000); // to hide modal
-            router.push('/admin?display=drinks');
+            location.reload();
         }
     }
 
@@ -35,18 +35,18 @@ const Drinks = () => {
     const onUpdateDrink = (_k) => {
         if(!_k) return;
         const drink = drinksObject[ _k ];
-        // const savingStatus = saveDrinkData({ 
-        //     id: _k,
-        //     name: drink?.name || '',
-        //     description: drink?.description || '',
-        //     filename: drink?.filename || '',
-        //     costperhead: drink?.costperhead || 0 
-        // });
+        const savingStatus = saveDrinkData({ 
+            id: _k,
+            name: drink?.name || '',
+            description: drink?.description || '',
+            filename: drink?.filename || '',
+            costperhead: drink?.costperhead || 0 
+        });
 
-        // if(savingStatus) {
-        //     router.push('/admin?display=updatedrink');
-        //     return;
-        // }
+        if(savingStatus) {
+            router.push('/admin?display=updatedrink');
+            return;
+        }
 
         // error modal
     }

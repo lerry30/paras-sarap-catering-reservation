@@ -9,7 +9,7 @@ export const zDrink = create(set => ({
 
     init: () => {
         try {
-            set(state => !state.id ? JSON.parse(localStorage.getItem('drink-update-data')) : state);
+            set(state => !state.id ? JSON.parse(localStorage.getItem('drink-update-data')) || {} : state);
         } catch(error) {}
     },
 

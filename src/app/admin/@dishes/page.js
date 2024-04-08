@@ -34,6 +34,23 @@ const Dishes = () => {
     // because if I would set value into setSelectedDish at first it doesn't mount immediately or not reflec to selectedDish.
     const onUpdateDish = (_k) => {
         if(!_k) return;
+        const savingStatus = saveIntoStore(_k);
+        if(savingStatus) {
+            router.push('/admin?display=updatedish');
+            return;
+        }
+    }
+
+    const viewMore = (_k) => {
+        if(!_k) return;
+        const savingStatus = saveIntoStore(_k);
+        if(savingStatus) {
+            router.push('/admin?display=viewdish');
+            return;
+        }
+    }
+
+    const saveIntoStore = (_k) => {
         const dish = dishesObject[ _k ];
         const savingStatus = saveDishData({ 
             id: _k,
@@ -44,13 +61,7 @@ const Dishes = () => {
             costperhead: dish?.costperhead || 0 
         });
 
-        // console.log(zDish.getState().name);
-        if(savingStatus) {
-            router.push('/admin?display=updatedish');
-            return;
-        }
-
-        // error modal
+        return savingStatus;
     }
 
     const getDishes = async () => {
@@ -87,10 +98,8 @@ const Dishes = () => {
                                         setSelectedDish(_k);
                                     }
                                 } 
-                                onUpdate={ (_k) => {
-                                        onUpdateDish(_k);
-                                    } 
-                                }
+                                onUpdate={ onUpdateDish }
+                                viewMore={ viewMore }
                             />
                         ))
                     }

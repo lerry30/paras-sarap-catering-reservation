@@ -65,8 +65,6 @@ const UpdateDrink = () => {
         setDrinkName(zDrink.getState().name);
         setDescription(zDrink.getState().description);
         setCostPerHead(zDrink.getState().costperhead);
-
-        initCheckBox();
     }, []);
 
     useEffect(() => {
@@ -88,15 +86,13 @@ const UpdateDrink = () => {
                     <article className="max-w-96 text-yellow-900 text-sm p-2 bg-yellow-500/20 rounded-md shadow-md">Keep in mind that uploading your image file may result in the loss of some important features, such as transparency, as the uploaded image file will be converted to a JPG file for performance enhancement</article>
                 </div>
                 <div className="grow flex flex-col gap-4 py-6">
-                    <div className="w-full flex gap-4">
-                        <div className="w-1/2">
-                            <input value={ drinkName } name="drinkname" onChange={(e) => setDrinkName(e.target.value)} className="input w-full border border-neutral-500/40" placeholder="Drink Name" />
-                            <ErrorField message={ invalidFieldsValue['drinkname'] }/>
-                        </div>
-                        <div className="w-1/2">
-                            <input value={ costPerHead } name="costperhead" onChange={ costPerHeadInput } className="input w-full border border-neutral-500/40" placeholder="Cost Per Head" />
-                            <ErrorField message={ invalidFieldsValue['costperhead'] }/>
-                        </div>
+                    <div className="w-full">
+                        <input value={ drinkName } name="drinkname" onChange={(e) => setDrinkName(e.target.value)} className="input w-full border border-neutral-500/40" placeholder="Drink Name" />
+                        <ErrorField message={ invalidFieldsValue['drinkname'] }/>
+                    </div>
+                    <div className="w-full">
+                        <input value={ costPerHead } name="costperhead" onChange={ costPerHeadInput } className="input w-full border border-neutral-500/40" placeholder="Cost Per Head" />
+                        <ErrorField message={ invalidFieldsValue['costperhead'] }/>
                     </div>
                     <div>
                         <textarea value={ description } name="description" onChange={(e) => setDescription(e.target.value)} className="input w-full h-40 border border-neutral-500/40" placeholder="Description"></textarea>
