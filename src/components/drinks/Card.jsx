@@ -2,13 +2,11 @@
 import Image from 'next/image';
 import { Pen, Trash } from '@/components/icons/All';
 
-const Card = ({ dishData, onDelete, onUpdate }) => {
-    const image = dishData?.filename || '';
-    const name = dishData?.name || '';
-    const description = dishData?.description || '';
-    const allergens = dishData?.allergens || [];
-    // const allergens = [];
-    const costPerHead = dishData?.costperhead || 0;
+const Card = ({ drinkData, onDelete, onUpdate }) => {
+    const image = drinkData?.filename || '';
+    const name = drinkData?.name || '';
+    const description = drinkData?.description || '';
+    const costPerHead = drinkData?.costperhead || 0;
 
     const pesoFormatter = new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' });
 
@@ -33,33 +31,20 @@ const Card = ({ dishData, onDelete, onUpdate }) => {
             />
             <article className="px-4 pt-2 pb-0 overflow-hidden min-h-[100px]">
                 <h3 className="font-headings font-semibold">{ name }</h3>
-                <p className={ `font-paragraphs text-sm line-clamp-3 ${ allergens.length === 0 && 'line-clamp-6' }` }>{ description }</p>
+                <p className="font-paragraphs text-sm line-clamp-3">{ description }</p>
             </article>
-            {
-                allergens.length > 0 &&
-                    <article className="flex flex-col gap-1 px-4 pt-2 pb-0 font-semibold">
-                        <h6 className="font-headings text-sm">Allergic Food Components</h6>
-                        <div className="min-h-[60px] flex flex-wrap gap-1">
-                            {
-                                allergens.map((item, index) => (
-                                    <span key={ index } className="size-fit p-1 rounded-full bg-yellow-500/20 text-yellow-900 text-[12px]">{ item }</span>
-                                ))
-                            }
-                        </div>
-                    </article>
-            }
             <article className="w-full px-4 mt-auto pb-2">
                 <span className="text-sm text-neutral-600">{ pesoFormatter.format(costPerHead) } / head</span>
             </article>
             <div className="flex gap-2 justify-end px-4 pb-6 mt-auto">
                 <button className="rounded-full bg-neutral-500/40 font-medium py-1 px-2 cursor-pointer text-sm hover:bg-neutral-400 transition-colors">More Details</button>
-                <button onClick={ () => onUpdate(dishData?._k) } className="group relative rounded-full bg-blue-600/40 p-1 cursor-pointer hover:bg-blue-400 transition-colors"><Pen size={20} stroke="#00f9" />
+                <button onClick={ () => onUpdate(drinkData?._k) } className="group relative rounded-full bg-blue-600/40 p-1 cursor-pointer hover:bg-blue-400 transition-colors"><Pen size={20} stroke="#00f9" />
                     <div className="absolute top-full mt-2 bg-neutral-700 px-2 py-1 rounded-md text-white hidden group-hover:flex">
                         <span className="text-sm">Edit</span>
                         <div className="size-2 absolute top-0 -mt-[2px] z-0 rotate-45 bg-neutral-700"></div>
                     </div>
                 </button>
-                <button onClick={ () => onDelete(dishData?._k) } className="group relative rounded-full bg-red-600/40 p-1 cursor-pointer hover:bg-red-400 transition-colors"><Trash size={20} stroke="#f009" />
+                <button onClick={ () => onDelete(drinkData?._k) } className="group relative rounded-full bg-red-600/40 p-1 cursor-pointer hover:bg-red-400 transition-colors"><Trash size={20} stroke="#f009" />
                     <div className="absolute top-full mt-2 bg-neutral-700 px-2 py-1 rounded-md text-white hidden group-hover:flex">
                         <span className="text-sm">Remove</span>
                         <div className="size-2 absolute top-0 -mt-[2px] z-0 rotate-45 bg-neutral-700"></div>

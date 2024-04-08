@@ -14,8 +14,8 @@ const Dishes = () => {
     const [ deletionPrompt, setDeletionPrompt ] = useState(false);
     const [ selectedDish, setSelectedDish ] = useState(undefined);
 
-    const [ actionSuccessMessage, setActionSuccessMessage ] = useState('');
     const router = useRouter();
+    const [ actionSuccessMessage, setActionSuccessMessage ] = useState('');
     const saveDishData = zDish(state => state.saveDishData);
 
     const onDeleteDish = async () => {
@@ -26,7 +26,7 @@ const Dishes = () => {
         if(response?.success) {
             setActionSuccessMessage('Dish removed successfully.');
             setTimeout(() => setActionSuccessMessage(''), 2000); // to hide modal
-            router.refresh();
+            router.push('/admin?display=dishes');
         }
     }
 
@@ -56,8 +56,6 @@ const Dishes = () => {
     const getDishes = async () => {
         const { data } = (await getData('/api/dishes')) || { data: [] };
         setDishes(data);
-
-        console.log(data);
 
         for(const dish of data) {
             setDishesObject(prev => ({ ...prev, [ dish?._k ]: dish }));

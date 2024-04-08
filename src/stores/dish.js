@@ -8,9 +8,17 @@ export const zDish = create(set => ({
     filename: '',
     costperhead: 0,
 
+    init: () => {
+        try {
+            set(state => !state.id ? JSON.parse(localStorage.getItem('dish-update-data')) : state);
+        } catch(error) {}
+    },
+
     saveDishData: ({ id, name, description, allergens, filename, costperhead }) => {
         if(!id || !name || !description || !filename || !costperhead) return false;
-        set(state => ({ id, name, description, allergens, filename, costperhead }));
+        const data = { id, name, description, allergens, filename, costperhead };
+        localStorage.setItem('dish-update-data', JSON.stringify(data));
+        set(data);
         return true;
-    }
+    },
 }));

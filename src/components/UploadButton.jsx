@@ -36,7 +36,7 @@ const UploadButton = ({ fileData: [ file, setFile ], initialImageSrc=undefined }
 
     useEffect(() => {
         let fileReader, isCancel = false;
-        if (file) {
+        if(file) {
             fileReader = new FileReader();
             fileReader.onload = (e) => {
                 const { result } = e.target;
@@ -58,15 +58,15 @@ const UploadButton = ({ fileData: [ file, setFile ], initialImageSrc=undefined }
 
     useEffect(() => {
         // initial image source
-        if(initialImageSrc)
+        if(!imageSrc && initialImageSrc)
             setImageSrc(initialImageSrc);
         // tooltip
         uploadBtn?.current?.addEventListener('mousemove', toolTipOverMouse);
         return () => uploadBtn?.current?.removeEventListener('mousemove', toolTipOverMouse);
-    });
+    }, []);
 
     return (
-        <div>
+        <div>   
             <label htmlFor="file" className="pl-1 font-paragraphs">Click to add image</label>
             <div 
                 ref={ uploadBtn }

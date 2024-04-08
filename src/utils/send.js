@@ -57,3 +57,17 @@ export const deleteWithJSON = async (urlPath, payload) => {
 
     return resPayload;
 }
+
+export const sendFormUpdate = async (urlPath, form) => {
+    const res = await fetch(urlPath, {
+        method: 'PUT',
+        body: form
+    });
+
+    const payload = await res.json();
+    const message = payload?.message || 'Failed to fetch';
+
+    if(!res?.ok) throw new Error(message, { cause: { response: res, payload } });
+
+    return payload;
+}
