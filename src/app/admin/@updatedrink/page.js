@@ -99,13 +99,13 @@ const UpdateDrink = () => {
                         <ErrorField message={ invalidFieldsValue['description'] }/>
                     </div>
                     <div className="w-full flex gap-4">
+                        <button type="submit" className="w-1/2 button shadow-md border border-neutral-500/40 bg-emerald-500/40">Update</button>
                         <button onClick={ (ev) => {
                             ev.preventDefault();
                             router.push('/admin?display=drinks')
                         }} className="w-1/2 button shadow-md border border-neutral-500/40">
                             Cancel
                         </button>
-                        <button type="submit" className="w-1/2 button shadow-md border border-neutral-500/40 bg-emerald-500/40">Update</button>
                     </div>
                     <ErrorField message={ invalidFieldsValue?.unauth }/>
                     <ErrorField message={ invalidFieldsValue['image'] }/>

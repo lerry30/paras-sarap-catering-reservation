@@ -73,10 +73,6 @@ const Card = ({ dishData, onDelete, onUpdate, viewMore }) => {
 export default Card;
 // w-[calc((100vw-var(--admin-sidebar-width)-(16px*5))/4)]
 
-
-// They’re made with a delicious vegetable and tofu filling then rolled in authentic lumpia wrappers
-// Indulge in our tantalizing pork BBQ, meticulously crafted with succulent cuts of premium pork, expertly marinated in our signature blend of handpicked spices and secret ingredients. But what truly sets our BBQ apart is our meticulously curated special sweetened sauce. Every mouthwatering bite bursts with a symphony of flavors, as the tender pork harmonizes perfectly with the rich, tangy sweetness of our sauce. From the first savory bite to the last lingering taste, experience a culinary journey like no other, where each bite is an unforgettable delight. Elevate your BBQ experience with our unparalleled fusion of flavors, guaranteed to tantalize your taste buds and leave you craving more.
-
 // Model.deleteMany()
 // Model.deleteOne()
 // Model.find()
@@ -91,5 +87,3 @@ export default Card;
 // Model.replaceOne()
 // Model.updateMany()
 // Model.updateOne()
-
-// https://www.youtube.com/watch?v=lHQUkWcp8xU&pp=ygUObGUgbGEgbGUgbGEgbGU%3D

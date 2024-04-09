@@ -11,8 +11,6 @@ import { useRouter } from 'next/navigation';
 import { toNumber } from '@/utils/number';
 import { zDish } from '@/stores/dish';
 
-zDish.getState().init();
-
 const UpdateDish = () => {
     const [ dishName, setDishName ] = useState('');
     const [ description, setDescription ] = useState('');
@@ -94,9 +92,6 @@ const UpdateDish = () => {
         setCostPerHead(zDish.getState().costperhead);
 
         initCheckBox();
-        // if store doesn't have value
-        // if(!prevDishId)
-        //     router.push('/admin?display=dishes');
     }, []);
 
     useEffect(() => {
@@ -142,13 +137,13 @@ const UpdateDish = () => {
                         <Checkbox ref={ checkbox => checkBoxes.current['grains'] = checkbox } value="grains" onChange={ checkboxHandler } text="Wheat and other gluten-containing grains" />
                     </div>
                     <div className="w-full flex gap-4">
+                        <button type="submit" className="w-1/2 button shadow-md border border-neutral-500/40 bg-emerald-500/40">Update</button>
                         <button onClick={ (ev) => {
                             ev.preventDefault();
                             router.push('/admin?display=dishes')
                         }} className="w-1/2 button shadow-md border border-neutral-500/40">
                             Cancel
                         </button>
-                        <button type="submit" className="w-1/2 button shadow-md border border-neutral-500/40 bg-emerald-500/40">Update</button>
                     </div>
                     <ErrorField message={ invalidFieldsValue?.unauth }/>
                     <ErrorField message={ invalidFieldsValue['image'] }/>

@@ -19,14 +19,14 @@ const ASidebar = () => {
             </Option>
             <ParentOption text="Foods & Beverages" className="px-4">
                 <Option href="/admin?display=dishes" className={ `!rounded-full px-4` }>Dishes</Option>
-                <Option href="" className="!rounded-full px-4">Menus</Option>
+                <Option href="/" className="!rounded-full px-4">Menus</Option>
                 <Option href="/admin?display=drinks" className="!rounded-full px-4">Drinks</Option>
             </ParentOption>
             <ParentOption text="Packages" className="px-4">
-                <Option href="" className="!rounded-full px-4">Item 6</Option>
-                <Option href="" className="!rounded-full px-4">Item 7</Option>
-                <Option href="" className="!rounded-full px-4">Item 8</Option>
-                <Option href="" className="!rounded-full px-4">Item 9</Option>
+                <Option href="/" className="!rounded-full px-4">Item 6</Option>
+                <Option href="/" className="!rounded-full px-4">Item 7</Option>
+                <Option href="/" className="!rounded-full px-4">Item 8</Option>
+                <Option href="/" className="!rounded-full px-4">Item 9</Option>
             </ParentOption>
             <Option href="/" className="!rounded-full px-4">Item 10</Option>
         </section>

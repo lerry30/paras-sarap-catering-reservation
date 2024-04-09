@@ -7,26 +7,43 @@ import { deleteWithJSON, getData } from '@/utils/send';
 import { Prompt, SuccessModal } from '@/components/Modal';
 import { useRouter } from 'next/navigation';
 import { zDish } from '@/stores/dish';
+import Loading from '@/components/Loading';
 
 const Dishes = () => {
     const [ dishes, setDishes ] = useState([]);
     const [ dishesObject, setDishesObject ] = useState({});
     const [ deletionPrompt, setDeletionPrompt ] = useState(false);
     const [ selectedDish, setSelectedDish ] = useState(undefined);
+    const [ actionSuccessMessage, setActionSuccessMessage ] = useState('');
+    const [ loading, setLoading ] = useState(false);
 
     const router = useRouter();
-    const [ actionSuccessMessage, setActionSuccessMessage ] = useState('');
     const saveDishData = zDish(state => state.saveDishData);
+
+    const saveIntoStore = (_k) => {
+        const dish = dishesObject[ _k ];
+        const savingStatus = saveDishData({ 
+            id: _k,
+            name: dish?.name || '',
+            description: dish?.description || '',
+            allergens: dish?.allergens || [],
+            filename: dish?.filename || '',
+            costperhead: dish?.costperhead || 0 
+        });
+
+        return savingStatus;
+    }
 
     const onDeleteDish = async () => {
         if(!selectedDish) return;
         setDeletionPrompt(false);
+        setLoading(true);
 
         const response = await deleteWithJSON('/api/dishes', { _k: selectedDish });
         if(response?.success) {
             setActionSuccessMessage('Dish removed successfully.');
             setTimeout(() => setActionSuccessMessage(''), 2000); // to hide modal
-            router.push('/admin?display=dishes');
+            location.reload();
         }
     }
 
@@ -50,20 +67,6 @@ const Dishes = () => {
         }
     }
 
-    const saveIntoStore = (_k) => {
-        const dish = dishesObject[ _k ];
-        const savingStatus = saveDishData({ 
-            id: _k,
-            name: dish?.name || '',
-            description: dish?.description || '',
-            allergens: dish?.allergens || [],
-            filename: dish?.filename || '',
-            costperhead: dish?.costperhead || 0 
-        });
-
-        return savingStatus;
-    }
-
     const getDishes = async () => {
         const { data } = (await getData('/api/dishes')) || { data: [] };
         setDishes(data);
@@ -79,6 +82,7 @@ const Dishes = () => {
 
     return (
         <>
+            { loading && <Loading customStyle="size-full" /> }
             <section className="flex flex-col gap-2 p-4 ">
                 <div className="flex justify-between items-center p-1 rounded-lg">
                     <h2 className="font-headings font-semibold">Dishes</h2>

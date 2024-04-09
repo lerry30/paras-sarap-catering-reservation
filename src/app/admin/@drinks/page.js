@@ -7,20 +7,37 @@ import { deleteWithJSON, getData } from '@/utils/send';
 import { Prompt, SuccessModal } from '@/components/Modal';
 import { useRouter } from 'next/navigation';
 import { zDrink } from '@/stores/drink';
+import Loading from '@/components/Loading';
 
 const Drinks = () => {
     const [ drinks, setDrinks ] = useState([]);
     const [ drinksObject, setDrinksObject ] = useState({});
     const [ deletionPrompt, setDeletionPrompt ] = useState(false);
     const [ selectedDrink, setSelectedDrink ] = useState(undefined);
+    const [ actionSuccessMessage, setActionSuccessMessage ] = useState('');
+    const [ loading, setLoading ] = useState(false);
 
     const router = useRouter();
-    const [ actionSuccessMessage, setActionSuccessMessage ] = useState('');
     const saveDrinkData = zDrink(state => state.saveDrinkData);
+
+    const saveIntoStore = (_k) => {
+        const drink = drinksObject[ _k ];
+        const savingStatus = saveDrinkData({ 
+            id: _k,
+            name: drink?.name || '',
+            description: drink?.description || '',
+            allergens: drink?.allergens || [],
+            filename: drink?.filename || '',
+            costperhead: drink?.costperhead || 0 
+        });
+
+        return savingStatus;
+    }
 
     const onDeleteDrink = async () => {
         if(!selectedDrink) return;
         setDeletionPrompt(false);
+        setLoading(true);
 
         const response = await deleteWithJSON('/api/drinks', { _k: selectedDrink });
         if(response?.success) {
@@ -47,8 +64,15 @@ const Drinks = () => {
             router.push('/admin?display=updatedrink');
             return;
         }
+    }
 
-        // error modal
+    const viewMore = (_k) => {
+        if(!_k) return;
+        const savingStatus = saveIntoStore(_k);
+        if(savingStatus) {
+            router.push('/admin?display=viewdrink');
+            return;
+        }
     }
 
     const getDrinks = async () => {
@@ -66,6 +90,7 @@ const Drinks = () => {
 
     return (
         <>
+            { loading && <Loading customStyle="size-full" /> }
             <section className="flex flex-col gap-2 p-4 ">
                 <div className="flex justify-between items-center p-1 rounded-lg">
                     <h2 className="font-headings font-semibold">Drinks</h2>
@@ -85,10 +110,8 @@ const Drinks = () => {
                                         setSelectedDrink(_k);
                                     }
                                 } 
-                                onUpdate={ (_k) => {
-                                        onUpdateDrink(_k);
-                                    } 
-                                }
+                                onUpdate={ onUpdateDrink }
+                                viewMore={ viewMore }
                             />
                         ))
                     }

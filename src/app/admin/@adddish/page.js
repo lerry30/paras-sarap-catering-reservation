@@ -108,13 +108,13 @@ const AddDish = () => {
                         <Checkbox value="grains" text="Wheat and other gluten-containing grains" onChange={ checkboxHandler } />
                     </div>
                     <div className="w-full flex gap-4">
+                        <button type="submit" className="w-1/2 button shadow-md border border-neutral-500/40">Save</button>
                         <button onClick={ (ev) => {
                             ev.preventDefault();
                             router.push('/admin?display=dishes')
                         }} className="w-1/2 button shadow-md border border-neutral-500/40">
                             Cancel
                         </button>
-                        <button type="submit" className="w-1/2 button shadow-md border border-neutral-500/40">Save</button>
                     </div>
                     <ErrorField message={ invalidFieldsValue?.unauth }/>
                     <ErrorField message={ invalidFieldsValue['image'] }/>
