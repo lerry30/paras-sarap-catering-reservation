@@ -14,14 +14,13 @@ const ASidebar = () => {
 
     return  (
         <section className="absolute left-0 top-[var(--nav-height)] w-admin-sidebar h-screen p-2 pt-4 border-r border-neutral-600/20 flex flex-col gap-2">
-            <Option href="/" className="!rounded-full px-4" icon="square-arrow-right">
-                Item 1
-            </Option>
+            <Option href="/admin?display=dashboard" className="!rounded-full px-4" icon="square-arrow-right">Dashboard</Option>
             <ParentOption text="Foods & Beverages" className="px-4">
                 <Option href="/admin?display=dishes" className={ `!rounded-full px-4` }>Dishes</Option>
                 <Option href="/" className="!rounded-full px-4">Menus</Option>
                 <Option href="/admin?display=drinks" className="!rounded-full px-4">Drinks</Option>
             </ParentOption>
+            <Option href="/admin?display=venues" className="!rounded-full px-4" icon="square-arrow-right">Venues</Option>
             <ParentOption text="Packages" className="px-4">
                 <Option href="/" className="!rounded-full px-4">Item 6</Option>
                 <Option href="/" className="!rounded-full px-4">Item 7</Option>

@@ -10,8 +10,6 @@ import { useRouter } from 'next/navigation';
 import { toNumber } from '@/utils/number';
 import { zDrink } from '@/stores/drink';
 
-zDrink.getState().init();
-
 const UpdateDrink = () => {
     const [ drinkName, setDrinkName ] = useState('');
     const [ description, setDescription ] = useState('');

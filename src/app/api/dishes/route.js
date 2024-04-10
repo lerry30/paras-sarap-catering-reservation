@@ -39,8 +39,8 @@ export const POST = async (request) => {
         if(!isAnAdmin) return NextResponse.json({ message: 'There\'s something wrong!' }, { status: 400 });
 
         const form = await request.formData();
-        const dishName = form.get('dishname');
-        const description = form.get('description');
+        const dishName = form.get('dishname')?.trim();
+        const description = form.get('description')?.trim();
         const file = form.get('file');
         const costPerHead = toNumber(form.get('costperhead'));
 
@@ -62,7 +62,7 @@ export const POST = async (request) => {
         if(dishFromDb)
             return Response.json({ message: 'Dish already exist', errorData: 'dishname' }, { status: 400 }); // I turn 204 to 400 since nextjs have problem with responding with status code of 204 right now
     
-        const sharpImageData = await sharp(buffer).jpeg({ quality: 30 }).toBuffer(); // reduce file size
+        const sharpImageData = await sharp(buffer).jpeg({ quality: 10 }).toBuffer(); // reduce file size
         const { uploaded, filename } = await uploadFileToS3(sharpImageData, 'dishes'); // upload into aws
 
         if(!uploaded) 
@@ -107,9 +107,9 @@ export const PUT = async (request) => {
         if(!isAnAdmin) return NextResponse.json({ message: 'There\'s something wrong!' }, { status: 400 });
 
         const form = await request.formData();
-        const dishId = form.get('id');
-        const dishName = form.get('dishname');
-        const description = form.get('description');
+        const dishId = form.get('id')?.trim();
+        const dishName = form.get('dishname')?.trim();
+        const description = form.get('description')?.trim();
         const file = form.get('file');
         const costPerHead = toNumber(form.get('costperhead'));
         const isImageChange = !!Number(form.get('is-image-change')); // it is actually a boolean but because form converts it to string, I'll need to convert it to number the boolean

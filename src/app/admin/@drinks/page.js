@@ -42,8 +42,9 @@ const Drinks = () => {
         const response = await deleteWithJSON('/api/drinks', { _k: selectedDrink });
         if(response?.success) {
             setActionSuccessMessage('Drink removed successfully.');
-            setTimeout(() => setActionSuccessMessage(''), 2000); // to hide modal
-            location.reload();
+            setTimeout(() => {
+                location.reload();
+            }, 2000); // to hide modal
         }
     }
 
@@ -62,7 +63,6 @@ const Drinks = () => {
 
         if(savingStatus) {
             router.push('/admin?display=updatedrink');
-            return;
         }
     }
 

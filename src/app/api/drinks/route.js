@@ -38,8 +38,8 @@ export const POST = async (request) => {
         if(!isAnAdmin) return NextResponse.json({ message: 'There\'s something wrong!' }, { status: 400 });
 
         const form = await request.formData();
-        const drinkName = form.get('drinkname');
-        const description = form.get('description');
+        const drinkName = form.get('drinkname')?.trim();
+        const description = form.get('description')?.trim();
         const file = form.get('file');
         const costPerHead = toNumber(form.get('costperhead'));
 
@@ -101,9 +101,9 @@ export const PUT = async (request) => {
         if(!isAnAdmin) return NextResponse.json({ message: 'There\'s something wrong!' }, { status: 400 });
 
         const form = await request.formData();
-        const drinkId = form.get('id');
-        const drinkName = form.get('drinkname');
-        const description = form.get('description');
+        const drinkId = form.get('id')?.trim();
+        const drinkName = form.get('drinkname')?.trim();
+        const description = form.get('description')?.trim();
         const file = form.get('file');
         const costPerHead = toNumber(form.get('costperhead'));
         const isImageChange = !!Number(form.get('is-image-change')); // it is actually a boolean but because form converts it to string, I'll need to convert it to number the boolean
@@ -121,7 +121,7 @@ export const PUT = async (request) => {
         const drinkIdDecoded = jwt.verify(drinkId, process.env.ACTION_KEY);
         if(isImageChange) {
             const buffer = Buffer.from(await file.arrayBuffer());
-            const sharpImageData = await sharp(buffer).jpeg({ quality: 30 }).toBuffer(); // reduce file size
+            const sharpImageData = await sharp(buffer).jpeg({ quality: 10 }).toBuffer(); // reduce file size
             const { uploaded, filename } = await uploadFileToS3(sharpImageData, 'drinks'); // upload into aws
 
             if(!uploaded) 
