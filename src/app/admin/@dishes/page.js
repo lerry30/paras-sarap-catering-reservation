@@ -28,7 +28,8 @@ const Dishes = () => {
             description: dish?.description || '',
             allergens: dish?.allergens || [],
             filename: dish?.filename || '',
-            costperhead: dish?.costperhead || 0 
+            costperhead: dish?.costperhead || 0,
+            status: dish?.status || 'available',
         });
 
         return savingStatus;

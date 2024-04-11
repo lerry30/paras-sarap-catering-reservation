@@ -10,6 +10,7 @@ const Card = ({ venueData, onDelete, onUpdate, viewMore }) => {
     const address = venueData?.address || {};
     const maximumSeatingCapacity = venueData?.maximumSeatingCapacity || 0;
     const price = venueData?.price || 0;
+    const status = venueData?.status || 'available';
     const [ fullAddress, setFullAddress ] = useState('');
 
     useEffect(() => {
@@ -18,7 +19,7 @@ const Card = ({ venueData, onDelete, onUpdate, viewMore }) => {
     }, []);
 
     return (
-        <div className="flex flex-col w-full max-w-[400px] h-[370px] rounded-lg shadow-xl hover:scale-[1.01] hover:shadow-2xl transition-transform">
+        <div className="flex flex-col w-full min-w-[370px] max-w-[calc((100vw-var(--admin-sidebar-width)-(18px*4))/2)] h-[370px] rounded-lg shadow-xl hover:scale-[1.01] hover:shadow-2xl transition-transform">
             <Image 
                 src={ image }
                 alt={ name }
@@ -47,20 +48,23 @@ const Card = ({ venueData, onDelete, onUpdate, viewMore }) => {
                 <span className="text-neutral-600 text-sm">Maximum Seating Capacity: { maximumSeatingCapacity }</span>
                 <span className="text-neutral-600 text-sm">From: { price }</span>
             </article>
-            <div className="flex gap-2 justify-end px-4 pb-6 mt-auto">
-                <button onClick={ () => viewMore(venueData?._k) } className="rounded-full bg-neutral-500/40 font-medium py-1 px-2 cursor-pointer text-sm hover:bg-neutral-400 transition-colors">See Details</button>
-                <button onClick={ () => onUpdate(venueData?._k) } className="group relative rounded-full bg-blue-600/40 p-1 cursor-pointer hover:bg-blue-400 transition-colors"><Pen size={20} stroke="#00f9" />
-                    <div className="absolute top-full mt-2 bg-neutral-700 px-2 py-1 rounded-md text-white hidden group-hover:flex">
-                        <span className="text-sm">Edit</span>
-                        <div className="size-2 absolute top-0 -mt-[2px] z-0 rotate-45 bg-neutral-700"></div>
-                    </div>
-                </button>
-                <button onClick={ () => onDelete(venueData?._k) } className="group relative rounded-full bg-red-600/40 p-1 cursor-pointer hover:bg-red-400 transition-colors"><Trash size={20} stroke="#f009" />
-                    <div className="absolute top-full mt-2 bg-neutral-700 px-2 py-1 rounded-md text-white hidden group-hover:flex">
-                        <span className="text-sm">Remove</span>
-                        <div className="size-2 absolute top-0 -mt-[2px] z-0 rotate-45 bg-neutral-700"></div>
-                    </div>
-                </button>
+            <div className="flex justify-between items-center px-4 pb-6 mt-auto">
+                <span className={ `text-sm rounded-full px-1 ${ status === 'available' ? 'bg-green-200/40 text-green-500' : 'bg-red-200/40 text-red-500' }` }>{ status }</span>
+                <div className="flex gap-2">
+                    <button onClick={ () => viewMore(venueData?._k) } className="rounded-full bg-neutral-500/40 font-medium py-1 px-2 cursor-pointer text-sm hover:bg-neutral-400 transition-colors">See Details</button>
+                    <button onClick={ () => onUpdate(venueData?._k) } className="group relative rounded-full bg-blue-600/40 p-1 cursor-pointer hover:bg-blue-400 transition-colors"><Pen size={20} stroke="#00f9" />
+                        <div className="absolute top-full mt-2 bg-neutral-700 px-2 py-1 rounded-md text-white hidden group-hover:flex">
+                            <span className="text-sm">Edit</span>
+                            <div className="size-2 absolute top-0 -mt-[2px] z-0 rotate-45 bg-neutral-700"></div>
+                        </div>
+                    </button>
+                    <button onClick={ () => onDelete(venueData?._k) } className="group relative rounded-full bg-red-600/40 p-1 cursor-pointer hover:bg-red-400 transition-colors"><Trash size={20} stroke="#f009" />
+                        <div className="absolute top-full mt-2 bg-neutral-700 px-2 py-1 rounded-md text-white hidden group-hover:flex">
+                            <span className="text-sm">Remove</span>
+                            <div className="size-2 absolute top-0 -mt-[2px] z-0 rotate-45 bg-neutral-700"></div>
+                        </div>
+                    </button>
+                </div>
             </div>
         </div>
     );

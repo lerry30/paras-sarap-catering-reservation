@@ -20,6 +20,7 @@ const UpdateDish = () => {
     const [ invalidFieldsValue, setInvalidFieldsValue ] = useState({});
     const [ loading, setLoading ] = useState(false);
     const [ isImageChange, setImageChange ] = useState(false);
+    const [ status, setStatus ] = useState('available');
     const router = useRouter();
 
     const checkboxAllergens = [ 'nuts', 'seafood', 'milk', 'eggs', 'soybeans', 'grains' ];
@@ -90,6 +91,7 @@ const UpdateDish = () => {
         setDishName(zDish.getState().name);
         setDescription(zDish.getState().description);
         setCostPerHead(zDish.getState().costperhead);
+        setStatus(zDish.getState().status);
 
         initCheckBox();
     }, []);
@@ -135,6 +137,19 @@ const UpdateDish = () => {
                         <Checkbox ref={ checkbox => checkBoxes.current['eggs'] = checkbox } value="eggs" onChange={ checkboxHandler } text="Eggs" />
                         <Checkbox ref={ checkbox => checkBoxes.current['soybeans'] = checkbox } value="soybeans" onChange={ checkboxHandler } text="Soybeans" />
                         <Checkbox ref={ checkbox => checkBoxes.current['grains'] = checkbox } value="grains" onChange={ checkboxHandler } text="Wheat and other gluten-containing grains" />
+                    </div>
+                    <div className="flex flex-col">
+                        <h4 className="font-headings text-sm font-semibold">Status:</h4>
+                        <div className="flex gap-2 items-center">
+                            <input type="hidden" name="status" value={ status } />
+                            <button onClick={ (ev) => {
+                                ev.preventDefault();
+                                setStatus(status === 'available' ? 'unavailable' : 'available');
+                            } } className={ `w-12 h-6 flex items-center bg-neutral-400 rounded-full ${ status === 'available' ? 'justify-end' : 'justify-start'}` }>
+                                <div onClick={ ev => ev.preventDefault() } className={ `size-[26px] rounded-full border border-neutral-300 ${ status === 'available' ? 'bg-green-500' : 'bg-red-500' }` }></div>
+                            </button>
+                            <span className={ `text-sm rounded-full px-1 ${ status === 'available' ? 'bg-green-200/40 text-green-500' : 'bg-red-200/40 text-red-500' }` }>{ status }</span>
+                        </div>
                     </div>
                     <div className="w-full flex gap-4">
                         <button type="submit" className="w-1/2 button shadow-md border border-neutral-500/40 bg-emerald-500/40">Update</button>

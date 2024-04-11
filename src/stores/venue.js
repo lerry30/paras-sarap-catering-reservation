@@ -15,6 +15,7 @@ export const zVenue = create(set => ({
     maximumSeatingCapacity: 0,
     price: 0,
     chargeForTablesAndChairs: 0,
+    status: 'available',
 
     init: () => {
         try {
@@ -23,9 +24,9 @@ export const zVenue = create(set => ({
         } catch(error) {}
     },  
 
-    saveVenueData: ({ id, name, description, address, filename, maximumSeatingCapacity, price, chargeForTablesAndChairs }) => {
+    saveVenueData: ({ id, name, description, address, filename, maximumSeatingCapacity, price, chargeForTablesAndChairs, status }) => {
         if(!id || !name || !description || Object.values(address).length === 0 || !filename || !maximumSeatingCapacity || !price) return false;
-        const data = { id, name, description, address, filename, maximumSeatingCapacity, price, chargeForTablesAndChairs };
+        const data = { id, name, description, address, filename, maximumSeatingCapacity, price, chargeForTablesAndChairs, status };
         localStorage.setItem('venue-update-data', JSON.stringify(data));
         set(data);
         return true;

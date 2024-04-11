@@ -8,6 +8,8 @@ import { uploadFileToS3, deleteFileFromS3 } from '@/utils/aws/s3';
 import { apiIsAnAdmin } from '@/utils/auth/api/isanadmin';
 import { toNumber } from '@/utils/number';
 
+const imageQuality = toNumber(process.env.SHARP_IMG_QUALITY);
+
 export const GET = async () => {
     try {
         const allDrinks = (await Drink.find({}).sort({ createdAt: -1 })) || [];
@@ -20,6 +22,7 @@ export const GET = async () => {
                 description: drink?.description,
                 filename: drink?.filename,
                 costperhead: drink?.costperhead,
+                status: drink?.status,
             };
 
             data.push(item);
@@ -56,7 +59,7 @@ export const POST = async (request) => {
         if(drinkFromDb)
             return Response.json({ message: 'Drink already exist', errorData: 'drinkname' }, { status: 400 }); // I turn 204 to 400 since nextjs have problem with responding with status code of 204 right now
     
-        const sharpImageData = await sharp(buffer).jpeg({ quality: 30 }).toBuffer(); // reduce file size
+        const sharpImageData = await sharp(buffer).jpeg({ quality: imageQuality }).toBuffer(); // reduce file size
         const { uploaded, filename } = await uploadFileToS3(sharpImageData, 'drinks'); // upload into aws
 
         if(!uploaded) 
@@ -107,6 +110,7 @@ export const PUT = async (request) => {
         const file = form.get('file');
         const costPerHead = toNumber(form.get('costperhead'));
         const isImageChange = !!Number(form.get('is-image-change')); // it is actually a boolean but because form converts it to string, I'll need to convert it to number the boolean
+        const status = form.get('status')?.trim();
 
         if(!drinkId) return NextResponse.json({ message: 'There\'s something wrong!', errorData: 'unauth' }, { status: 400 });
 
@@ -117,11 +121,13 @@ export const PUT = async (request) => {
         
         const fDrinkName = TitleFormat(drinkName);
         const fDescription = (`${ description[0].toUpperCase() }${ description.substring(1) }`).trim();
+        const statusValues = { available: 'available', unavailable: 'unavailable' };
+        const fStatus = statusValues[status] || 'available';
         
         const drinkIdDecoded = jwt.verify(drinkId, process.env.ACTION_KEY);
         if(isImageChange) {
             const buffer = Buffer.from(await file.arrayBuffer());
-            const sharpImageData = await sharp(buffer).jpeg({ quality: 10 }).toBuffer(); // reduce file size
+            const sharpImageData = await sharp(buffer).jpeg({ quality: imageQuality }).toBuffer(); // reduce file size
             const { uploaded, filename } = await uploadFileToS3(sharpImageData, 'drinks'); // upload into aws
 
             if(!uploaded) 
@@ -134,7 +140,7 @@ export const PUT = async (request) => {
             await deleteFileFromS3(pathname);
         }
 
-        const drink = await Drink.findByIdAndUpdate(drinkIdDecoded, { name: fDrinkName, description: fDescription, costperhead: costPerHead });
+        const drink = await Drink.findByIdAndUpdate(drinkIdDecoded, { name: fDrinkName, description: fDescription, costperhead: costPerHead, status: fStatus });
         return NextResponse.json({ message: '', success: true }, { status: 200 });
     } catch(error) {
         console.log(error);

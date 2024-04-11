@@ -7,6 +7,7 @@ export const zDish = create(set => ({
     allergens: [],
     filename: '',
     costperhead: 0,
+    status: 'available',
 
     init: () => {
         try {
@@ -15,9 +16,9 @@ export const zDish = create(set => ({
         } catch(error) {}
     },
 
-    saveDishData: ({ id, name, description, allergens, filename, costperhead }) => {
+    saveDishData: ({ id, name, description, allergens, filename, costperhead, status }) => {
         if(!id || !name || !description || !filename || !costperhead) return false;
-        const data = { id, name, description, allergens, filename, costperhead };
+        const data = { id, name, description, allergens, filename, costperhead, status };
         localStorage.setItem('dish-update-data', JSON.stringify(data));
         set(data);
         return true;

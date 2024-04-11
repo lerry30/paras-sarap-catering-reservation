@@ -6,6 +6,7 @@ export const zDrink = create(set => ({
     description: '',
     filename: '',
     costperhead: 0,
+    status: 'available',
 
     init: () => {
         try {
@@ -13,9 +14,9 @@ export const zDrink = create(set => ({
         } catch(error) {}
     },
 
-    saveDrinkData: ({ id, name, description, filename, costperhead }) => {
+    saveDrinkData: ({ id, name, description, filename, costperhead, status }) => {
         if(!id || !name || !description || !filename || !costperhead) return false;
-        const data = { id, name, description, filename, costperhead };
+        const data = { id, name, description, filename, costperhead, status };
         localStorage.setItem('drink-update-data', JSON.stringify(data));
         set(data);
         return true;

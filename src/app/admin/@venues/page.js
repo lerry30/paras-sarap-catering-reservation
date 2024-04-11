@@ -29,7 +29,9 @@ const Venues = () => {
             description: venue?.description || '',
             address: venue?.address || {},
             filename: venue?.filename || '',
-            maximumSeatingCapacity: venue?.maximumSeatingCapacity || 0 
+            maximumSeatingCapacity: venue?.maximumSeatingCapacity || 0,
+            chargesForTablesAndChairs: venue?.chargesForTablesAndChairs || 0,
+            status: venue?.status || 'available',
         });
 
         return savingStatus;
@@ -70,8 +72,6 @@ const Venues = () => {
     const getVenues = async () => {
         const { data } = (await getData('/api/venues')) || { data: [] };
         setVenues(data);
-
-        console.log(data);
 
         for(const venue of data) {
             setVenuesObject(prev => ({ ...prev, [ venue?._k ]: venue }));

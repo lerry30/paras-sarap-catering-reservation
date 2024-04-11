@@ -20,6 +20,7 @@ const UpdateVenue = () => {
     const [ price, setPrice ] = useState(0);
     const [ chargeForTablesAndChairs, setChargeForTablesAndChairs ] = useState(0);
     const [ maximumSeatingCapacity, setMaximumSeatingCapacity ] = useState(0);
+    const [ status, setStatus ] = useState('available');
 
     const [ invalidFieldsValue, setInvalidFieldsValue ] = useState({});
     const [ loading, setLoading ] = useState(false);
@@ -121,6 +122,7 @@ const UpdateVenue = () => {
         setPrice(zVenue.getState().price);
         setMaximumSeatingCapacity(zVenue.getState().maximumSeatingCapacity);
         setChargeForTablesAndChairs(zVenue.getState().chargeForTablesAndChairs || 0);
+        setStatus(zVenue.getState().status);
 
         const { region, province, municipality, barangay, street } = zVenue.getState().address;
         const fRegion = region?.toUpperCase() || '';
@@ -247,6 +249,19 @@ const UpdateVenue = () => {
                             <ErrorField message={ invalidFieldsValue['barangay'] }/>
                         </div>
                     </div>  
+                    <div className="flex flex-col">
+                        <h4 className="font-headings text-sm font-semibold">Status:</h4>
+                        <div className="flex gap-2 items-center">
+                            <input type="hidden" name="status" value={ status } />
+                            <button onClick={ (ev) => {
+                                ev.preventDefault();
+                                setStatus(status === 'available' ? 'unavailable' : 'available');
+                            } } className={ `w-12 h-6 flex items-center bg-neutral-400 rounded-full ${ status === 'available' ? 'justify-end' : 'justify-start'}` }>
+                                <div onClick={ ev => ev.preventDefault() } className={ `size-[26px] rounded-full border border-neutral-300 ${ status === 'available' ? 'bg-green-500' : 'bg-red-500' }` }></div>
+                            </button>
+                            <span className={ `text-sm rounded-full px-1 ${ status === 'available' ? 'bg-green-200/40 text-green-500' : 'bg-red-200/40 text-red-500' }` }>{ status }</span>
+                        </div>
+                    </div>
                     <div className="w-full flex gap-4">
                         <button type="submit" className="w-1/2 button shadow-md border border-neutral-500/40">Update</button>
                         <button onClick={ (ev) => {

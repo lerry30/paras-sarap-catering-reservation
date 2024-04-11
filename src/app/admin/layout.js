@@ -15,6 +15,7 @@ export default function AdminLayout({
         dishes, adddish, updatedish, viewdish, 
         drinks, adddrink, updatedrink, viewdrink,
         venues, addvenue, updatevenue, viewvenue,
+        viewweddingthemes
     }) {
     const searchParams = useSearchParams();
     const param = searchParams?.get('display');
@@ -33,6 +34,7 @@ export default function AdminLayout({
         addvenue: addvenue,
         updatevenue: updatevenue,
         viewvenue: viewvenue,
+        viewweddingthemes: viewweddingthemes
     }
 
     // Keep in mind to always restart the server every time a new slot is added.

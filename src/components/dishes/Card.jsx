@@ -9,6 +9,7 @@ const Card = ({ dishData, onDelete, onUpdate, viewMore }) => {
     const allergens = dishData?.allergens || [];
     // const allergens = [];
     const costPerHead = dishData?.costperhead || 0;
+    const status = dishData?.status || 'available';
 
     const pesoFormatter = new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' });
 
@@ -48,8 +49,9 @@ const Card = ({ dishData, onDelete, onUpdate, viewMore }) => {
                         </div>
                     </article>
             }
-            <article className="w-full px-4 mt-auto pb-2">
+            <article className="w-full px-4 mt-auto pb-2 flex justify-between">
                 <span className="text-sm text-neutral-600">{ pesoFormatter.format(costPerHead) } / head</span>
+                <span className={ `text-sm rounded-full px-1 ${ status === 'available' ? 'bg-green-200/40 text-green-500' : 'bg-red-200/40 text-red-500' }` }>{ status }</span>
             </article>
             <div className="flex gap-2 justify-end px-4 pb-6 mt-auto">
                 <button onClick={ () => viewMore(dishData?._k) } className="rounded-full bg-neutral-500/40 font-medium py-1 px-2 cursor-pointer text-sm hover:bg-neutral-400 transition-colors">See Details</button>

@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation';
 import { zDrink } from '@/stores/drink';
 import Loading from '@/components/Loading';
 
-const Drinks = () => {
+const ViewWeddingThemes = () => {
     const [ drinks, setDrinks ] = useState([]);
     const [ drinksObject, setDrinksObject ] = useState({});
     const [ deletionPrompt, setDeletionPrompt ] = useState(false);
@@ -19,6 +19,20 @@ const Drinks = () => {
 
     const router = useRouter();
     const saveDrinkData = zDrink(state => state.saveDrinkData);
+
+    const saveIntoStore = (_k) => {
+        const drink = drinksObject[ _k ];
+        const savingStatus = saveDrinkData({ 
+            id: _k,
+            name: drink?.name || '',
+            description: drink?.description || '',
+            allergens: drink?.allergens || [],
+            filename: drink?.filename || '',
+            costperhead: drink?.costperhead || 0 
+        });
+
+        return savingStatus;
+    }
 
     const onDeleteDrink = async () => {
         if(!selectedDrink) return;
@@ -34,25 +48,19 @@ const Drinks = () => {
         }
     }
 
-    const saveIntoStore = (_k) => {
+    // for updating the drink I dont use the selectedDrink useState since this function is not invoke immediately
+    // because if I would set value into setSelectedDrink at first it doesn't mount immediately or not reflec to selectedDrink.
+    const onUpdateDrink = (_k) => {
+        if(!_k) return;
         const drink = drinksObject[ _k ];
         const savingStatus = saveDrinkData({ 
             id: _k,
             name: drink?.name || '',
             description: drink?.description || '',
             filename: drink?.filename || '',
-            costperhead: drink?.costperhead || 0, 
-            status: drink?.status || 'available',
+            costperhead: drink?.costperhead || 0 
         });
 
-        return savingStatus;
-    }
-
-    // for updating the drink I dont use the selectedDrink useState since this function is not invoke immediately
-    // because if I would set value into setSelectedDrink at first it doesn't mount immediately or not reflec to selectedDrink.
-    const onUpdateDrink = (_k) => {
-        if(!_k) return;
-        const savingStatus = saveIntoStore(_k);
         if(savingStatus) {
             router.push('/admin?display=updatedrink');
         }
@@ -120,4 +128,4 @@ const Drinks = () => {
     );
 }
 
-export default Drinks;
+export default ViewWeddingThemes;

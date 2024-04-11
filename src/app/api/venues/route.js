@@ -9,6 +9,8 @@ import { apiIsAnAdmin } from '@/utils/auth/api/isanadmin';
 import { toNumber } from '@/utils/number';
 import { addressAll } from '@/utils/philAddress';
 
+const imageQuality = toNumber(process.env.SHARP_IMG_QUALITY);
+
 export const GET = async () => {
     try {
         const allVenues = (await Venue.find({}).sort({ createdAt: -1 })) || [];
@@ -23,6 +25,8 @@ export const GET = async () => {
                 filename: venue?.filename,
                 maximumSeatingCapacity: venue?.maximumSeatingCapacity,
                 price: venue?.price,
+                chargesForTablesAndChairs: venue?.chargesForTablesAndChairs,
+                status: venue?.status,
             };
 
             data.push(item);
@@ -76,7 +80,7 @@ export const POST = async (request) => {
         if(venueFromDb)
             return Response.json({ message: 'Venue already exist', errorData: 'venuename' }, { status: 400 }); // I turn 204 to 400 since nextjs have problem with responding with status code of 204 right now
     
-        const sharpImageData = await sharp(buffer).jpeg({ quality: 4 }).toBuffer(); // reduce file size
+        const sharpImageData = await sharp(buffer).jpeg({ quality: imageQuality }).toBuffer(); // reduce file size
         const { uploaded, filename } = await uploadFileToS3(sharpImageData, 'venues'); // upload into aws
 
         if(!uploaded) 
@@ -128,6 +132,7 @@ export const PUT = async (request) => {
         const price = toNumber(form.get('price'));
         const chargesForTablesAndChairs = toNumber(form.get('chargesForTablesAndChairs'));
         const maximumSeatingCapacity = toNumber(form.get('maximumSeatingCapacity'));
+        const status = form.get('status')?.trim();
         const street = form.get('street')?.trim();
         const barangay = form.get('barangay')?.trim();
         const municipality = form.get('municipality')?.trim();
@@ -145,7 +150,9 @@ export const PUT = async (request) => {
 
         const fVenueName = TitleFormat(venueName);
         const fDescription = (`${ description[0].toUpperCase() }${ description.substring(1) }`).trim();
-        const isValidAddress = addressAll[region]?.province[province]?.municipality[municipality]?.barangay?.includes(barangay)
+        const statusValues = { available: 'available', unavailable: 'unavailable' };
+        const fStatus = statusValues[status] || 'available';
+        const isValidAddress = addressAll[region]?.province[province]?.municipality[municipality]?.barangay?.includes(barangay);
 
         const fStreet = TitleFormat(street);
         const fBarangay = TitleFormat(barangay);
@@ -158,7 +165,7 @@ export const PUT = async (request) => {
         const venueIdDecoded = jwt.verify(venueId, process.env.ACTION_KEY);
         if(isImageChange) {
             const buffer = Buffer.from(await file.arrayBuffer());
-            const sharpImageData = await sharp(buffer).jpeg({ quality: 30 }).toBuffer(); // reduce file size
+            const sharpImageData = await sharp(buffer).jpeg({ quality: imageQuality }).toBuffer(); // reduce file size
             const { uploaded, filename } = await uploadFileToS3(sharpImageData, 'venues'); // upload into aws
 
             if(!uploaded) 
@@ -171,7 +178,7 @@ export const PUT = async (request) => {
             await deleteFileFromS3(pathname);
         }
 
-        const venue = await Venue.findByIdAndUpdate(venueIdDecoded, { name: fVenueName, price, description: fDescription, address: { street: fStreet, barangay: fBarangay, municipality: fMunicipality, province: fProvince, region: fRegion }, maximumSeatingCapacity, chargesForTablesAndChairs });
+        const venue = await Venue.findByIdAndUpdate(venueIdDecoded, { name: fVenueName, price, description: fDescription, address: { street: fStreet, barangay: fBarangay, municipality: fMunicipality, province: fProvince, region: fRegion }, maximumSeatingCapacity, chargesForTablesAndChairs, status: fStatus });
         return NextResponse.json({ message: '', success: true }, { status: 200 });
     } catch(error) {
         console.log(error);

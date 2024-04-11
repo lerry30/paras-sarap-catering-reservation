@@ -24,7 +24,13 @@ const drinkSchema = new Schema({
     costperhead: {
         type: Number,
         required: true
-    }
+    },
+
+    status: {
+        type: String,
+        enum: [ 'available', 'unavailable' ],
+        default: 'available'
+    },
 }, {
     timestamps: true
 });

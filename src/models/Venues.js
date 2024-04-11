@@ -59,6 +59,12 @@ const venueSchema = new Schema({
     },
 
     chargeForTablesAndChairs: Number,
+
+    status: {
+        type: String,
+        enum: [ 'available', 'unavailable' ],
+        default: 'available'
+    },
 }, {
     timestamps: true
 });
