@@ -4,6 +4,8 @@ import { Prompt, SuccessModal } from '@/components/Modal';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { deleteWithJSON, getData } from '@/utils/send';
+import { zMenu } from '@/stores/menu';
+
 import Link from 'next/link';
 import Loading from '@/components/Loading';
 import Card from '@/components/menus/Card';
@@ -29,15 +31,35 @@ const Menus = () => {
             setActionSuccessMessage('Menu removed successfully.');
             setTimeout(() => {
                 location.reload();
-            }, 2000); // to hide modal
+            }, 2000);
         }
     }
+    
+    const saveIntoStore = (_k) => {
+        const menu = menusObject[_k];
+        const { name, description, dishes, drinks, status } = menu;
+        zMenu.getState().saveNameNDescription(name, description);
+        zMenu.getState().saveDishesData(dishes);
+        zMenu.getState().saveDrinksData(drinks);
+        zMenu.getState().saveId(_k);
+        zMenu.getState().saveStatus(status);
+    }
 
+    const onUpdateMenu = (_k) => {
+        if(!_k) return;
+        saveIntoStore(_k);
+        router.push('/admin?display=updatemenu');
+    }
+
+    const viewMore = (_k) => {
+        if(!_k) return;
+        saveIntoStore(_k);
+        router.push('/admin?display=viewmenu');
+    }
+    
     const getMenus = async () => {
         const { data } = (await getData('/api/menus')) || { data: [] };
         setMenus(data);
-
-        console.log(data);
 
         for(const menu of data) {
             setMenusObject(prev => ({ ...prev, [ menu?._k ]: menu }));
@@ -69,6 +91,8 @@ const Menus = () => {
                                     setDeletionPrompt(true) 
                                     setSelectedMenu(_k);
                                 }} 
+                                onUpdate={ onUpdateMenu }
+                                viewMore={ viewMore }
                             />
                         ))
                     }

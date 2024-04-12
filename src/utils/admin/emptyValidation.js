@@ -70,7 +70,8 @@ export const emptyMenuFields = (name, description, dishes, drinks) => {
 
     const invalidFields = {};
     for(const [ field, value ] of Object.entries(fields)) {
-        if(typeof value === 'array') {
+        const collectionType = { object: true, array: true }
+        if(collectionType[typeof value]) {
             if(value.length === 0) {
                 const message = `No ${field} found.`;
                 const invalidField = field?.replace(/\s/g, '');

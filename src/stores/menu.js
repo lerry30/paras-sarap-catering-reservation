@@ -2,10 +2,12 @@ import { create } from 'zustand';
 
 const localStorageName = 'menu-update-data';
 export const zMenu = create(set => ({
+    id: '',
     name: '',
     description: '',
     dishes: {},
     drinks: {},
+    status: 'available',
 
     init: () => {
         try {
@@ -77,5 +79,40 @@ export const zMenu = create(set => ({
         });
 
         return true;
-    }
+    },
+
+    clear: () => {
+        set({
+            name: '',
+            description: '',
+            dishes: {},
+            drinks: {},
+        });
+
+        localStorage.removeItem(localStorageName);
+    },
+
+    saveId: (id) => {
+        if(!id) return false;
+        set(state => {
+            const data = { ...state, id };
+            localStorage.setItem(localStorageName, JSON.stringify(data));
+            return data;
+        });
+        
+        return true;
+    },
+    
+    saveStatus: (status) => {
+        const statusValues = { available: 'available', unavailable: 'unavailable' };
+        const fStatus = statusValues[status] || 'available';
+        if(!fStatus) return false;
+        set(state => { 
+            const data = { ...state, status: fStatus };
+            localStorage.setItem(localStorageName, JSON.stringify(data));
+            return data;
+        });
+        
+        return false;
+    },
 }));

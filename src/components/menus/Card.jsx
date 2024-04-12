@@ -1,25 +1,37 @@
 'use client';
 import Image from 'next/image';
 import { Pen, Trash } from '@/components/icons/All';
-import { Fragment } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 
 const Card = ({ menuData, onDelete, onUpdate, viewMore }) => {
     const name = menuData?.name || '';
     const description = menuData?.description || '';
+    const [ listOfDishes, setListOfDishes ] = useState([]);
+    const [ listOfDrinks, setListOfDrinks ] = useState([]);
+    const [ status, setStatus ] = useState('available');
 
     const pesoFormatter = new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' });
+
+    useEffect(() => {
+        setListOfDishes(Object.values(menuData?.dishes || []));
+        setListOfDrinks(Object.values(menuData?.drinks || []));
+        setStatus(menuData?.status);
+    }, []);
 
     return (
         <div className="flex flex-col w-full rounded-lg shadow-xl hover:scale-[1.01] hover:shadow-2xl transition-transform">
             <article className="px-4 py-2 overflow-hidden">
-                <h3 className="font-headings font-semibold">{ name }</h3>
+                <div className="flex items-center gap-2">
+                    <h3 className="font-headings font-semibold">{ name }</h3>
+                    <span className={ `max-h-[18px] text-sm rounded-full px-1 border-[1px] leading-none ${ status === 'available' ? 'bg-green-200/40 text-green-700 border-green-500/40' : 'bg-red-200/40 text-red-700 border-red-500/40' }` }>{ status }</span>
+                </div>
                 <p className="font-paragraphs text-sm">{ description }</p>
             </article>
             <div className="w-full flex justify-around px-4">
                 <div className="w-1/2 flex flex-col gap-1">
                     <h3 className="font-headings text-sm font-semibold">Dishes</h3>
                     {
-                        menuData?.dishes?.map((dish, index) => {
+                        listOfDishes?.map((dish, index) => {
                             if(Object.values(dish).length === 0) return <Fragment key={ index } />
                             return <div key={ index } className="flex items-center gap-2 pr-2">
                                     <div className="size-10 min-w-10 flex justify-center items-center rounded-md shadow-lg cursor-pointer border border-neutral-500/40 relative">
@@ -51,7 +63,7 @@ const Card = ({ menuData, onDelete, onUpdate, viewMore }) => {
                 <div className="w-1/2 flex flex-col gap-1">
                     <h3 className="font-headings text-sm font-semibold">Drinks</h3>
                     {
-                        menuData?.drinks?.map((drink, index) => {
+                        listOfDrinks?.map((drink, index) => {
                             if(Object.values(drink).length === 0) return <Fragment key={ index } />
                             return <div key={ index } className="flex items-center gap-2">
                                     <div className="size-10 min-w-10 flex justify-center items-center rounded-md shadow-lg cursor-pointer border border-neutral-500/40 relative">

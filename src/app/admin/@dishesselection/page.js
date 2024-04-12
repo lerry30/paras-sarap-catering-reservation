@@ -1,10 +1,9 @@
 'use client';
 import CardSelect from '@/components/dishes/CardSelect';
-import Link from 'next/link';
 import { ArrowLeft } from '@/components/icons/All';
 import { useEffect, useState } from 'react';
 import { getData } from '@/utils/send';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { zMenu } from '@/stores/menu';
 
 const DishesSelection = () => {
@@ -14,18 +13,23 @@ const DishesSelection = () => {
     zMenu.getState().init();
 
     const router = useRouter();
+    const searchParams = useSearchParams();
     const saveDishesData = zMenu(state => state.saveDishesData);
+
+    const goBack = () => {
+        const action = searchParams?.get('action');
+        const actions = { update: 'updatemenu', add: 'addmenu' };
+        router.push(`/admin?display=${ actions[action]}`);
+    }
     
     const handleSelection = () => {
         // save into store
         const savingStatus = saveDishesData(dishMenu);
-        if(savingStatus) {
-            router.push('/admin?display=addmenu');
-        }
+        if(savingStatus) goBack();
     }
 
     const getDishes = async () => {
-        const { data } = (await getData('/api/menu/dishes')) || { data: [] };
+        const { data } = (await getData('/api/menus/dishes')) || { data: [] };
         setDishes(data);
     }
 
@@ -41,9 +45,9 @@ const DishesSelection = () => {
         <section className="relative flex flex-col gap-2">
             <div className="sticky w-full top-[var(--nav-height)] left-0 z-navbar border-b-[1px] bg-white flex justify-between items-center py-1 px-4">
                 <div className="flex gap-4">
-                    <Link href="/admin?display=addmenu">
+                    <button onClick={ goBack }>
                         <ArrowLeft />
-                    </Link>
+                    </button>
                     <h2 className="font-headings font-semibold">Dishes</h2>
                 </div>
                 <button onClick={ handleSelection } className="font-headings bg-skin-ten text-white text-sm font-bold py-2 px-4 rounded-full leading-4">CONTINUE</button>

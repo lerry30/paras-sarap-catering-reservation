@@ -4,6 +4,7 @@ import { apiIsAnAdmin } from '@/utils/auth/api/isanadmin';
 
 export const GET = async (request) => {
     try {
+        console.log('add dishes');
         const isAnAdmin = await apiIsAnAdmin(request);
         if(!isAnAdmin) return NextResponse.json({ message: 'There\'s something wrong!' }, { status: 400 });
 

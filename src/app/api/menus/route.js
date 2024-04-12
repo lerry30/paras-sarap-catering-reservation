@@ -16,17 +16,17 @@ export const GET = async () => {
         const data = [];
         for(const menu of allMenus) {
             const key = jwt.sign({ _id: menu._id }, process.env.ACTION_KEY);
-            const dishes = [];
-            const drinks = [];
+            const dishes = {};
+            const drinks = {};
 
             for(const dishId of (menu?.dishes || [])) {
                 const dish = (await Dish.findById(dishId) || {});
-                dishes.push(dish);
+                dishes[dishId] = dish;
             }
 
             for(const drinkId of (menu?.drinks || [])) {
                 const drink = (await Drink.findById(drinkId) || {});
-                drinks.push(drink);
+                drinks[drinkId] = drink;
             }
             
             const item = {
@@ -66,11 +66,11 @@ export const POST = async (request) => {
         const fMenuName = TitleFormat(menuName);
         const fDescription = (`${ description[0].toUpperCase() }${ description.substring(1) }`).trim();
 
-        const drinkFromDb = await Menu.findOne({ name: fMenuName });
-        if(drinkFromDb)
-            return Response.json({ message: 'Drink already exist', errorData: 'drinkname' }, { status: 400 }); // I turn 204 to 400 since nextjs have problem with responding with status code of 204 right now
+        const menuFromDb = await Menu.findOne({ name: fMenuName });
+        if(menuFromDb)
+            return Response.json({ message: 'Menu already exist', errorData: 'menuname' }, { status: 400 }); // I turn 204 to 400 since nextjs have problem with responding with status code of 204 right now
 
-        const drink = await Menu.create({ name: fMenuName, description: fDescription, dishes, drinks });
+        const menu = await Menu.create({ name: fMenuName, description: fDescription, dishes, drinks });
         return NextResponse.json({ message: '', success: true }, { status: 200 });
     } catch(error) {
         console.log(error);
@@ -103,43 +103,26 @@ export const PUT = async (request) => {
         if(!isAnAdmin) return NextResponse.json({ message: 'There\'s something wrong!' }, { status: 400 });
 
         const form = await request.formData();
-        const drinkId = form.get('id')?.trim();
-        const drinkName = form.get('drinkname')?.trim();
+        const menuId = form.get('id').trim();
+        const menuName = form.get('menuname')?.trim();
         const description = form.get('description')?.trim();
-        const file = form.get('file');
-        const costPerHead = toNumber(form.get('costperhead'));
-        const isImageChange = !!Number(form.get('is-image-change')); // it is actually a boolean but because form converts it to string, I'll need to convert it to number the boolean
+        const dishes = form.get('dishes')?.split(',');
+        const drinks = form.get('drinks')?.split(',');
         const status = form.get('status')?.trim();
+        
+        if(!menuId) return NextResponse.json({ message: 'There\'s something wrong!', errorData: 'unauth' }, { status: 400 });
 
-        if(!drinkId) return NextResponse.json({ message: 'There\'s something wrong!', errorData: 'unauth' }, { status: 400 });
-
-        const invalidFields = emptyDrinkFields(drinkName, description, true); // file return File Object still - File { size: 0, type: 'application/octet-stream', name: '', lastModified: 1712386503245 }, so validating the name effectively work I guess
-        if(costPerHead === 0) invalidFields.costperhead = 'Enter a numerical value greater than zero for the cost per head';
+        const invalidFields = emptyMenuFields(menuName, description, dishes, drinks);
         if(Object.values(invalidFields).length > 0)
             return Response.json({ message: 'All fields should be filled', errorData: invalidFields }, { status: 400 }); // I turn 204 to 400 since nextjs have problem with responding with status code of 204 right now
         
-        const fDrinkName = TitleFormat(drinkName);
+        const fMenuName = TitleFormat(menuName);
         const fDescription = (`${ description[0].toUpperCase() }${ description.substring(1) }`).trim();
         const statusValues = { available: 'available', unavailable: 'unavailable' };
         const fStatus = statusValues[status] || 'available';
-        
-        const drinkIdDecoded = jwt.verify(drinkId, process.env.ACTION_KEY);
-        if(isImageChange) {
-            const buffer = Buffer.from(await file.arrayBuffer());
-            const sharpImageData = await sharp(buffer).jpeg({ quality: imageQuality }).toBuffer(); // reduce file size
-            const { uploaded, filename } = await uploadFileToS3(sharpImageData, 'drinks'); // upload into aws
 
-            if(!uploaded) 
-                return NextResponse.json({ message: 'There\'s something wrong, uploading file to AWS!', errorData: 'unauth' }, { status: 400 });
-            const prevDrink = await Drink.findByIdAndUpdate(drinkIdDecoded, { filename }, { option: true });
-
-            // delete previous file from aws
-            const imageURL = new URL(prevDrink.filename);
-            const pathname = imageURL.pathname.startsWith('/') ? imageURL.pathname.substring(1) : imageURL.pathname;
-            await deleteFileFromS3(pathname);
-        }
-
-        const drink = await Drink.findByIdAndUpdate(drinkIdDecoded, { name: fDrinkName, description: fDescription, costperhead: costPerHead, status: fStatus });
+        const menuIdDecoded = jwt.verify(menuId, process.env.ACTION_KEY);
+        const drink = await Menu.findByIdAndUpdate(menuIdDecoded,  { name: fMenuName, description: fDescription, dishes, drinks, status: fStatus });
         return NextResponse.json({ message: '', success: true }, { status: 200 });
     } catch(error) {
         console.log(error);

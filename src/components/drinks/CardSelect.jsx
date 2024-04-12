@@ -64,7 +64,7 @@ const CardSelect = ({ drinkData, drinkMenu={}, setDrinkMenu=undefined }) => {
             </article>
             <article className="w-full px-4 mt-auto pb-4 flex justify-between">
                 <span className="text-sm text-neutral-600">{ pesoFormatter.format(costPerHead) } per guest served</span>
-                <span className={ `text-sm rounded-full px-1 border-[1px] ${ status === 'available' ? 'bg-green-200/40 text-green-500 border-green-500/40' : 'bg-red-200/40 text-red-500 border-red-500/40' }` }>{ status }</span>
+                <span className={ `max-h-[22px] text-sm rounded-full px-1 border-[1px] ${ status === 'available' ? 'bg-green-200/40 text-green-500 border-green-500/40' : 'bg-red-200/40 text-red-500 border-red-500/40' }` }>{ status }</span>
             </article>
             {
                 status === 'unavailable' ?

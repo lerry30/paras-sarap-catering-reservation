@@ -63,12 +63,12 @@ const AddDish = () => {
     }
 
     const costPerHeadInput = (ev) => {
-            const value = ev.target.value;
-            const cost = toNumber(value);
-            ev.target.value = cost;
-            setCostPerHead(cost);
+        const value = ev.target.value;
+        const cost = toNumber(value);
+        ev.target.value = cost;
+        setCostPerHead(cost);
 
-            if(isNaN(Number(value))) setInvalidFieldsValue(prev => ({ ...prev, costperhead: 'Please enter a numerical value for the cost per head.' }));
+        if(isNaN(Number(value))) setInvalidFieldsValue(prev => ({ ...prev, costperhead: 'Please enter a numerical value for the cost per head.' }));
 
     }
 
