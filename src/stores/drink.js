@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 
+const localStorageName = 'drink-update-data';
 export const zDrink = create(set => ({
     id: '',
     name: '',
@@ -10,14 +11,14 @@ export const zDrink = create(set => ({
 
     init: () => {
         try {
-            set(state => !state.id ? JSON.parse(localStorage.getItem('drink-update-data')) || {} : state);
+            set(state => !state.id ? JSON.parse(localStorage.getItem(localStorageName)) || {} : state);
         } catch(error) {}
     },
 
     saveDrinkData: ({ id, name, description, filename, costperhead, status }) => {
         if(!id || !name || !description || !filename || !costperhead) return false;
         const data = { id, name, description, filename, costperhead, status };
-        localStorage.setItem('drink-update-data', JSON.stringify(data));
+        localStorage.setItem(localStorageName, JSON.stringify(data));
         set(data);
         return true;
     },

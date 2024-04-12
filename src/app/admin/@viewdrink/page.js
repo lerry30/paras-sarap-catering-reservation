@@ -71,7 +71,7 @@ const ViewDrink = () => {
                         </div>
                         <div className="grow flex flex-col gap-4">
                             <div className="w-full flex gap-4">
-                                <h4 className="font-medium">{ pesoFormatter.format(costPerHead) } / head</h4>
+                                <h4 className="font-medium">{ pesoFormatter.format(costPerHead) } per guest served</h4>
                             </div>
                             <div>
                                 <p className="text-md text-neutral-600 italic">{ description }</p>

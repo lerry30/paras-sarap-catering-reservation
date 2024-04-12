@@ -83,7 +83,7 @@ const ViewVenue = () => {
                         </div>
                         <div className="grow flex flex-col gap-4">
                             <div className="w-full flex gap-4">
-                                <h4 className="font-headings text-2xl font-bold">{ pesoFormatter.format(price) }</h4>
+                                <h4 className="font-headings text-2xl font-bold">{ pesoFormatter.format(price) } per guest served</h4>
                             </div>
                             <div>
                                 <p className="font-paragraphs text-md text-neutral-600 italic">{ description }</p>

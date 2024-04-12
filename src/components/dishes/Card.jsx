@@ -50,7 +50,7 @@ const Card = ({ dishData, onDelete, onUpdate, viewMore }) => {
                     </article>
             }
             <article className="w-full px-4 mt-auto pb-2 flex justify-between">
-                <span className="text-sm text-neutral-600">{ pesoFormatter.format(costPerHead) } / head</span>
+                <span className="text-sm text-neutral-600">{ pesoFormatter.format(costPerHead) } per guest served</span>
                 <span className={ `text-sm rounded-full px-1 ${ status === 'available' ? 'bg-green-200/40 text-green-500' : 'bg-red-200/40 text-red-500' }` }>{ status }</span>
             </article>
             <div className="flex gap-2 justify-end px-4 pb-6 mt-auto">

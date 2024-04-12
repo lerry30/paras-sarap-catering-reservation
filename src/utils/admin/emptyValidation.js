@@ -59,3 +59,30 @@ export const emptyVenueFields = (name, description, image, region, province, mun
 
     return invalidFields;
 }
+
+export const emptyMenuFields = (name, description, dishes, drinks) => {
+    const fields = {
+        ['Menu Name']: name, 
+        ['Description']: description,
+        ['dishes']: dishes,
+        ['drinks']: drinks,
+    };
+
+    const invalidFields = {};
+    for(const [ field, value ] of Object.entries(fields)) {
+        if(typeof value === 'array') {
+            if(value.length === 0) {
+                const message = `No ${field} found.`;
+                const invalidField = field?.replace(/\s/g, '');
+                invalidFields[invalidField] = message;
+            }
+        } else if(!value) {
+            const message = `${field} is empty`;
+            const invalidField = field.toLowerCase()?.replace(/\s/g, '');
+            invalidFields[invalidField] = message;
+        }
+
+    }
+
+    return invalidFields;
+}

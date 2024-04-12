@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 
+const localStorageName = 'venue-update-data';
 export const zVenue = create(set => ({
     id: '',
     name: '',
@@ -20,14 +21,14 @@ export const zVenue = create(set => ({
     init: () => {
         try {
             console.log('init venue store');
-            set(state => !state.id ? JSON.parse(localStorage.getItem('venue-update-data')) || {} : state);
+            set(state => !state.id ? JSON.parse(localStorage.getItem(localStorageName)) || {} : state);
         } catch(error) {}
     },  
 
     saveVenueData: ({ id, name, description, address, filename, maximumSeatingCapacity, price, chargeForTablesAndChairs, status }) => {
         if(!id || !name || !description || Object.values(address).length === 0 || !filename || !maximumSeatingCapacity || !price) return false;
         const data = { id, name, description, address, filename, maximumSeatingCapacity, price, chargeForTablesAndChairs, status };
-        localStorage.setItem('venue-update-data', JSON.stringify(data));
+        localStorage.setItem(localStorageName, JSON.stringify(data));
         set(data);
         return true;
     },

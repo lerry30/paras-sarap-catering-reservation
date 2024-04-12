@@ -160,3 +160,65 @@ export const CloudUpload = ({ size=24, stroke='hsl(0deg 0% 10% / 100%)', strokeW
         </svg>
     );
 }
+
+export const CircleX = ({ size=24, stroke='hsl(0deg 0% 10% / 100%)', strokeWidth=2, className='' }) => {
+    return (
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width={ size }
+            height={ size }
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke={ stroke }
+            strokeWidth={ strokeWidth }
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className={ className }
+        >
+           <circle cx="12" cy="12" r="10"/>
+           <path d="m15 9-6 6"/>
+           <path d="m9 9 6 6"/>
+        </svg>
+    );
+}
+
+export const CirclePlus = ({ size=24, stroke='hsl(0deg 0% 10% / 100%)', strokeWidth=2, className='' }) => {
+    return (
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width={ size }
+            height={ size }
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke={ stroke }
+            strokeWidth={ strokeWidth }
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className={ className }
+        >
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M8 12h8"/>
+            <path d="M12 8v8"/>
+        </svg>
+    );
+}
+
+export const CircleCheck = ({ size=24, stroke='hsl(0deg 0% 10% / 100%)', strokeWidth=2, className='' }) => {
+    return (
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width={ size }
+            height={ size }
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke={ stroke }
+            strokeWidth={ strokeWidth }
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className={ className }
+        >
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+            <path d="m9 11 3 3L22 4"/>
+        </svg>
+    );
+}

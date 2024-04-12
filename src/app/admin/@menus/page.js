@@ -1,91 +1,51 @@
 'use client';
-import Card from '@/components/drinks/Card';
-import Link from 'next/link';
 import { Plus } from '@/components/icons/All';
-import { useEffect, useState } from 'react';
-import { deleteWithJSON, getData } from '@/utils/send';
 import { Prompt, SuccessModal } from '@/components/Modal';
 import { useRouter } from 'next/navigation';
-import { zDrink } from '@/stores/drink';
+import { useEffect, useState } from 'react';
+import { deleteWithJSON, getData } from '@/utils/send';
+import Link from 'next/link';
 import Loading from '@/components/Loading';
+import Card from '@/components/menus/Card';
 
 const Menus = () => {
-    const [ drinks, setDrinks ] = useState([]);
-    const [ drinksObject, setDrinksObject ] = useState({});
+    const [ menus, setMenus ] = useState([]);
+    const [ menusObject, setMenusObject ] = useState({});
+    const [ selectedMenu, setSelectedMenu] = useState(undefined);
+
     const [ deletionPrompt, setDeletionPrompt ] = useState(false);
-    const [ selectedDrink, setSelectedDrink ] = useState(undefined);
     const [ actionSuccessMessage, setActionSuccessMessage ] = useState('');
     const [ loading, setLoading ] = useState(false);
 
     const router = useRouter();
-    const saveDrinkData = zDrink(state => state.saveDrinkData);
 
-    const saveIntoStore = (_k) => {
-        const drink = drinksObject[ _k ];
-        const savingStatus = saveDrinkData({ 
-            id: _k,
-            name: drink?.name || '',
-            description: drink?.description || '',
-            allergens: drink?.allergens || [],
-            filename: drink?.filename || '',
-            costperhead: drink?.costperhead || 0 
-        });
-
-        return savingStatus;
-    }
-
-    const onDeleteDrink = async () => {
-        if(!selectedDrink) return;
+    const onDeleteMenu = async () => {
+        if(!selectedMenu) return;
         setDeletionPrompt(false);
         setLoading(true);
 
-        const response = await deleteWithJSON('/api/drinks', { _k: selectedDrink });
+        const response = await deleteWithJSON('/api/menus', { _k: selectedMenu });
         if(response?.success) {
-            setActionSuccessMessage('Drink removed successfully.');
+            setActionSuccessMessage('Menu removed successfully.');
             setTimeout(() => {
                 location.reload();
             }, 2000); // to hide modal
         }
     }
 
-    // for updating the drink I dont use the selectedDrink useState since this function is not invoke immediately
-    // because if I would set value into setSelectedDrink at first it doesn't mount immediately or not reflec to selectedDrink.
-    const onUpdateDrink = (_k) => {
-        if(!_k) return;
-        const drink = drinksObject[ _k ];
-        const savingStatus = saveDrinkData({ 
-            id: _k,
-            name: drink?.name || '',
-            description: drink?.description || '',
-            filename: drink?.filename || '',
-            costperhead: drink?.costperhead || 0 
-        });
+    const getMenus = async () => {
+        const { data } = (await getData('/api/menus')) || { data: [] };
+        setMenus(data);
 
-        if(savingStatus) {
-            router.push('/admin?display=updatedrink');
-        }
-    }
+        console.log(data);
 
-    const viewMore = (_k) => {
-        if(!_k) return;
-        const savingStatus = saveIntoStore(_k);
-        if(savingStatus) {
-            router.push('/admin?display=viewdrink');
-            return;
-        }
-    }
-
-    const getDrinks = async () => {
-        const { data } = (await getData('/api/drinks')) || { data: [] };
-        setDrinks(data);
-
-        for(const drink of data) {
-            setDrinksObject(prev => ({ ...prev, [ drink?._k ]: drink }));
+        for(const menu of data) {
+            setMenusObject(prev => ({ ...prev, [ menu?._k ]: menu }));
         }
     }
 
     useEffect(() => {
-        getDrinks();
+        getMenus();
     }, []);
 
     return (
@@ -93,32 +53,29 @@ const Menus = () => {
             { loading && <Loading customStyle="size-full" /> }
             <section className="flex flex-col gap-2 p-4 ">
                 <div className="flex justify-between items-center p-1 rounded-lg">
-                    <h2 className="font-headings font-semibold">Drinks</h2>
-                    <Link href="/admin?display=adddrink" className="flex gap-2 bg-green-600/40 rounded-full px-2 py-1 hover:bg-green-400 transition-colors">
+                    <h2 className="font-headings font-semibold">Menus</h2>
+                    <Link href="/admin?display=addmenu" className="flex gap-2 bg-green-600/40 rounded-full px-2 py-1 hover:bg-green-400 transition-colors">
                         <Plus size={20} />
-                        <span className="text-sm font-medium">Add New Drink</span>
+                        <span className="text-sm font-medium">Add New Menu</span>
                     </Link>
                 </div>
                 <div className="flex flex-wrap gap-2">
                     {
-                        drinks.map((item, index) => (
+                        menus?.map((menu, index) => (
                             <Card 
                                 key={ index } 
-                                drinkData={ item } 
+                                menuData={ menu } 
                                 onDelete={ (_k) => { 
-                                        setDeletionPrompt(true) 
-                                        setSelectedDrink(_k);
-                                    }
-                                } 
-                                onUpdate={ onUpdateDrink }
-                                viewMore={ viewMore }
+                                    setDeletionPrompt(true) 
+                                    setSelectedMenu(_k);
+                                }} 
                             />
                         ))
                     }
                 </div>
             </section>
             {
-                deletionPrompt && <Prompt callback={ onDeleteDrink } onClose={ () => setDeletionPrompt(false) } header="Confirm Drink Removal" message="Are you sure you want to remove this drink? Removing it will completely erase all data associated with it and cannot be undone."/>
+                deletionPrompt && <Prompt callback={ onDeleteMenu } onClose={ () => setDeletionPrompt(false) } header="Confirm Menu Removal" message="Are you sure you want to remove this menu? Removing it will completely erase all data associated with it and cannot be undone."/>
             }
 
             {
