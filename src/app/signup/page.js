@@ -91,16 +91,16 @@ const SignUpPage = () => {
     }, []);
     
     return (
-        <div className="-mt-[var(--nav-height)] card w-96 bg-zinc-50 shadow-lg shadow-indigo-500/40 dark:bg-neutral-800 dark:border dark:border-neutral-500 dark:shadow-black dark:text-white">
+        <div className="-mt-[var(--nav-height)] card w-96 shadow-lg border-[1px] border-neutral-600">
             { loading && <Loading customStyle="w-full min-h-screen" /> }
             <form>
-                <h3 className="text-center font-extrabold text-3xl">Sign Up</h3>
+                <h3 className="font-headings text-center font-extrabold text-3xl">Sign Up</h3>
                 <div className="flex flex-col md:flex-row md:gap-2">
                     <div className="w-full md:w-1/2">
                         <label htmlFor="firstname">First Name</label>
                         <input 
                             onChange={naming} 
-                            className="input w-full dark:bg-neutral-600"
+                            className="input w-full border-[1px] border-neutral-600/60"
                             id="firstname" 
                             name="firstname" 
                             type="text" 
@@ -111,7 +111,7 @@ const SignUpPage = () => {
                         <label htmlFor="lastname">Last Name</label>
                         <input 
                             onChange={naming} 
-                            className="input w-full dark:bg-neutral-600"
+                            className="input w-full border-[1px] border-neutral-600/60"
                             id="lastname" 
                             name="lastname" 
                             type="text" 
@@ -123,7 +123,7 @@ const SignUpPage = () => {
                     <label htmlFor="email">Email</label>
                     <input 
                         onChange={(e) => setEmailAddress(e.target.value)} 
-                        className="input w-full dark:bg-neutral-600"
+                        className="input w-full border-[1px] border-neutral-600/60"
                         id="email" 
                         name="email" 
                         type="email" 
@@ -134,7 +134,7 @@ const SignUpPage = () => {
                     <label htmlFor="password">Password</label>
                     <input 
                         onChange={(e) => setPassword(e.target.value)} 
-                        className="input w-full dark:bg-neutral-600"
+                        className="input w-full border-[1px] border-neutral-600/60"
                         id="password" 
                         name="password" 
                         type="password" 
@@ -144,7 +144,7 @@ const SignUpPage = () => {
                 <button 
                     type="submit"
                     onClick={handleSubmit}
-                    className="button w-full mt-2 text-sm"
+                    className="button w-full mt-2 text-sm text-white bg-teal-500"
                 >
                     CONTINUE
                 </button>

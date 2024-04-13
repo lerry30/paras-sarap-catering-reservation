@@ -5,17 +5,18 @@ import { NextResponse } from 'next/server';
 export const GET = async () => {
     try {
         const userId = decodeUserIdFromHeader();
-        const user = await User.findById(userId);
-
-        if(!user)
-            return NextResponse.json({ message: 'There\'s something wrong with your data.', errorData: 'unauth' }, { status: 400 });
+        const state = await User.findById(userId);
+        const user = state || {}
         
         const userData = { 
             firstname: user?.firstname || '', 
             lastname: user?.lastname || '', 
             email: user?.email || ''
         };
-
+        
+        if(!state)
+            return NextResponse.json({ message: 'There\'s something wrong with your data.', data: userData, errorData: 'unauth' }, { status: 400 });
+        
         return NextResponse.json({ message: '', data: userData }, { status: 200 });
     } catch (error) {
         console.log(error);

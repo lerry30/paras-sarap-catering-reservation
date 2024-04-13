@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { sendJSON } from '@/utils/send';
 
-const legacyPrefixes = { '/signup': true, '/signin': true, '/': true };
+const legacyPrefixes = { '/signup': true, '/signin': true, '/': true, '/about': true, };
 
 export const middleware = async (request) => {
     const { origin, pathname } = request.nextUrl;

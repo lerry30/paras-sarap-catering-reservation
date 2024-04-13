@@ -54,9 +54,14 @@ const CNavbar = () => {
 
                     <ul className="flex items-center">
                         { !fullName ?
-                                <li className="h-nav-item-height flex items-center rounded-sm hover:bg-skin-ten transition-colors">
-                                    <Link href="/signup" className="py-2 px-4 max-h-[40px] hover:text-white font-semibold">Register</Link>
-                                </li>
+                                <>
+                                    <li className="h-nav-item-height flex items-center rounded-sm">
+                                        <Link href="/signin" className="py-2 px-4 max-h-[40px] text-neutral-600">LogIn</Link>
+                                    </li>
+                                    <li className="h-nav-item-height flex items-center rounded-sm hover:bg-skin-ten transition-colors">
+                                        <Link href="/signup" className="py-2 px-4 max-h-[40px] hover:text-white font-semibold">Register</Link>
+                                    </li>
+                                </>
                             :
                                 <li className="h-nav-item-height flex rounded-full">
                                     <Avatar name={ fullName }/>

@@ -5,20 +5,20 @@ import ParentOption from '@/components/nav/SubDrawer';
 const CSidebar = () => {
     return  (
         <BurgerMenu size="h-nav-item-height" className="mr-2 lg:hidden">
-                <Option href="/about" className="!rounded-full px-4">About</Option>
-                <ParentOption text="Services" className="px-4">
-                    <Option href="" className="!rounded-full px-4">Wedding</Option>
-                    <Option href="" className="!rounded-full px-4">Debut</Option>
-                    <Option href="" className="!rounded-full px-4">Kids Party</Option>
-                    <Option href="" className="!rounded-full px-4">Private Party</Option>
-                </ParentOption>
-                <ParentOption text="Packages" className="px-4">
-                    <Option href="" className="!rounded-full px-4">Wedding</Option>
-                    <Option href="" className="!rounded-full px-4">Debut</Option>
-                    <Option href="" className="!rounded-full px-4">Kids Party</Option>
-                    <Option href="" className="!rounded-full px-4">Private Party</Option>
-                </ParentOption>
-                <Option href="/" className="!rounded-full px-4">Contact</Option>
+            <Option href="/about" className="!rounded-full px-4">About</Option>
+            <ParentOption text="Services" className="px-4">
+                <Option href="" className="!rounded-full px-4">Wedding</Option>
+                <Option href="" className="!rounded-full px-4">Debut</Option>
+                <Option href="" className="!rounded-full px-4">Kids Party</Option>
+                <Option href="" className="!rounded-full px-4">Private Party</Option>
+            </ParentOption>
+            <ParentOption text="Packages" className="px-4">
+                <Option href="" className="!rounded-full px-4">Wedding</Option>
+                <Option href="" className="!rounded-full px-4">Debut</Option>
+                <Option href="" className="!rounded-full px-4">Kids Party</Option>
+                <Option href="" className="!rounded-full px-4">Private Party</Option>
+            </ParentOption>
+            <Option href="/" className="!rounded-full px-4">Contact</Option>
         </BurgerMenu>
     );
 }

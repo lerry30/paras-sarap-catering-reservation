@@ -65,15 +65,15 @@ const SignInPage = () => {
     }, []);
     
     return (
-        <div className="-mt-[var(--nav-height)] card w-96 bg-zinc-50 shadow-lg shadow-indigo-500/40 dark:bg-neutral-800 dark:border dark:border-neutral-500 dark:shadow-black">
+        <div className="-mt-[var(--nav-height)] card w-96 shadow-lg border-[1px] border-neutral-600">
             { loading && <Loading customStyle="w-full min-h-screen" /> }
             <form className="flex flex-col gap-2">
-                <h3 className="text-center font-extrabold text-3xl">Sign In</h3>
+                <h3 className="font-headings text-center font-extrabold text-3xl">Sign In</h3>
                 <div>
                     <label htmlFor="email">Email</label>
                     <input 
                         onChange={(e) => setEmailAddress(e.target.value)}
-                        className="input w-full dark:bg-neutral-600"
+                        className="input w-full border-[1px] border-neutral-600/60"
                         id="email" 
                         name="email" 
                         type="email" 
@@ -83,7 +83,7 @@ const SignInPage = () => {
                     <label htmlFor="password">Password</label>
                     <input 
                         onChange={(e) => setPassword(e.target.value)} 
-                        className="input w-full dark:bg-neutral-600"
+                        className="input w-full border-[1px] border-neutral-600/60"
                         id="password" 
                         name="password" 
                         type="password" 
@@ -92,7 +92,7 @@ const SignInPage = () => {
                 <button 
                     type="submit"
                     onClick={handleSubmit}
-                    className="button w-full mt-2 text-sm"
+                    className="button w-full mt-2 text-sm text-white bg-teal-500"
                 >
                     CONTINUE
                 </button>

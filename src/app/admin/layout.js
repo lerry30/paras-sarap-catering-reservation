@@ -11,7 +11,7 @@ zDrink.getState().init();
 zVenue.getState().init();
 
 export default function AdminLayout({ 
-        children, 
+        children, dashboard,
         dishes, adddish, updatedish, viewdish, 
         drinks, adddrink, updatedrink, viewdrink,
         venues, addvenue, updatevenue, viewvenue,
@@ -22,8 +22,8 @@ export default function AdminLayout({
     const searchParams = useSearchParams();
     const param = searchParams?.get('display');
 
-
     const views = {
+        dashboard: dashboard,
         dishes: dishes,
         adddish: adddish,
         updatedish: updatedish,
@@ -47,7 +47,7 @@ export default function AdminLayout({
     }
 
     // Keep in mind to always restart the server every time a new slot is added.
-    const display = views[param];
+    const display = views[param] || dashboard;
     return (
         <>
             <ANavbar />

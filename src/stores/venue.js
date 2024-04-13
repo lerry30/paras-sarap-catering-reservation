@@ -1,6 +1,6 @@
 import { create } from 'zustand';
+import { venue as localStorageName } from '@/utils/localStorageNames';
 
-const localStorageName = 'venue-update-data';
 export const zVenue = create(set => ({
     id: '',
     name: '',

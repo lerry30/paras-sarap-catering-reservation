@@ -1,6 +1,6 @@
 import { create } from 'zustand';
+import { menu as localStorageName } from '@/utils/localStorageNames';
 
-const localStorageName = 'menu-update-data';
 export const zMenu = create(set => ({
     id: '',
     name: '',

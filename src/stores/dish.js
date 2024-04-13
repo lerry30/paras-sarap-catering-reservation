@@ -1,6 +1,6 @@
 import { create } from 'zustand';
+import { dish as localStorageName } from '@/utils/localStorageNames';
 
-const localStorageName = 'dish-update-data';
 export const zDish = create(set => ({
     id: '',
     name: '',

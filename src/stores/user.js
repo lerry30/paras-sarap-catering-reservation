@@ -1,4 +1,5 @@
 import { getData } from '@/utils/send';
+import { user as localStorageName } from '@/utils/localStorageNames';
 import { create } from 'zustand';
 
 export const zUserData = create(set => ({
@@ -8,18 +9,22 @@ export const zUserData = create(set => ({
     fullname: '',
 
     saveUserData: async () => {
-        const isLocalUserDataExist = (Object.keys(JSON.parse(localStorage.getItem('user-data') || '{}')).length > 0);
-        if(!isLocalUserDataExist) {
-            const { data } = await getData('/api/users/user');
-            localStorage.setItem('user-data', JSON.stringify(data));
-        }
-        
-        const { firstname, lastname, email } = JSON.parse(localStorage.getItem('user-data') || '{}');
+        try {
+            const isLocalUserDataExist = (Object.keys(JSON.parse(localStorage.getItem(localStorageName) || '{}')).length > 0);
+            if(!isLocalUserDataExist) {
+                const { data } = await getData('/api/users/user');
+                localStorage.setItem(localStorageName, JSON.stringify(data));
+            }
+            
+            const { firstname, lastname, email } = JSON.parse(localStorage.getItem(localStorageName) || '{}');
 
-        set(state => {
-            const fullname = createFullname(firstname, lastname);
-            return { firstname, lastname, email, fullname };
-        });
+            set(state => {
+                const fullname = createFullname(firstname, lastname);
+                return { firstname, lastname, email, fullname };
+            });
+        } catch(error) {
+            console.log(error, ', get user data error!');
+        }
     },
 
     wipeOutData: () => {
