@@ -13,6 +13,8 @@ const Card = ({ venueData, onDelete, onUpdate, viewMore }) => {
     const status = venueData?.status || 'available';
     const [ fullAddress, setFullAddress ] = useState('');
 
+    const pesoFormatter = new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' });
+
     useEffect(() => {
         const fAddress = `${ address?.street }, Brgy. ${ address?.barangay }, ${ address?.municipality }, ${ address?.province }`;
         setFullAddress(fAddress);
@@ -46,7 +48,7 @@ const Card = ({ venueData, onDelete, onUpdate, viewMore }) => {
             </article>
             <article className="w-full flex justify-between px-4 mt-auto pb-2">
                 <span className="text-neutral-600 text-sm">Maximum Seating Capacity: { maximumSeatingCapacity }</span>
-                <span className="text-neutral-600 text-sm">From: { price }</span>
+                <span className="text-neutral-600 text-sm">From: { pesoFormatter.format(price) }</span>
             </article>
             <div className="flex justify-between items-center px-4 pb-6 mt-auto">
                 <span className={ `text-sm rounded-full px-1 ${ status === 'available' ? 'bg-green-200/40 text-green-500' : 'bg-red-200/40 text-red-500' }` }>{ status }</span>

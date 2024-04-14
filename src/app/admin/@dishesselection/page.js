@@ -1,5 +1,5 @@
 'use client';
-import CardSelect from '@/components/dishes/CardSelect';
+import CardSelect from '@/components/admin/dishes/CardSelect';
 import { ArrowLeft } from '@/components/icons/All';
 import { useEffect, useState } from 'react';
 import { getData } from '@/utils/send';

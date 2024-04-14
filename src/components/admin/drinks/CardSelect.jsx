@@ -1,6 +1,6 @@
 'use client';
 import Image from 'next/image';
-import { CircleCheck, CirclePlus, CircleX } from '../icons/All';
+import { CircleCheck, CirclePlus, CircleX } from '../../icons/All';
 import { useState, useEffect } from 'react';
 
 const CardSelect = ({ drinkData, drinkMenu={}, setDrinkMenu=undefined }) => {

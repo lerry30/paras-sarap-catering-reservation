@@ -8,7 +8,7 @@ import { zMenu } from '@/stores/menu';
 
 import Link from 'next/link';
 import Loading from '@/components/Loading';
-import Card from '@/components/menus/Card';
+import Card from '@/components/admin/menus/Card';
 
 const Menus = () => {
     const [ menus, setMenus ] = useState([]);

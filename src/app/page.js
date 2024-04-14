@@ -2,8 +2,14 @@
 
 import CNavbar from '@/components/nav/client/CNavbar';
 import Image from 'next/image';
-import HeroImg5 from '../../public/hero-image/hero-img-5.jpg';
+import HeroImg5 from '../../public/images/hero-img-5.jpg';
+import WeddingImg from '../../public/images/wedding-img.jpg';
+import DebutImg from '../../public/images/debut-img.jpg';
+import KidsPartyImg from '../../public/images/kids-party-img.jpg';
+import PrivatePartyImg from '../../public/images/private-party-img.jpg';
 import Link from 'next/link';
+import Card from '@/components/services/Card';
+import Footer from '@/components/Footer';
 
 export default function Home() {
     return (
@@ -44,11 +50,26 @@ export default function Home() {
                     <h3 className="font-headings w-full text-center text-lg font-semibold">About Us</h3>
                     <p></p>
                 </section>
-                <section className="w-full flex flex-col gap-4 p-4 md:h-[calc(100vh-var(--nav-height)-32px)]">
-                    <h3 className="font-headings w-full text-center text-lg font-semibold">About Us</h3>
-                    <p></p>
+                <section className="w-full flex flex-col p-4 md:min-h-[calc(100vh-var(--nav-height)-32px)]">
+                    <h3 className="font-headings w-full text-center text-lg font-semibold leading-none">Services</h3>
+                    <p className="font-paragraphs w-full text-center text-neutral-700 text-sm">Choose Service</p>
+                    <div className="w-full flex justify-center gap-4 mt-4 flex-wrap">
+                        <Link href="/reserve?display=themes&service=wedding">
+                            <Card name="Wedding Service" image={ WeddingImg } description={ "Short description" }/>
+                        </Link>
+                        <Link href="/reserve?display=themes&service=debut">
+                            <Card name="Debut Service" image={ DebutImg } description={ "Short description" }/>
+                        </Link>
+                        <Link href="/reserve?display=themes&service=kidsparty">
+                            <Card name="Kids Party Service" image={ KidsPartyImg } description={ "Short description" }/>
+                        </Link>
+                        <Link href="/reserve?display=themes&service=privateparty">
+                            <Card name="Private Party Service" image={ PrivatePartyImg } description={ "Short description" }/>
+                        </Link>
+                    </div>
                 </section>
             </main>
+            <Footer />
         </>
     );
 }

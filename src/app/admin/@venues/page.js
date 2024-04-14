@@ -1,5 +1,5 @@
 'use client';
-import Card from '@/components/venues/Card';
+import Card from '@/components/admin/venues/Card';
 import Link from 'next/link';
 import { Plus } from '@/components/icons/All';
 import { useEffect, useState } from 'react';
