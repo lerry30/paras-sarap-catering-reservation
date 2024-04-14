@@ -4,7 +4,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Loading from '@/components/Loading';
 import Link from 'next/link';
 
-const Reserve = () => {
+const Themes = () => {
     const [ themesObject, setThemesObject ] = useState({});
     const [ loading, setLoading ] = useState(false);
 
@@ -37,4 +37,4 @@ const Reserve = () => {
     );
 }
 
-export default Reserve;
+export default Themes;

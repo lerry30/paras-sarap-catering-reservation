@@ -1,7 +1,7 @@
 'use client';
 import { useEffect } from 'react';
 
-const Admin = () => {
+const Admin = ({ }) => {
     const start = () => {
         
     }
@@ -11,9 +11,9 @@ const Admin = () => {
     });
 
     return (
-        <>
-            Dashboard
-        </>
+        <section>
+            
+        </section>
     );
 }
 

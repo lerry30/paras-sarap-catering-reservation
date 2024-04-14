@@ -1,61 +1,25 @@
 'use client';
 import ANavbar from '@/components/nav/admin/ANavbar';
+import Loading from './loading';
 import { zDish } from '@/stores/dish';
 import { zDrink } from '@/stores/drink';
 import { zVenue } from '@/stores/venue';
-import { useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
 
 // reload zustan data from localstorage
 zDish.getState().init();
 zDrink.getState().init();
 zVenue.getState().init();
 
-export default function AdminLayout({ 
-        children, dashboard,
-        dishes, adddish, updatedish, viewdish, 
-        drinks, adddrink, updatedrink, viewdrink,
-        venues, addvenue, updatevenue, viewvenue,
-        viewweddingthemes,
-        menus, addmenu, dishesselection, drinksselection, updatemenu, viewmenu,
-        schedules,
-        users,
-    }) {
-    const searchParams = useSearchParams();
-    const param = searchParams?.get('display');
-
-    const views = {
-        dashboard: dashboard,
-        dishes: dishes,
-        adddish: adddish,
-        updatedish: updatedish,
-        viewdish: viewdish,
-        drinks: drinks,
-        adddrink: adddrink,
-        updatedrink: updatedrink,
-        viewdrink: viewdrink,
-        venues: venues,
-        addvenue: addvenue,
-        updatevenue: updatevenue,
-        viewvenue: viewvenue,
-        viewweddingthemes: viewweddingthemes,
-        menus: menus,
-        addmenu: addmenu,
-        dishesselection: dishesselection,
-        drinksselection: drinksselection,
-        updatemenu: updatemenu,
-        viewmenu: viewmenu,
-        schedules: schedules,
-        users: users,
-    }
-
-    // Keep in mind to always restart the server every time a new slot is added.
-    const display = views[param] || dashboard;
+export default function AdminLayout({ children }) {
     return (
         <>
             <ANavbar />
-            <main className="sm:pl-[var(--admin-sidebar-width)]">
-                { display }
-            </main>
+            <Suspense fallback={ <Loading customStyle="size-full" /> }>
+                <main className="sm:pl-[var(--admin-sidebar-width)]">
+                    { children }
+                </main>
+            </Suspense>
         </>
     );
 }

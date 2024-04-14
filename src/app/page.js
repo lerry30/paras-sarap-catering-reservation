@@ -54,16 +54,16 @@ export default function Home() {
                     <h3 className="font-headings w-full text-center text-lg font-semibold leading-none">Services</h3>
                     <p className="font-paragraphs w-full text-center text-neutral-700 text-sm">Choose Service</p>
                     <div className="w-full flex justify-center gap-4 mt-4 flex-wrap">
-                        <Link href="/reserve?display=themes&service=wedding">
+                        <Link href="/reserve?service=wedding">
                             <Card name="Wedding Service" image={ WeddingImg } description={ "Short description" }/>
                         </Link>
-                        <Link href="/reserve?display=themes&service=debut">
+                        <Link href="/reserve?service=debut">
                             <Card name="Debut Service" image={ DebutImg } description={ "Short description" }/>
                         </Link>
-                        <Link href="/reserve?display=themes&service=kidsparty">
+                        <Link href="/reserve?service=kidsparty">
                             <Card name="Kids Party Service" image={ KidsPartyImg } description={ "Short description" }/>
                         </Link>
-                        <Link href="/reserve?display=themes&service=privateparty">
+                        <Link href="/reserve?service=privateparty">
                             <Card name="Private Party Service" image={ PrivatePartyImg } description={ "Short description" }/>
                         </Link>
                     </div>
