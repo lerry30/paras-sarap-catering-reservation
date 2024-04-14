@@ -2,11 +2,14 @@
 // import Loading from '@/components/Loading';
 // import { zAdmin } from '@/stores/admin';
 // import { useSearchParams } from 'next/navigation';
-// import { Suspense, useEffect, useState } from 'react';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 const Admin = () => {
     // const [ display, setDisplay ] = useState([]);
     // const searchParams = useSearchParams();
+
+    const router = useRouter();
     
     // const start = () => {
     //     const param = searchParams?.get('display') || 'dashboard';
@@ -14,9 +17,9 @@ const Admin = () => {
     //     setDisplay(views[param]);
     // }
 
-    // useEffect(() => {
-    //     start();
-    // });
+    useEffect(() => {
+        router.push('/admin?display=dashboard');
+    });
 
     return (
         // <Suspense fallback={ <Loading customStyle="size-full" /> }>
@@ -24,7 +27,7 @@ const Admin = () => {
         //         { display }
         //     </section>
         // </Suspense>
-        <select></select>
+        <section></section>
     );
 }
 

@@ -50,15 +50,13 @@ export default function AdminLayout({
     }
 
     return (
-        <>
-            <Suspense fallback={ <Loading customStyle="size-full" />}>
-                <ANavbar />
-                <Display 
-                    main={ children } 
-                    slots={ views } 
-                />
-            </Suspense>
-        </>
+        <Suspense fallback={ <Loading customStyle="size-full" />}>
+            <ANavbar />
+            <Display 
+                main={ children } 
+                slots={ views } 
+            />
+        </Suspense>
     );
 }
 

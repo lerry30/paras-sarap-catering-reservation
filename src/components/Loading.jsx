@@ -79,7 +79,7 @@ const Loading = ({ customStyle }) => {
     }, []);
 
     return (
-        <div className={ `flex justify-center items-center absolute top-0 left-0 z-50 backdrop-blur-sm dark:bg-neutral-950/80 ${ customStyle }` }>
+        <div className={ `flex justify-center items-center fixed top-0 left-0 z-50 backdrop-blur-sm dark:bg-neutral-950/80 ${ customStyle }` }>
             <canvas ref={ canvasRef }></canvas>
         </div>
     );

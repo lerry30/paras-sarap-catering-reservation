@@ -143,10 +143,12 @@ const Venues = () => {
                         </button>
                     </div>
                 </div>
-                <div className="flex p-4">
-                    <article>
-                        
-                    </article>
+                <div className="px-4">
+                    <div className="size-full p-4 bg-blue-400/50 rounded-lg flex justify-center items-center">
+                        <article className="w-4/5 font-paragraphs text-center ">
+                            Note: It's essential to provide the precise location of your event. This ensures that our team can promptly prepare and plan the setup, including any necessary tools and equipment. Your detailed location information enables us to deliver a seamless and tailored experience, ensuring everything is in place for a successful event.
+                        </article>
+                    </div>
                 </div>
             </div>
             <ErrorField message={ invalidFieldsValue?.unauth }/>
