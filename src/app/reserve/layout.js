@@ -3,14 +3,15 @@ import CNavbar from '@/components/nav/client/CNavbar';
 import Loading from './loading';
 import { useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
+import Footer from '@/components/Footer';
 
 export default function AdminLayout({ 
-        children, themes, venues, hasownvenue
+        children, themes, venues, providevenuelocation
      }) {
     const views = {
         themes: themes,
         venues: venues,
-        hasownvenue: hasownvenue,
+        providevenuelocation: providevenuelocation,
     };
 
     return (
@@ -20,6 +21,7 @@ export default function AdminLayout({
                 main={ children } 
                 slots={ views } 
             />
+            <Footer />
         </Suspense>
     );
 }
@@ -34,7 +36,7 @@ const Display = ({ main, slots }) => {
     const slot = searchParams.get('display');
     const display = slots[ slot ] || main;
     return (
-        <main className="">
+        <main className="min-h-screen">
             { display }
         </main>
     );

@@ -4,7 +4,7 @@ import { Prompt, SuccessModal } from '@/components/Modal';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { deleteWithJSON, getData } from '@/utils/send';
-import { zMenu } from '@/stores/menu';
+import { zMenu } from '@/stores/admin/menu';
 
 import Link from 'next/link';
 import Loading from '@/components/Loading';
@@ -58,12 +58,18 @@ const Menus = () => {
     }
     
     const getMenus = async () => {
-        const { data } = (await getData('/api/menus')) || { data: [] };
-        setMenus(data);
+        setLoading(true);
 
-        for(const menu of data) {
-            setMenusObject(prev => ({ ...prev, [ menu?._k ]: menu }));
-        }
+        try {
+            const { data } = (await getData('/api/menus')) || { data: [] };
+            setMenus(data);
+
+            for(const menu of data) {
+                setMenusObject(prev => ({ ...prev, [ menu?._k ]: menu }));
+            }
+        } catch(error) {}
+
+        setLoading(false);
     }
 
     useEffect(() => {

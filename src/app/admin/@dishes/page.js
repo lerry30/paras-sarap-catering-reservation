@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { deleteWithJSON, getData } from '@/utils/send';
 import { Prompt, SuccessModal } from '@/components/Modal';
 import { useRouter } from 'next/navigation';
-import { zDish } from '@/stores/dish';
+import { zDish } from '@/stores/admin/dish';
 import Loading from '@/components/Loading';
 
 const Dishes = () => {
@@ -69,12 +69,17 @@ const Dishes = () => {
     }
 
     const getDishes = async () => {
-        const { data } = (await getData('/api/dishes')) || { data: [] };
-        setDishes(data);
+        setLoading(true);
+        try {
+            const { data } = (await getData('/api/dishes')) || { data: [] };
+            setDishes(data);
 
-        for(const dish of data) {
-            setDishesObject(prev => ({ ...prev, [ dish?._k ]: dish }));
-        }
+            for(const dish of data) {
+                setDishesObject(prev => ({ ...prev, [ dish?._k ]: dish }));
+            }
+        } catch(error) {}
+
+        setLoading(false);
     }
 
     useEffect(() => {

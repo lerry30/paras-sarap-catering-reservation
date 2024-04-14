@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { deleteWithJSON, getData } from '@/utils/send';
 import { Prompt, SuccessModal } from '@/components/Modal';
 import { useRouter } from 'next/navigation';
-import { zDrink } from '@/stores/drink';
+import { zDrink } from '@/stores/admin/drink';
 import Loading from '@/components/Loading';
 
 const Drinks = () => {
@@ -68,12 +68,18 @@ const Drinks = () => {
     }
 
     const getDrinks = async () => {
-        const { data } = (await getData('/api/drinks')) || { data: [] };
-        setDrinks(data);
+        setLoading(true);
+        
+        try {
+            const { data } = (await getData('/api/drinks')) || { data: [] };
+            setDrinks(data);
 
-        for(const drink of data) {
-            setDrinksObject(prev => ({ ...prev, [ drink?._k ]: drink }));
-        }
+            for(const drink of data) {
+                setDrinksObject(prev => ({ ...prev, [ drink?._k ]: drink }));
+            }
+        } catch(error) {}
+
+        setLoading(false);
     }
 
     useEffect(() => {

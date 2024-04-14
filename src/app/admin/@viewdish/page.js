@@ -3,7 +3,7 @@ import Loading from '@/components/Loading';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { zDish } from '@/stores/dish';
+import { zDish } from '@/stores/admin/dish';
 import { deleteWithJSON } from '@/utils/send';
 import { Prompt, SuccessModal } from '@/components/Modal';
 

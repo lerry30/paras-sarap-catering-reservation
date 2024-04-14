@@ -1,13 +1,13 @@
 'use client';
 import Card from '@/components/admin/venues/Card';
 import Link from 'next/link';
+import Loading from '@/components/Loading';
 import { Plus } from '@/components/icons/All';
 import { useEffect, useState } from 'react';
 import { deleteWithJSON, getData } from '@/utils/send';
 import { Prompt, SuccessModal } from '@/components/Modal';
 import { useRouter } from 'next/navigation';
-import { zVenue } from '@/stores/venue';
-import Loading from '@/components/Loading';
+import { zVenue } from '@/stores/admin/venue';
 
 const Venues = () => {
     const [ venues, setVenues ] = useState([]); // database
@@ -70,12 +70,18 @@ const Venues = () => {
     }
 
     const getVenues = async () => {
-        const { data } = (await getData('/api/venues')) || { data: [] };
-        setVenues(data);
+        setLoading(true);
 
-        for(const venue of data) {
-            setVenuesObject(prev => ({ ...prev, [ venue?._k ]: venue }));
-        }
+        try {
+            const { data } = (await getData('/api/venues')) || { data: [] };
+            setVenues(data);
+
+            for(const venue of data) {
+                setVenuesObject(prev => ({ ...prev, [ venue?._k ]: venue }));
+            }
+        } catch(error) {}
+
+        setLoading(false);
     }
 
     useEffect(() => {

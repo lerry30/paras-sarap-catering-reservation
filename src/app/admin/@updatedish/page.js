@@ -9,7 +9,7 @@ import { sendFormUpdate } from '@/utils/send';
 import { handleError } from '@/utils/auth/backendError';
 import { useRouter } from 'next/navigation';
 import { toNumber } from '@/utils/number';
-import { zDish } from '@/stores/dish';
+import { zDish } from '@/stores/admin/dish';
 
 const UpdateDish = () => {
     const [ dishName, setDishName ] = useState('');
@@ -117,15 +117,18 @@ const UpdateDish = () => {
                 <div className="grow flex flex-col gap-4 py-6">
                     <div className="w-full flex gap-4">
                         <div className="w-1/2">
+                            <label className="font-paragraph text-sm font-semibold">Dish Name</label>
                             <input value={ dishName } name="dishname" onChange={(e) => setDishName(e.target.value)} className="input w-full border border-neutral-500/40" placeholder="Dish Name" />
                             <ErrorField message={ invalidFieldsValue['dishname'] }/>
                         </div>
                         <div className="w-1/2">
+                            <label className="font-paragraph text-sm font-semibold">Cost Per Guest Served</label>
                             <input value={ costPerHead } name="costperhead" onChange={ costPerHeadInput } className="input w-full border border-neutral-500/40" placeholder="Cost Per Head" />
                             <ErrorField message={ invalidFieldsValue['costperhead'] }/>
                         </div>
                     </div>
                     <div>
+                        <label className="font-paragraph text-sm font-semibold">Description</label>
                         <textarea value={ description } name="description" onChange={(e) => setDescription(e.target.value)} className="input w-full h-40 border border-neutral-500/40" placeholder="Description"></textarea>
                         <ErrorField message={ invalidFieldsValue['description'] }/>
                     </div>

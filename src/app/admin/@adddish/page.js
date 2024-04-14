@@ -86,15 +86,18 @@ const AddDish = () => {
                 <div className="grow flex flex-col gap-4 py-6">
                     <div className="w-full flex gap-4">
                         <div className="w-1/2">
+                            <label className="font-paragraph text-sm font-semibold">Dish Name</label>
                             <input name="dishname" onChange={(e) => setDishName(e.target.value)} className="input w-full border border-neutral-500/40" placeholder="Dish Name" />
                             <ErrorField message={ invalidFieldsValue['dishname'] }/>
                         </div>
                         <div className="w-1/2">
+                            <label className="font-paragraph text-sm font-semibold">Cost Per Guest Served</label>
                             <input name="costperhead" onChange={ costPerHeadInput } className="input w-full border border-neutral-500/40" placeholder="Cost Per Head" />
                             <ErrorField message={ invalidFieldsValue['costperhead'] }/>
                         </div>
                     </div>
                     <div>
+                        <label className="font-paragraph text-sm font-semibold">Description</label>
                         <textarea name="description" onChange={(e) => setDescription(e.target.value)} className="input w-full h-40 border border-neutral-500/40" placeholder="Description"></textarea>
                         <ErrorField message={ invalidFieldsValue['description'] }/>
                     </div>

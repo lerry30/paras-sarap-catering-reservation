@@ -3,7 +3,7 @@ import Loading from '@/components/Loading';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { zVenue } from '@/stores/venue';
+import { zVenue } from '@/stores/admin/venue';
 import { deleteWithJSON } from '@/utils/send';
 import { Prompt, SuccessModal } from '@/components/Modal';
 

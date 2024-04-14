@@ -8,7 +8,7 @@ import { sendFormUpdate } from '@/utils/send';
 import { handleError } from '@/utils/auth/backendError';
 import { useRouter } from 'next/navigation';
 import { toNumber } from '@/utils/number';
-import { zDrink } from '@/stores/drink';
+import { zDrink } from '@/stores/admin/drink';
 
 const UpdateDrink = () => {
     const [ drinkName, setDrinkName ] = useState('');
@@ -88,14 +88,17 @@ const UpdateDrink = () => {
                 </div>
                 <div className="grow flex flex-col gap-4 py-6">
                     <div className="w-full">
+                        <label className="font-paragraph text-sm font-semibold">Drink Name</label>
                         <input value={ drinkName } name="drinkname" onChange={(e) => setDrinkName(e.target.value)} className="input w-full border border-neutral-500/40" placeholder="Drink Name" />
                         <ErrorField message={ invalidFieldsValue['drinkname'] }/>
                     </div>
                     <div className="w-full">
+                        <label className="font-paragraph text-sm font-semibold">Cost Per Guest Served</label>
                         <input value={ costPerHead } name="costperhead" onChange={ costPerHeadInput } className="input w-full border border-neutral-500/40" placeholder="Cost Per Head" />
                         <ErrorField message={ invalidFieldsValue['costperhead'] }/>
                     </div>
                     <div>
+                        <label className="font-paragraph text-sm font-semibold">Description</label>
                         <textarea value={ description } name="description" onChange={(e) => setDescription(e.target.value)} className="input w-full h-40 border border-neutral-500/40" placeholder="Description"></textarea>
                         <ErrorField message={ invalidFieldsValue['description'] }/>
                     </div>

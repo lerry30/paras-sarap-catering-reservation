@@ -1,88 +1,80 @@
 'use client';
-import UploadButton from '@/components/UploadButton';
-import Loading from '@/components/Loading';
-import ErrorField from '@/components/ErrorField';
-import { useState } from 'react';
-import { emptyVenueFields } from '@/utils/admin/emptyValidation';
-import { sendForm } from '@/utils/send';
-import { handleError } from '@/utils/auth/backendError';
-import { useRouter } from 'next/navigation';
-import { toNumber } from '@/utils/number';
+import { useEffect, useState } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 
 import { addressAll } from '@/utils/philAddress';
 import { regions } from '@/utils/philAddress';
+import { toNumber } from '@/utils/number';
+import { zReservation } from '@/stores/reservation';
+import { emptyVenueFields } from '@/utils/client/emptyValidation';
+import { Prompt } from '@/components/Modal';
+import ErrorField from '@/components/ErrorField';
+import Checkbox from '@/components/Checkbox';
+import Loading from '@/components/Loading';
+import Link from 'next/link';
 
-const AddVenue = () => {
+const Venues = () => {
     const [ venueName, setVenueName ] = useState('');
     const [ description, setDescription ] = useState('');
-    const [ file, setFile ] = useState(undefined);
-    const [ price, setPrice ] = useState(0);
-    const [ chargeForTablesAndChairs, setChargeForTablesAndChairs ] = useState(0);
-    const [ maximumSeatingCapacity, setMaximumSeatingCapacity ] = useState(0);
-    const [ invalidFieldsValue, setInvalidFieldsValue ] = useState({});
+    const [ tablesNChairsProvided, setTablesNChairsProvided ] = useState(false);
+    const [ noOfGuest, setNoOfGuest ] = useState(0);
+    const [ service, setService ] = useState(undefined);
     const [ loading, setLoading ] = useState(false);
-    const router = useRouter();
+    const [ invalidFieldsValue, setInvalidFieldsValue ] = useState({});
+    const [ confirmationPrompt, setConfirmationPrompt ] = useState('');
 
     const [ selectedAddress, setSelectedAddress ] = useState({ street: '', region: '', province: '', municipality: '', barangay: '' });
     const [ listOfProvince, setListOfProvince ] = useState([]);
     const [ listOfMunicipality, setListOfMunicipality ] = useState([]);
     const [ listOfBarangay, setListOfBarangay ] = useState([]);
 
-    const handleSubmit = async (ev) => {
-        ev.preventDefault();
+    const searchParams = useSearchParams();
+    const router = useRouter();
 
+    const saveProvidedVenueInfo = async () => {
         setInvalidFieldsValue({});
         setLoading(true);
 
         const { street, region, province, municipality, barangay } = selectedAddress;
-        const invalidFields = emptyVenueFields(venueName, description, file, region, province, municipality, barangay, street);
+        const invalidFields = emptyVenueFields(region, province, municipality, barangay, street);
         for(const [field, message] of Object.entries(invalidFields))
             setInvalidFieldsValue(prev => ({ ...prev, [field]: message }));
 
-        if(!price) setInvalidFieldsValue(prev => ({ ...prev, price: 'Enter a numerical value greater than zero for the price' }));
-        if(!maximumSeatingCapacity) setInvalidFieldsValue(prev => ({ ...prev, maximumSeatingCapacity: 'Enter a numerical value greater than zero for the maximum seating capacity' }));
+        if(!noOfGuest) setInvalidFieldsValue(prev => ({ ...prev, noofguest: 'Enter a numerical value greater than zero for the number of guest' }));
 
         if(Object.values(invalidFields).length === 0) {
             try {
-                const form = new FormData(ev.target);
-                const createVenueResponse = await sendForm('/api/venues', form);
-                if(createVenueResponse?.success) {
-                    router.push('/admin?display=venues');
-                }
+                const venueData = {
+                    name: venueName,
+                    description,
+                    tablesnchairsprovided: tablesNChairsProvided,
+                    noofguest: noOfGuest,
+                    address: {
+                        region, 
+                        province, 
+                        municipality, 
+                        barangay, 
+                        street
+                    }
+                };
+
+                zReservation.getState().saveVenueData(venueData);
+                router.push(`/reserve?display=menus&service=${ service }`);
             } catch(error) {
-                const backendError = handleError(error);
-                setInvalidFieldsValue(prev => ({ ...prev, ...backendError }));
+                setInvalidFieldsValue(prev => ({ ...prev, unauth: 'There\'s something wrong!' }));
             }
         }
 
         setLoading(false);
     }
 
-    const priceInput = (ev) => {
+    const guestNoInput = (ev) => {
         const value = ev.target.value;
-        const priceOfVenue = toNumber(value);
-        ev.target.value = priceOfVenue;
-        setPrice(priceOfVenue);
+        const noOfGuest = toNumber(value);
+        ev.target.value = noOfGuest;
+        setNoOfGuest(noOfGuest);
 
-        if(isNaN(Number(value))) setInvalidFieldsValue(prev => ({ ...prev, price: 'Please enter a numerical value for the price.' }));
-    }
-
-    const maximumSeatingCapacityInput = (ev) => {
-        const value = ev.target.value;
-        const capacity = toNumber(value);
-        ev.target.value = capacity;
-        setMaximumSeatingCapacity(capacity);
-
-        if(isNaN(Number(value))) setInvalidFieldsValue(prev => ({ ...prev, maximumSeatingCapacity: 'Please enter a numerical value for the maximum seating capacity.' }));
-    }
-
-    const tablesNChairsInput = (ev) => {
-        const value = ev.target.value;
-        const charge = toNumber(value);
-        ev.target.value = charge;
-        setChargeForTablesAndChairs(charge);
-
-        if(isNaN(Number(value))) setInvalidFieldsValue(prev => ({ ...prev, tablesNChairsCharge: 'Please enter a numerical value for the additional charges for tables and chairs.' }));
+        if(isNaN(Number(value))) setInvalidFieldsValue(prev => ({ ...prev, noofguest: 'Please enter a numerical value for the number of guest.' }));
     }
 
     const select = (ev, key) => {
@@ -104,48 +96,54 @@ const AddVenue = () => {
         })[key]();
     }
 
+    useEffect(() => {
+        const serviceParam = searchParams.get('service');
+        setService(serviceParam);
+    }, []);
+
     return (
-        <section className="flex flex-col gap-2 p-4">
+        <section className="w-full flex flex-col pt-4 px-page-x">
             { loading && <Loading customStyle="size-full" /> }
             <div className="flex justify-between items-center p-1 rounded-lg">
-                <h2 className="font-headings font-semibold">Add New Venue</h2>
+                <h2 className="font-headings font-semibold">Add Your Venue</h2>
             </div>
-            <form onSubmit={ handleSubmit } className="flex gap-4 font-paragraphs">
-                <div className="flex flex-col gap-4">
-                    <UploadButton fileData={ [ file, setFile ]} />
-                    <article className="max-w-96 text-yellow-900 text-sm p-2 bg-yellow-500/20 rounded-md shadow-md">Keep in mind that uploading your image file may result in the loss of some important features, such as transparency, as the uploaded image file will be converted to a JPG file for performance enhancement</article>
-                </div>
-                <div className="grow flex flex-col gap-4 py-6">
+            <div className="font-paragraphs grow flex py-2 gap-4">
+                <div className="w-1/2 flex flex-col gap-4" >
                     <div className="w-full">
-                        <label className="font-paragraph text-sm font-semibold">Venue Name</label>
-                        <input name="venuename" onChange={(ev) => setVenueName(ev.target.value)} className="input w-full border border-neutral-500/40" placeholder="Venue Name" />
+                        <label className="font-paragraph text-sm font-semibold">Venue Name (Optional)</label>
+                        <input name="venuename" id="venuename" onChange={(ev) => setVenueName(ev.target.value)} className="input w-full border border-neutral-500/40" placeholder="Venue Name (Optional)" />
                         <ErrorField message={ invalidFieldsValue['venuename'] }/>
                     </div>
-                    <div className="w-full flex gap-4">
-                        <div className="w-1/2">
-                            <label className="font-paragraph text-sm font-semibold">Price</label>
-                            <input name="price" onChange={ priceInput } className="input w-full border border-neutral-500/40" placeholder="Price" />
-                            <ErrorField message={ invalidFieldsValue['price'] }/>
-                        </div>
-                        <div className="w-1/2">
-                            <label className="font-paragraph text-sm font-semibold">Maximum Seating Capacity</label>
-                            <input name="maximumSeatingCapacity" onChange={ maximumSeatingCapacityInput } className="input w-full border border-neutral-500/40" placeholder="Maximum Seating Capacity" />
-                            <ErrorField message={ invalidFieldsValue['maximumSeatingCapacity'] }/>
-                        </div>
-                    </div>
-                    <div className="w-full">
-                        <label className="font-paragraph text-sm font-semibold">Additional Charges for Tables and Chairs (Optional)</label>
-                        <input name="chargeForTablesAndChairs" onChange={ tablesNChairsInput } className="input w-full border border-neutral-500/40" placeholder="Additional Charges for Tables and Chairs(Optional)" />
-                        <ErrorField message={ invalidFieldsValue['chargeForTablesAndChairs'] }/>
-                    </div>
                     <div>
-                        <label className="font-paragraph text-sm font-semibold">Desciption</label>
-                        <textarea name="description" onChange={(ev) => setDescription(ev.target.value)} className="input w-full h-40 border border-neutral-500/40" placeholder="Description"></textarea>
+                        <label className="font-paragraph text-sm font-semibold">Description (Optional)</label>
+                        <textarea name="description" onChange={(ev) => setDescription(ev.target.value)} className="input w-full h-40 border border-neutral-500/40" placeholder="Description (Optional)"></textarea>
                         <ErrorField message={ invalidFieldsValue['description'] }/>
                     </div>
-                    <h2 className="font-headings">Address</h2>
+                    <div className="size-full p-4 bg-blue-400/50 rounded-lg flex justify-center items-center">
+                        <article className="w-4/5 font-paragraphs text-sm text-center ">
+                            <span className="font-semibold">Note:&nbsp;</span>
+                            <span>It's essential to provide the precise location of your event. This ensures that our team can promptly prepare and plan the setup, including any necessary tools and equipment. Your detailed location information enables us to deliver a seamless and tailored experience, ensuring everything is in place for a successful event.
+                            </span>
+                        </article>
+                    </div>
+                </div>
+                <div className="w-1/2 flex flex-col gap-4">
+                    <div className="flex flex-col gap-4">
+                        <p className="text-sm font-paragraphs">By checking the box below, you confirm that you will provide the chairs and tables needed for the event. In addition to providing the venue, it's important to specify the number of guests attending your occasion. Please ensure to include the number of guests. For further discussion, click <Link href="/message" className="text-blue-700 font-semibold">Message me</Link> to collaborate on making your event even more memorable.</p>
+                        <Checkbox value="" text="Do you want to use your own tables and chairs" onChange={ ev => setTablesNChairsProvided(ev.target.checked) }/>
+                    </div>
                     <div className="w-full">
-                        <label className="font-paragraph text-sm font-semibold">Street/Building Name</label>
+                        <label className="font-paragraph text-sm font-semibold">Number of Guest</label>
+                        <input 
+                            name="noofguest" 
+                            onChange={ guestNoInput } 
+                            className="input w-full border border-neutral-500/40" 
+                            placeholder="Number of Guest"
+                        />
+                        <ErrorField message={ invalidFieldsValue['noofguest'] }/>
+                    </div>
+                    <div className="w-full">
+                        <label htmlFor="" className="font-paragraph text-sm font-semibold">Street/Building Name</label>
                         <input 
                             name="street" 
                             onChange={ (ev) => setSelectedAddress(state => ({ ...state, street: ev.target.value })) } 
@@ -154,6 +152,7 @@ const AddVenue = () => {
                     </div>
                     <div className="w-full flex gap-4">
                         <div className="w-1/2">
+                            <label className="font-paragraph text-sm font-semibold">Region</label>
                             <select 
                                 name="region"
                                 defaultValue="placeholder" 
@@ -169,6 +168,7 @@ const AddVenue = () => {
                             <ErrorField message={ invalidFieldsValue['region'] }/>
                         </div>
                         <div className="w-1/2">
+                            <label className="font-paragraph text-sm font-semibold">Province</label>
                             <select 
                                 name="province"
                                 defaultValue="placeholder" 
@@ -186,6 +186,7 @@ const AddVenue = () => {
                     </div>
                     <div className="w-full flex gap-4">
                         <div className="w-1/2">
+                            <label className="font-paragraph text-sm font-semibold">Municipality</label>
                             <select 
                                 name="municipality"
                                 defaultValue="placeholder" 
@@ -201,6 +202,7 @@ const AddVenue = () => {
                             <ErrorField message={ invalidFieldsValue['municipality'] }/>
                         </div>
                         <div className="w-1/2">
+                            <label className="font-paragraph text-sm font-semibold">Barangay</label>
                             <select 
                                 name="barangay"
                                 defaultValue="placeholder"  
@@ -217,20 +219,28 @@ const AddVenue = () => {
                         </div>
                     </div>  
                     <div className="w-full flex gap-4">
-                        <button type="submit" className="w-1/2 button shadow-md border border-neutral-500/40">Save</button>
-                        <button onClick={ (ev) => {
-                            ev.preventDefault();
-                            router.push('/admin?display=venues')
-                        }} className="w-1/2 button shadow-md border border-neutral-500/40">
+                        <button onClick={ () => setConfirmationPrompt(true) } className="w-1/2 button shadow-md border border-neutral-500/40">Save</button>
+                        <button onClick={ () => router.push('/reserve?display=themes') } className="w-1/2 button shadow-md border border-neutral-500/40">
                             Cancel
                         </button>
                     </div>
-                    <ErrorField message={ invalidFieldsValue?.unauth }/>
-                    <ErrorField message={ invalidFieldsValue['image'] }/>
+                    
                 </div>
-            </form>
+            </div>
+            <div className="w-1/2 ml-auto pl-2">
+                <ErrorField message={ invalidFieldsValue?.unauth }/>
+            </div>
+            {
+                confirmationPrompt && <Prompt callback={ saveProvidedVenueInfo } onClose={ () => setConfirmationPrompt(false) } header="Confirm Venue Info"
+                    message={ `Are you sure you want your place to be the venue of the event? ${
+                        tablesNChairsProvided 
+                            ? 'You will be responsible for providing chairs and tables.' 
+                            : 'We will provide chairs and tables, but there will be an additional charge for this service.'
+                    }` }
+                />
+            }
         </section>
     );
 }
 
-export default AddVenue;
+export default Venues;

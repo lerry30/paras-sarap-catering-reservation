@@ -1,9 +1,9 @@
 'use client';
 import ANavbar from '@/components/nav/admin/ANavbar';
 import Loading from '@/components/Loading';
-import { zDish } from '@/stores/dish';
-import { zDrink } from '@/stores/drink';
-import { zVenue } from '@/stores/venue';
+import { zDish } from '@/stores/admin/dish';
+import { zDrink } from '@/stores/admin/drink';
+import { zVenue } from '@/stores/admin/venue';
 import { useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
 

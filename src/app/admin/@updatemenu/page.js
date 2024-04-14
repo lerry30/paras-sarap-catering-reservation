@@ -8,7 +8,7 @@ import { emptyMenuFields } from '@/utils/admin/emptyValidation';
 import { sendFormUpdate } from '@/utils/send';
 import { handleError } from '@/utils/auth/backendError';
 import { useRouter } from 'next/navigation';
-import { zMenu } from '@/stores/menu';
+import { zMenu } from '@/stores/admin/menu';
 
 const UpdateMenu = () => {
     const [ menuName, setMenuName ] = useState('');
@@ -168,10 +168,12 @@ const UpdateMenu = () => {
                 </div>  
                 <div className="flex flex-col gap-2 pt-4 w-1/3">
                     <div className="w-full">
+                        <label className="font-paragraph text-sm font-semibold">Menu Name</label>
                         <input name="menuname" value={ menuName } onChange={(e) => setMenuName(e.target.value)} className="input w-full border border-neutral-500/40" placeholder="Menu Name" />
                         <ErrorField message={ invalidFieldsValue['menuname'] }/>
                     </div>
                     <div>
+                        <label className="font-paragraph text-sm font-semibold">Description</label>
                         <textarea name="description" value={ description } onChange={(e) => setDescription(e.target.value)} className="input w-full h-40 border border-neutral-500/40" placeholder="Description"></textarea>
                         <ErrorField message={ invalidFieldsValue['description'] }/>
                     </div>

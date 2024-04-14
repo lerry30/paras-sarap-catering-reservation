@@ -11,7 +11,7 @@ import { toNumber } from '@/utils/number';
 
 import { addressAll } from '@/utils/philAddress';
 import { regions } from '@/utils/philAddress';
-import { zVenue } from '@/stores/venue';
+import { zVenue } from '@/stores/admin/venue';
 
 const UpdateVenue = () => {
     const [ venueName, setVenueName ] = useState('');
@@ -159,29 +159,35 @@ const UpdateVenue = () => {
                 </div>
                 <div className="grow flex flex-col gap-4 py-6">
                     <div className="w-full">
+                        <label className="font-paragraph text-sm font-semibold">Venue Name</label>
                         <input value={ venueName } name="venuename" onChange={(ev) => setVenueName(ev.target.value)} className="input w-full border border-neutral-500/40" placeholder="Venue Name" />
                         <ErrorField message={ invalidFieldsValue['venuename'] }/>
                     </div>
                     <div className="w-full flex gap-4">
                         <div className="w-1/2">
+                            <label className="font-paragraph text-sm font-semibold">Price</label>
                             <input value={ price } name="price" onChange={ priceInput } className="input w-full border border-neutral-500/40" placeholder="Price" />
                             <ErrorField message={ invalidFieldsValue['price'] }/>
                         </div>
                         <div className="w-1/2">
+                            <label className="font-paragraph text-sm font-semibold">Maximum Seating Capacity</label>
                             <input value={ maximumSeatingCapacity } name="maximumSeatingCapacity" onChange={ maximumSeatingCapacityInput } className="input w-full border border-neutral-500/40" placeholder="Maximum Seating Capacity" />
                             <ErrorField message={ invalidFieldsValue['maximumSeatingCapacity'] }/>
                         </div>
                     </div>
                     <div className="w-full">
+                        <label className="font-paragraph text-sm font-semibold">Additional Charges for Tables and Chairs</label>
                         <input value={ chargeForTablesAndChairs } name="chargeForTablesAndChairs" onChange={ tablesNChairsInput } className="input w-full border border-neutral-500/40" placeholder="Additional Charges for Tables and Chairs(Optional)" />
                         <ErrorField message={ invalidFieldsValue['chargeForTablesAndChairs'] }/>
                     </div>
                     <div>
+                        <label className="font-paragraph text-sm font-semibold">Description</label>
                         <textarea value={ description } name="description" onChange={(ev) => setDescription(ev.target.value)} className="input w-full h-40 border border-neutral-500/40" placeholder="Description"></textarea>
                         <ErrorField message={ invalidFieldsValue['description'] }/>
                     </div>
                     <h2 className="font-headings">Address</h2>
                     <div className="w-full">
+                        <label className="font-paragraph text-sm font-semibold">Street/Building Name</label>
                         <input 
                             value={ selectedAddress.street }
                             name="street" 
@@ -191,6 +197,7 @@ const UpdateVenue = () => {
                     </div>
                     <div className="w-full flex gap-4">
                         <div className="w-1/2">
+                            <label className="font-paragraph text-sm font-semibold">Region</label>
                             <select 
                                 value={ selectedAddress.region }
                                 name="region"
@@ -205,6 +212,7 @@ const UpdateVenue = () => {
                             <ErrorField message={ invalidFieldsValue['region'] }/>
                         </div>
                         <div className="w-1/2">
+                            <label className="font-paragraph text-sm font-semibold">Province</label>
                             <select 
                                 value={ selectedAddress.province }
                                 name="province"
@@ -221,6 +229,7 @@ const UpdateVenue = () => {
                     </div>
                     <div className="w-full flex gap-4">
                         <div className="w-1/2">
+                            <label className="font-paragraph text-sm font-semibold">Municipality</label>
                             <select 
                                 value={ selectedAddress.municipality }
                                 name="municipality"
@@ -235,6 +244,7 @@ const UpdateVenue = () => {
                             <ErrorField message={ invalidFieldsValue['municipality'] }/>
                         </div>
                         <div className="w-1/2">
+                            <label className="font-paragraph text-sm font-semibold">Barangay</label>
                             <select 
                                 value={ selectedAddress.barangay }
                                 name="barangay"
