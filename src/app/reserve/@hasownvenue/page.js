@@ -143,6 +143,11 @@ const Venues = () => {
                         </button>
                     </div>
                 </div>
+                <div className="flex p-4">
+                    <article>
+                        
+                    </article>
+                </div>
             </div>
             <ErrorField message={ invalidFieldsValue?.unauth }/>
             <ErrorField message={ invalidFieldsValue['image'] }/>
