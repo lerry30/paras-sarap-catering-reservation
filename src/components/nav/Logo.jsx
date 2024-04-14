@@ -3,7 +3,7 @@ import Link from 'next/link';
 import ParasSarapLogo from '../../../public/ParasSarapLogo.svg';
 
 const Logo = () => (
-    <Link href='/'>
+    <Link href="/">
         <Image 
             src={ ParasSarapLogo }
             alt='Paras Sarap Logo'

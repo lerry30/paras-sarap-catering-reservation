@@ -1,19 +1,30 @@
 'use client';
-import { useEffect } from 'react';
+// import Loading from '@/components/Loading';
+// import { zAdmin } from '@/stores/admin';
+// import { useSearchParams } from 'next/navigation';
+// import { Suspense, useEffect, useState } from 'react';
 
-const Admin = ({ }) => {
-    const start = () => {
-        
-    }
+const Admin = () => {
+    // const [ display, setDisplay ] = useState([]);
+    // const searchParams = useSearchParams();
+    
+    // const start = () => {
+    //     const param = searchParams?.get('display') || 'dashboard';
+    //     const views = zAdmin.getState().slots;
+    //     setDisplay(views[param]);
+    // }
 
-    useEffect(() => {
-        start();
-    });
+    // useEffect(() => {
+    //     start();
+    // });
 
     return (
-        <section>
-            
-        </section>
+        // <Suspense fallback={ <Loading customStyle="size-full" /> }>
+        //     <section>
+        //         { display }
+        //     </section>
+        // </Suspense>
+        <select></select>
     );
 }
 
