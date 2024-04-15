@@ -4,7 +4,7 @@ import { Prompt, SuccessModal } from '@/components/Modal';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { deleteWithJSON, getData } from '@/utils/send';
-import { zMenu } from '@/stores/admin/menu';
+import { zMenu } from '@/stores/menu';
 
 import Link from 'next/link';
 import Loading from '@/components/Loading';

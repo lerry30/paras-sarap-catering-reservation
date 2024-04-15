@@ -1,6 +1,6 @@
 'use client';
 import { Fragment, useEffect, useState } from 'react';
-import { zMenu } from '@/stores/admin/menu';
+import { zMenu } from '@/stores/menu';
 import { useRouter } from 'next/navigation';
 import { Prompt, SuccessModal } from '@/components/Modal';
 import { deleteWithJSON } from '@/utils/send';

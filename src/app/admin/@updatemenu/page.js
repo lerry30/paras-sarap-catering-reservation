@@ -8,7 +8,7 @@ import { emptyMenuFields } from '@/utils/admin/emptyValidation';
 import { sendFormUpdate } from '@/utils/send';
 import { handleError } from '@/utils/auth/backendError';
 import { useRouter } from 'next/navigation';
-import { zMenu } from '@/stores/admin/menu';
+import { zMenu } from '@/stores/menu';
 
 const UpdateMenu = () => {
     const [ menuName, setMenuName ] = useState('');

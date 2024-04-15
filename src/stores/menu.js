@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { menu as localStorageName } from '@/utils/localStorageNames';
 
+// admin & client
 export const zMenu = create(set => ({
     id: '',
     name: '',

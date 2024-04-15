@@ -4,11 +4,11 @@ import ErrorField from '@/components/ErrorField';
 import Image from 'next/image';
 import { Plus, X } from '@/components/icons/All';
 import { useEffect, useState } from 'react';
-import { emptyMenuFields } from '@/utils/admin/emptyValidation';
+import { emptyMenuFields } from '@/utils/client/emptyValidation';
 import { sendForm } from '@/utils/send';
 import { handleError } from '@/utils/auth/backendError';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { zMenu } from '@/stores/admin/menu';
+import { zMenu } from '@/stores/menu';
 
 const CreateMenu = () => {
     const [ menuName, setMenuName ] = useState('');
@@ -24,37 +24,34 @@ const CreateMenu = () => {
     const clearAllData = zMenu(state => state.clear);
 
     const [ invalidFieldsValue, setInvalidFieldsValue ] = useState({});
+    const [ confirmationPrompt, setConfirmationPrompt ] = useState(false);
     const [ loading, setLoading ] = useState(false);
+
     const router = useRouter();
     const searchParams = useSearchParams();
 
     const services = { wedding: true, debut: true, kidsparty: true, privateparty: true };
     const pesoFormatter = new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' });
 
-    const handleSubmit = async (ev) => {    
-        ev.preventDefault();
-
+    const checkMenuData = () => {
         setInvalidFieldsValue({});
-        setLoading(true);
 
-        const invalidFields = emptyMenuFields(menuName, description, Object.keys(dishMenu), Object.keys(drinkMenu));
+        const invalidFields = emptyMenuFields(Object.keys(dishMenu), Object.keys(drinkMenu));
         for(const [field, message] of Object.entries(invalidFields))
             setInvalidFieldsValue(prev => ({ ...prev, [field]: message }));
 
         if(Object.values(invalidFields).length === 0) {
-            try {
-                const form = new FormData(ev.target);
-                form.append('dishes', Object.keys(dishMenu));
-                form.append('drinks', Object.keys(drinkMenu));
-                const createMenuResponse = await sendForm('/api/menus', form);
-                if(createMenuResponse?.success) {
-                    clearAllData();
-                    router.push('/admin?display=menus');
-                }
-            } catch(error) {
-                const backendError = handleError(error);
-                setInvalidFieldsValue(prev => ({ ...prev, ...backendError }));
-            }
+            setConfirmationPrompt(true);
+        }
+    }
+
+    const saveClientCreatedMenu = () => {
+        setLoading(true);
+        try {
+            zMenu.getState().saveNameNDescription(menuName, description);
+            router.push(`/reserve?display=schedule&service=${ service }`);
+        } catch(error) {
+            setInvalidFieldsValue(prev => ({ ...prev, unauth: 'There\'s something wrong!' }));
         }
 
         setLoading(false);
@@ -95,7 +92,7 @@ const CreateMenu = () => {
     const saveNameNDescThenAdd = (ev, path) => {
         ev.preventDefault();
         zMenu.getState().saveNameNDescription(menuName, description);
-        router.push(path + '&action=add');
+        router.push(path + '&action=add&service=' + service);
     }
 
     useEffect(() => {
@@ -103,10 +100,6 @@ const CreateMenu = () => {
         setDescription(zMenu.getState().description);
         setDishMenu(zMenu.getState().dishes);
         setDrinkMenu(zMenu.getState().drinks);
-
-        // const serviceParam = searchParams.get('service');
-        // if(!services[searchParams]) router.push('/');
-        // setService(serviceParam);
         
         const serviceParam = searchParams.get('service');
         if(!services[serviceParam]) router.push('/');
@@ -119,12 +112,12 @@ const CreateMenu = () => {
             <div className="flex justify-between items-center p-1 rounded-lg">
                 <h2 className="font-headings font-semibold">Create New Menu</h2>
             </div>
-            <form onSubmit={ handleSubmit } className="flex gap-4 font-paragraphs min-h-[340px] border-y-[1px]">
+            <div className="flex gap-4 font-paragraphs min-h-[340px] border-y-[1px]">
                 <div className="flex grow max-h-[340px] pt-2 divide-x-2 border-r-[1px]">
                     <div className="w-full flex flex-col gap-2 p-2">
                         <header className="flex justify-between">
                             <h2 className="font-headings font-bold text-xl">Dishes</h2>
-                            <button onClick={ ev => saveNameNDescThenAdd(ev, '/admin/dishesselection') } className="flex gap-2 bg-green-600/40 rounded-full px-2 py-1 hover:bg-green-400 transition-colors">
+                            <button onClick={ ev => saveNameNDescThenAdd(ev, '/reserve?display=dishesselection') } className="flex gap-2 bg-green-600/40 rounded-full px-2 py-1 hover:bg-green-400 transition-colors">
                                 <Plus size={20} />
                                 <span className="text-sm font-medium">Add New</span>
                             </button>
@@ -148,7 +141,7 @@ const CreateMenu = () => {
                     <div className="w-full flex flex-col gap-2 p-2">
                         <header className="flex justify-between">
                             <h2 className="font-headings font-bold text-xl">Drinks</h2>
-                            <button onClick={ ev => saveNameNDescThenAdd(ev, '/admin/drinksselection') } className="flex gap-2 bg-green-600/40 rounded-full px-2 py-1 hover:bg-green-400 transition-colors">
+                            <button onClick={ ev => saveNameNDescThenAdd(ev, '/reserve?display=drinksselection') } className="flex gap-2 bg-green-600/40 rounded-full px-2 py-1 hover:bg-green-400 transition-colors">
                                 <Plus size={20} />
                                 <span className="text-sm font-medium">Add New</span>
                             </button>
@@ -182,17 +175,17 @@ const CreateMenu = () => {
                         <ErrorField message={ invalidFieldsValue['description'] }/>
                     </div>
                     <div className="w-full flex gap-4">
-                        <button type="submit" className="w-1/2 button shadow-md border border-neutral-500/40">Save</button>
+                        <button onClick={ checkMenuData } className="w-1/2 button shadow-md border border-neutral-500/40">Save</button>
                         <button onClick={ (ev) => {
                             ev.preventDefault();
-                            router.push('/admin?display=menus')
+                            router.push('/reserve?display=menus')
                         }} className="w-1/2 button shadow-md border border-neutral-500/40">
                             Cancel
                         </button>
                     </div>
                     <ErrorField message={ invalidFieldsValue['unauth'] }/>
                 </div> 
-            </form>
+            </div>
             <div className="w-full h-[calc(100vh-var(--nav-height)-380px)] flex justify-center items-center">
                 {
                     Object.values(preview).length === 0 ?
@@ -242,6 +235,11 @@ const CreateMenu = () => {
                         </div>
                 }
             </div>
+            {
+                confirmationPrompt && <Prompt callback={ saveClientCreatedMenu } onClose={ () => setConfirmationPrompt(false) } header="Confirm Your Custom Menu for the Event"
+                    message={ `Are you sure you want your custom menu to be the menu for the event?` }
+                />
+            }
         </section>
     );
 }

@@ -21,7 +21,7 @@ const ProvideVenueLocation = () => {
     const [ service, setService ] = useState(undefined);
     const [ loading, setLoading ] = useState(false);
     const [ invalidFieldsValue, setInvalidFieldsValue ] = useState({});
-    const [ confirmationPrompt, setConfirmationPrompt ] = useState('');
+    const [ confirmationPrompt, setConfirmationPrompt ] = useState(false);
 
     const [ selectedAddress, setSelectedAddress ] = useState({ street: '', region: '', province: '', municipality: '', barangay: '' });
     const [ listOfProvince, setListOfProvince ] = useState([]);
@@ -240,7 +240,7 @@ const ProvideVenueLocation = () => {
             </div>
             {
                 confirmationPrompt && <Prompt callback={ saveProvidedVenueInfo } onClose={ () => setConfirmationPrompt(false) } header="Confirm Venue Info"
-                    message={ `Are you sure you want your place to be the venue of the event? ${
+                    message={ `Are you sure you want your place to be the venue for the event? ${
                         tablesNChairsProvided 
                             ? 'You will be responsible for providing chairs and tables.' 
                             : 'We will provide chairs and tables, but there will be an additional charge for this service.'
