@@ -8,8 +8,9 @@ import DebutImg from '../../public/images/debut-img.jpg';
 import KidsPartyImg from '../../public/images/kids-party-img.jpg';
 import PrivatePartyImg from '../../public/images/private-party-img.jpg';
 import Link from 'next/link';
-import Card from '@/components/services/Card';
+import Card from '@/components/client/services/Card';
 import Footer from '@/components/Footer';
+import { zUserData } from '@/stores/user';
 
 export default function Home() {
     return (
@@ -23,7 +24,10 @@ export default function Home() {
                         <p className="font-paragraphs text-neutral-700 text-sm">At Paras Sarap Catering Reservation, we streamline catering reservations, eliminating the hassle of coordinating food for your events. From weddings to corporate gatherings, our user-friendly platform and diverse menu options ensure culinary success, allowing you to focus on creating unforgettable moments.</p>
                         <div className="flex gap-2 mt-4">
                             <Link href="/about" className="rounded-sm border-[1px] border-neutral-600 p-2">Learn More</Link>
-                            <Link href="/signup" className="rounded-sm border-[1px] bg-skin-ten p-2 text-white">Register</Link>
+                            {
+                                zUserData.getState().fullname &&
+                                    <Link href="/signup" className="rounded-sm border-[1px] bg-skin-ten p-2 text-white">Register</Link>
+                            }
                         </div>
                     </div>
                     <div className="w-full md:w-1/2 flex md:justify-end md:mt-14">

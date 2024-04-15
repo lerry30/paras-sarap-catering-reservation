@@ -6,12 +6,19 @@ import { Suspense } from 'react';
 import Footer from '@/components/Footer';
 
 export default function AdminLayout({ 
-        children, themes, venues, providevenuelocation
+        children, 
+        themes, 
+        venues, 
+        providevenuelocation, 
+        menus,
+        createmenu,
      }) {
     const views = {
         themes: themes,
         venues: venues,
         providevenuelocation: providevenuelocation,
+        menus: menus,
+        createmenu: createmenu,
     };
 
     return (

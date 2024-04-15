@@ -116,7 +116,7 @@ const UpdateMenu = () => {
                     <div className="w-full flex flex-col gap-2 p-2">
                         <header className="flex justify-between">
                             <h2 className="font-headings font-bold text-xl">Dishes</h2>
-                            <button onClick={ ev => saveNameNDescThenAdd(ev, '/admin/dishesselection') } className="flex gap-2 bg-green-600/40 rounded-full px-2 py-1 hover:bg-green-400 transition-colors">
+                            <button onClick={ ev => saveNameNDescThenAdd(ev, '/admin?display=dishesselection') } className="flex gap-2 bg-green-600/40 rounded-full px-2 py-1 hover:bg-green-400 transition-colors">
                                 <Plus size={20} />
                                 <span className="text-sm font-medium">Add New</span>
                             </button>
@@ -142,7 +142,7 @@ const UpdateMenu = () => {
                     <div className="w-full flex flex-col gap-2 p-2">
                         <header className="flex justify-between">
                             <h2 className="font-headings font-bold text-xl">Drinks</h2>
-                            <button onClick={ ev => saveNameNDescThenAdd(ev, '/admin/drinksselection') } className="flex gap-2 bg-green-600/40 rounded-full px-2 py-1 hover:bg-green-400 transition-colors">
+                            <button onClick={ ev => saveNameNDescThenAdd(ev, '/admin?display=drinksselection') } className="flex gap-2 bg-green-600/40 rounded-full px-2 py-1 hover:bg-green-400 transition-colors">
                                 <Plus size={20} />
                                 <span className="text-sm font-medium">Add New</span>
                             </button>

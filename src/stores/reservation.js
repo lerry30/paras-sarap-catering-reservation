@@ -13,4 +13,12 @@ export const zReservation = create(set => ({
             return nData;
         });
     },
+
+    saveMenuData: (data) => {
+        set(state => {
+            const nData = { ...state, menu: data };
+            localStorage.setItem(localStorageName, JSON.stringify(nData));
+            return nData;
+        });
+    },
 }));

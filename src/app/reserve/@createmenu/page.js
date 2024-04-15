@@ -7,15 +7,16 @@ import { useEffect, useState } from 'react';
 import { emptyMenuFields } from '@/utils/admin/emptyValidation';
 import { sendForm } from '@/utils/send';
 import { handleError } from '@/utils/auth/backendError';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { zMenu } from '@/stores/admin/menu';
 
-const AddMenu = () => {
+const CreateMenu = () => {
     const [ menuName, setMenuName ] = useState('');
     const [ description, setDescription ] = useState('');
     const [ dishMenu, setDishMenu ] = useState({});
     const [ drinkMenu, setDrinkMenu ] = useState({});
     const [ preview, setPreview ] = useState({});
+    const [ service, setService ] = useState(undefined);
 
     zMenu.getState().init();
     const removeDish = zMenu(state => state.removeDish);
@@ -25,10 +26,12 @@ const AddMenu = () => {
     const [ invalidFieldsValue, setInvalidFieldsValue ] = useState({});
     const [ loading, setLoading ] = useState(false);
     const router = useRouter();
+    const searchParams = useSearchParams();
 
+    const services = { wedding: true, debut: true, kidsparty: true, privateparty: true };
     const pesoFormatter = new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' });
 
-    const handleSubmit = async (ev) => {
+    const handleSubmit = async (ev) => {    
         ev.preventDefault();
 
         setInvalidFieldsValue({});
@@ -100,20 +103,28 @@ const AddMenu = () => {
         setDescription(zMenu.getState().description);
         setDishMenu(zMenu.getState().dishes);
         setDrinkMenu(zMenu.getState().drinks);
+
+        // const serviceParam = searchParams.get('service');
+        // if(!services[searchParams]) router.push('/');
+        // setService(serviceParam);
+        
+        const serviceParam = searchParams.get('service');
+        if(!services[serviceParam]) router.push('/');
+        setService(serviceParam);
     }, []);
 
     return (
         <section className="flex flex-col px-4 pt-1">
             { loading && <Loading customStyle="size-full" /> }
             <div className="flex justify-between items-center p-1 rounded-lg">
-                <h2 className="font-headings font-semibold">Add New Menu</h2>
+                <h2 className="font-headings font-semibold">Create New Menu</h2>
             </div>
             <form onSubmit={ handleSubmit } className="flex gap-4 font-paragraphs min-h-[340px] border-y-[1px]">
                 <div className="flex grow max-h-[340px] pt-2 divide-x-2 border-r-[1px]">
                     <div className="w-full flex flex-col gap-2 p-2">
                         <header className="flex justify-between">
                             <h2 className="font-headings font-bold text-xl">Dishes</h2>
-                            <button onClick={ ev => saveNameNDescThenAdd(ev, '/admin?display=dishesselection') } className="flex gap-2 bg-green-600/40 rounded-full px-2 py-1 hover:bg-green-400 transition-colors">
+                            <button onClick={ ev => saveNameNDescThenAdd(ev, '/admin/dishesselection') } className="flex gap-2 bg-green-600/40 rounded-full px-2 py-1 hover:bg-green-400 transition-colors">
                                 <Plus size={20} />
                                 <span className="text-sm font-medium">Add New</span>
                             </button>
@@ -137,7 +148,7 @@ const AddMenu = () => {
                     <div className="w-full flex flex-col gap-2 p-2">
                         <header className="flex justify-between">
                             <h2 className="font-headings font-bold text-xl">Drinks</h2>
-                            <button onClick={ ev => saveNameNDescThenAdd(ev, '/admin?display=drinksselection') } className="flex gap-2 bg-green-600/40 rounded-full px-2 py-1 hover:bg-green-400 transition-colors">
+                            <button onClick={ ev => saveNameNDescThenAdd(ev, '/admin/drinksselection') } className="flex gap-2 bg-green-600/40 rounded-full px-2 py-1 hover:bg-green-400 transition-colors">
                                 <Plus size={20} />
                                 <span className="text-sm font-medium">Add New</span>
                             </button>
@@ -161,13 +172,13 @@ const AddMenu = () => {
                 </div>  
                 <div className="flex flex-col gap-4 py-4 w-1/3">
                     <div className="w-full">
-                        <label className="font-paragraph text-sm font-semibold">Menu Name</label>
-                        <input name="menuname" value={ menuName } onChange={(e) => setMenuName(e.target.value)} className="input w-full border border-neutral-500/40" placeholder="Menu Name" />
+                        <label className="font-paragraph text-sm font-semibold">Menu Name (Optional)</label>
+                        <input name="menuname" value={ menuName } onChange={(e) => setMenuName(e.target.value)} className="input w-full border border-neutral-500/40" placeholder="Menu Name (Optional)" />
                         <ErrorField message={ invalidFieldsValue['menuname'] }/>
                     </div>
                     <div>
-                        <label className="font-paragraph text-sm font-semibold">Desciption</label>
-                        <textarea name="description" value={ description } onChange={(e) => setDescription(e.target.value)} className="input w-full h-40 border border-neutral-500/40" placeholder="Description"></textarea>
+                        <label className="font-paragraph text-sm font-semibold">Desciption (Optional)</label>
+                        <textarea name="description" value={ description } onChange={(e) => setDescription(e.target.value)} className="input w-full h-40 border border-neutral-500/40" placeholder="Description (Optional)"></textarea>
                         <ErrorField message={ invalidFieldsValue['description'] }/>
                     </div>
                     <div className="w-full flex gap-4">
@@ -235,4 +246,4 @@ const AddMenu = () => {
     );
 }
 
-export default AddMenu;
+export default CreateMenu;

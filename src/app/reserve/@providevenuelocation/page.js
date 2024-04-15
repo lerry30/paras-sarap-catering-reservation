@@ -13,7 +13,7 @@ import Checkbox from '@/components/Checkbox';
 import Loading from '@/components/Loading';
 import Link from 'next/link';
 
-const Venues = () => {
+const ProvideVenueLocation = () => {
     const [ venueName, setVenueName ] = useState('');
     const [ description, setDescription ] = useState('');
     const [ tablesNChairsProvided, setTablesNChairsProvided ] = useState(false);
@@ -27,6 +27,8 @@ const Venues = () => {
     const [ listOfProvince, setListOfProvince ] = useState([]);
     const [ listOfMunicipality, setListOfMunicipality ] = useState([]);
     const [ listOfBarangay, setListOfBarangay ] = useState([]);
+
+    const services = { wedding: true, debut: true, kidsparty: true, privateparty: true };
 
     const searchParams = useSearchParams();
     const router = useRouter();
@@ -103,7 +105,7 @@ const Venues = () => {
 
     useEffect(() => {
         const serviceParam = searchParams.get('service');
-        if(!serviceParam) router.push('/');
+        if(!services[serviceParam]) router.push('/');
         setService(serviceParam);
     }, []);
 
@@ -249,4 +251,4 @@ const Venues = () => {
     );
 }
 
-export default Venues;
+export default ProvideVenueLocation;

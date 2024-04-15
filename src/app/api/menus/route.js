@@ -6,9 +6,6 @@ import jwt from 'jsonwebtoken';
 import { emptyMenuFields } from '@/utils/admin/emptyValidation';
 import { NextResponse } from 'next/server';
 import { apiIsAnAdmin } from '@/utils/auth/api/isanadmin';
-import { toNumber } from '@/utils/number';
-
-const imageQuality = toNumber(process.env.SHARP_IMG_QUALITY);
 
 export const GET = async () => {
     try {

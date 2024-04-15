@@ -21,7 +21,7 @@ const DrinksSelection = () => {
     const goBack = () => {
         const action = searchParams?.get('action');
         const actions = { update: 'updatemenu', add: 'addmenu' };
-        router.push(`/admin/${ actions[action]}`);
+        router.push(`/admin?display=${ actions[action]}`);
     }
     
     const handleSelection = () => {

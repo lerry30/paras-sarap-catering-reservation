@@ -1,9 +1,9 @@
 'use client';
 import Image from 'next/image';
 
-const Card = ({ name, image, description, onSelectService }) => {
+const Card = ({ name, image, description }) => {
     return (
-        <div onClick={ onSelectService } className={ `flex flex-col w-full max-w-[280px] min-w-[280px] h-[360px] rounded-lg shadow-xl hover:scale-[1.01] hover:shadow-2xl transition-transform cursor-pointer` }>
+        <div className={ `flex flex-col w-full max-w-[280px] min-w-[280px] h-[360px] rounded-lg shadow-xl hover:scale-[1.01] hover:shadow-2xl transition-transform cursor-pointer` }>
             <Image 
                 src={ image }
                 alt={ name }
