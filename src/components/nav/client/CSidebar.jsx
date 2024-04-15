@@ -7,10 +7,10 @@ const CSidebar = () => {
         <BurgerMenu size="h-nav-item-height" className="mr-2 lg:hidden">
             <Option href="/about" className="!rounded-full px-4">About</Option>
             <ParentOption text="Services" className="px-4">
-                <Option href="" className="!rounded-full px-4">Wedding</Option>
-                <Option href="" className="!rounded-full px-4">Debut</Option>
-                <Option href="" className="!rounded-full px-4">Kids Party</Option>
-                <Option href="" className="!rounded-full px-4">Private Party</Option>
+                <Option href="/reserve?display=themes&service=wedding" className="!rounded-full px-4">Wedding</Option>
+                <Option href="/reserve?display=themes&service=debut" className="!rounded-full px-4">Debut</Option>
+                <Option href="/reserve?display=themes&service=kidsparty" className="!rounded-full px-4">Kids Party</Option>
+                <Option href="/reserve?display=themes&service=privateparty" className="!rounded-full px-4">Private Party</Option>
             </ParentOption>
             <ParentOption text="Packages" className="px-4">
                 <Option href="" className="!rounded-full px-4">Wedding</Option>

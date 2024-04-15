@@ -25,6 +25,7 @@ const Themes = () => {
 
     useEffect(() => {
         const serviceParam = searchParams.get('service');
+        if(!serviceParam) router.push('/');
         setService(serviceParam);
     }, []);
 

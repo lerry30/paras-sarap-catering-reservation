@@ -28,7 +28,7 @@ export const SuccessModal = ({ message, callback }) => {
     );
 }
 
-export const ErrorModal = ({ message, callback }) => {
+export const ErrorModal = ({ header, message, callback }) => {
     const modalRef = useRef();
 
     const closeModal = () => {
@@ -48,7 +48,7 @@ export const ErrorModal = ({ message, callback }) => {
                     </div>
                 </article>
                 
-                <h1 className="font-headings font-bold text-2xl text-rose-700 dark:text-white">Error!</h1>
+                <h1 className="font font-headings font-bold text-2xl pt-2">{ header }</h1>
                 <p className="font-paragraphs w-60 py-4 text-center text-neutral-500 dark:text-neutral-400">{ message }</p>
             </div>
         </div>

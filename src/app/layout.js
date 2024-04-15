@@ -16,6 +16,9 @@ const quicksand = localFont({
 export const metadata = {
   title: "Paras Sarap Catering Reservation",
   description: "Catering Reservation",
+  icons: {
+    icon: 'favicon.svg',
+  },
 };
 
 export default function RootLayout({ children }) {

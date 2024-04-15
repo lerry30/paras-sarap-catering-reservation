@@ -31,9 +31,8 @@ const Venues = () => {
     const searchParams = useSearchParams();
     const router = useRouter();
 
-    const saveProvidedVenueInfo = async () => {
+    const checkProvidedVenueInfo = () => {
         setInvalidFieldsValue({});
-        setLoading(true);
 
         const { street, region, province, municipality, barangay } = selectedAddress;
         const invalidFields = emptyVenueFields(region, province, municipality, barangay, street);
@@ -43,26 +42,32 @@ const Venues = () => {
         if(!noOfGuest) setInvalidFieldsValue(prev => ({ ...prev, noofguest: 'Enter a numerical value greater than zero for the number of guest' }));
 
         if(Object.values(invalidFields).length === 0) {
-            try {
-                const venueData = {
-                    name: venueName,
-                    description,
-                    tablesnchairsprovided: tablesNChairsProvided,
-                    noofguest: noOfGuest,
-                    address: {
-                        region, 
-                        province, 
-                        municipality, 
-                        barangay, 
-                        street
-                    }
-                };
+            setConfirmationPrompt(true);
+        }
+    }
 
-                zReservation.getState().saveVenueData(venueData);
-                router.push(`/reserve?display=menus&service=${ service }`);
-            } catch(error) {
-                setInvalidFieldsValue(prev => ({ ...prev, unauth: 'There\'s something wrong!' }));
-            }
+    const saveProvidedVenueInfo = async () => {
+        setLoading(true);
+        try {
+            const { street, region, province, municipality, barangay } = selectedAddress;
+            const venueData = {
+                name: venueName,
+                description,
+                tablesnchairsprovided: tablesNChairsProvided,
+                noofguest: noOfGuest,
+                address: {
+                    region, 
+                    province, 
+                    municipality, 
+                    barangay, 
+                    street
+                }
+            };
+
+            zReservation.getState().saveVenueData(venueData);
+            router.push(`/reserve?display=menus&service=${ service }`);
+        } catch(error) {
+            setInvalidFieldsValue(prev => ({ ...prev, unauth: 'There\'s something wrong!' }));
         }
 
         setLoading(false);
@@ -98,6 +103,7 @@ const Venues = () => {
 
     useEffect(() => {
         const serviceParam = searchParams.get('service');
+        if(!serviceParam) router.push('/');
         setService(serviceParam);
     }, []);
 
@@ -219,8 +225,8 @@ const Venues = () => {
                         </div>
                     </div>  
                     <div className="w-full flex gap-4">
-                        <button onClick={ () => setConfirmationPrompt(true) } className="w-1/2 button shadow-md border border-neutral-500/40">Save</button>
-                        <button onClick={ () => router.push('/reserve?display=themes') } className="w-1/2 button shadow-md border border-neutral-500/40">
+                        <button onClick={ checkProvidedVenueInfo } className="w-1/2 button shadow-md border border-neutral-500/40">Save</button>
+                        <button onClick={ () => router.push(`/reserve?display=themes&service=${ service }`) } className="w-1/2 button shadow-md border border-neutral-500/40">
                             Cancel
                         </button>
                     </div>

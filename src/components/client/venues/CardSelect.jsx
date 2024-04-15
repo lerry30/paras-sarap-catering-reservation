@@ -40,7 +40,7 @@ const CardSelect = ({ venueData, index, allSelects, setAllSelects }) => {
     }, []);
 
     return (
-        <div className="relative flex flex-col w-full min-w-[340px] max-w-[calc((100vw-(var(--page-x-padding)*2))/3-16px)] h-[410px] rounded-lg shadow-xl hover:scale-[1.01] hover:shadow-2xl transition-transform">
+        <div className="relative flex flex-col w-full min-w-[300px] max-w-[calc((100vw-(var(--page-x-padding)*2))/3-20px)] h-[440px] rounded-lg shadow-xl hover:scale-[1.01] hover:shadow-2xl transition-transform">
             <Image 
                 src={ image }
                 alt={ name }
@@ -88,10 +88,10 @@ const CardSelect = ({ venueData, index, allSelects, setAllSelects }) => {
 
             {
                 allSelects[index] && 
-                    <div onClick={ removeVenue } className="group absolute top-0 left-0 right-0 bottom-0 rounded-lg bg-green-900 opacity-90 border-2 border-green-600 shadow-lg shadow-green-600 flex flex-col justify-center items-center">
+                    <div onClick={ removeVenue } className="group absolute top-0 left-0 right-0 bottom-0 rounded-lg bg-green-900 opacity-90 border-2 border-green-600 shadow-lg shadow-green-600 flex flex-col justify-center items-center px-8">
                         <CircleCheck size={ 90 } className="stroke-white -mt-[120px]" />
                         <p className="font-paragraphs text-white">{ name }</p>
-                        <h1 className="font-headings text-white font-bold text-2xl">ADDED</h1>
+                        <h1 className="font-headings text-white font-bold text-2xl text-center">SELECTED AS YOUR VENUE</h1>
                     </div>
             }
         </div>
