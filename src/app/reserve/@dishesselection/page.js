@@ -18,10 +18,16 @@ const DishesSelection = () => {
     const searchParams = useSearchParams();
     const saveDishesData = zMenu(state => state.saveDishesData);
 
+    const services = { wedding: true, debut: true, kidsparty: true, privateparty: true };
+
     const goBack = () => {
-        const action = searchParams?.get('action');
-        const actions = { update: 'updatemenu', add: 'addmenu' };
-        router.push(`/admin?display=${ actions[action]}`);
+        const service = searchParams?.get('service');
+        if(!services[service]) {
+            router.push('/');
+            return;
+        }
+        
+        router.push(`/admin?display=addmenu&service=${ service }`);
     }
     
     const handleSelection = () => {

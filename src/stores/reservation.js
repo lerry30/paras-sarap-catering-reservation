@@ -21,4 +21,12 @@ export const zReservation = create(set => ({
             return nData;
         });
     },
+
+    saveScheduleData: (data) => {
+        set(state => {
+            const nData = { ...state, schedule: data };
+            localStorage.setItem(localStorageName, JSON.stringify(nData));
+            return nData;
+        });
+    },
 }));

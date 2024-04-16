@@ -228,7 +228,7 @@ const ProvideVenueLocation = () => {
                     </div>  
                     <div className="w-full flex gap-4">
                         <button onClick={ checkProvidedVenueInfo } className="w-1/2 button shadow-md border border-neutral-500/40">Save</button>
-                        <button onClick={ () => router.push(`/reserve?display=themes&service=${ service }`) } className="w-1/2 button shadow-md border border-neutral-500/40">
+                        <button onClick={ () => router.push(`/reserve?display=venues&service=${ service }`) } className="w-1/2 button shadow-md border border-neutral-500/40">
                             Cancel
                         </button>
                     </div>

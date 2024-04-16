@@ -23,15 +23,15 @@ const Menus = () => {
     const services = { wedding: true, debut: true, kidsparty: true, privateparty: true };
 
     const next = () => {
-        // if(!allSelects.includes(true)) {
-        //     setActionErrorMessage('Please ensure to choose a venue or provide information about the event location.');
-        //     setTimeout(() => {
-        //         setActionErrorMessage('');
-        //     }, 1000);
-        //     return;
-        // }
+        if(!allSelects.includes(true)) {
+            setActionErrorMessage('Please ensure to choose a menu or create custom menu for the event.');
+            setTimeout(() => {
+                setActionErrorMessage('');
+            }, 2000);
+            return;
+        }
 
-        // router.push(`/reserve?display=menus&service=${ service }`);
+        router.push(`/reserve?display=schedule&service=${ service }`);
     }
     
     const getMenus = async () => {

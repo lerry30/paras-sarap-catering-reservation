@@ -9,6 +9,8 @@ import { sendForm } from '@/utils/send';
 import { handleError } from '@/utils/auth/backendError';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { zMenu } from '@/stores/menu';
+import { zReservation } from '@/stores/reservation';
+import { Prompt } from '@/components/Modal';
 
 const CreateMenu = () => {
     const [ menuName, setMenuName ] = useState('');
@@ -48,7 +50,15 @@ const CreateMenu = () => {
     const saveClientCreatedMenu = () => {
         setLoading(true);
         try {
-            zMenu.getState().saveNameNDescription(menuName, description);
+            const menuData = {
+                name: menuName,
+                description,
+                dishMenu,
+                drinkMenu,
+            };
+
+            zReservation.getState().saveMenuData(menuData);
+            clearAllData();
             router.push(`/reserve?display=schedule&service=${ service }`);
         } catch(error) {
             setInvalidFieldsValue(prev => ({ ...prev, unauth: 'There\'s something wrong!' }));
@@ -178,7 +188,7 @@ const CreateMenu = () => {
                         <button onClick={ checkMenuData } className="w-1/2 button shadow-md border border-neutral-500/40">Save</button>
                         <button onClick={ (ev) => {
                             ev.preventDefault();
-                            router.push('/reserve?display=menus')
+                            router.push(`/reserve?display=menus&service=${ service }`)
                         }} className="w-1/2 button shadow-md border border-neutral-500/40">
                             Cancel
                         </button>

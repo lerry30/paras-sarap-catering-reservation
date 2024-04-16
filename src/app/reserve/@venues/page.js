@@ -25,7 +25,7 @@ const Venues = () => {
             setActionErrorMessage('Please ensure to choose a venue or provide information about the event location.');
             setTimeout(() => {
                 setActionErrorMessage('');
-            }, 1000);
+            }, 2000);
             return;
         }
 
