@@ -86,6 +86,8 @@ const CreateMenu = () => {
 
         if(preview?._id === _id)
             setPreview({});
+
+        location.reload();
     }
 
     const removeItemFromDrinkTable = (ev, _id) => {
@@ -96,6 +98,8 @@ const CreateMenu = () => {
 
         if(preview?._id === _id)
             setPreview({});
+
+        location.reload();
     }
 
     const saveNameNDescThenAdd = (ev, path) => {
