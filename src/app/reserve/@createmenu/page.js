@@ -20,7 +20,6 @@ const CreateMenu = () => {
     const [ preview, setPreview ] = useState({});
     const [ service, setService ] = useState(undefined);
 
-    zMenu.getState().init();
     const removeDish = zMenu(state => state.removeDish);
     const removeDrink = zMenu(state => state.removeDrink);
     const clearAllData = zMenu(state => state.clear);

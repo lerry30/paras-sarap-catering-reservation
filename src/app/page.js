@@ -23,7 +23,7 @@ export default function Home() {
                         <h4 className="font-headings text-lg">Your Premier Catering Reservation Solution</h4>
                         <p className="font-paragraphs text-neutral-700 text-sm">At Paras Sarap Catering Reservation, we streamline catering reservations, eliminating the hassle of coordinating food for your events. From weddings to corporate gatherings, our user-friendly platform and diverse menu options ensure culinary success, allowing you to focus on creating unforgettable moments.</p>
                         <div className="flex gap-2 mt-4">
-                            <Link href="/about" className="rounded-sm border-[1px] border-neutral-600 p-2">Learn More</Link>
+                            <Link href="" className="rounded-sm border-[1px] border-neutral-600 p-2">Learn More</Link>
                             {
                                 zUserData.getState().fullname &&
                                     <Link href="/signup" className="rounded-sm border-[1px] bg-skin-ten p-2 text-white">Register</Link>
@@ -50,9 +50,9 @@ export default function Home() {
                         </div>
                     </div>
                 </section>
-                <section className="w-full flex flex-col gap-4 p-4 md:h-[calc(100vh-var(--nav-height)-32px)]">
+                <section className="w-full flex flex-col items-center gap-4 p-4 md:h-[calc(100vh-var(--nav-height)-32px)]">
                     <h3 className="font-headings w-full text-center text-lg font-semibold">About Us</h3>
-                    <p></p>
+                    <p className="font-paragraphs text-center w-1/2">Our catering services are driven by passion, precision, and a commitment to culinary excellence. With years of experience in the industry, we take pride in crafting unforgettable dining experiences for every occasion. From intimate gatherings to grand celebrations, our dedicated team of chefs and event specialists work tirelessly to bring your vision to life. We believe in using only the freshest ingredients and innovative techniques to create mouthwatering menus that delight the senses. Whether it's a wedding, corporate event, or private party, trust us to exceed your expectations and leave a lasting impression on your guests. Discover the art of catering with us and let us elevate your event to new heights.</p>
                 </section>
                 <section className="w-full flex flex-col p-4 md:min-h-[calc(100vh-var(--nav-height)-32px)]">
                     <h3 className="font-headings w-full text-center text-lg font-semibold leading-none">Services</h3>

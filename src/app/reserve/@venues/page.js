@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { getData } from '@/utils/send';
 import { ErrorModal } from '@/components/Modal';
+import { zReservation } from '@/stores/reservation';
 import Link from 'next/link';
 import CardSelect from '@/components/client/venues/CardSelect';
 import Loading from '@/components/Loading';
@@ -46,6 +47,7 @@ const Venues = () => {
 
     useEffect(() => {
         getVenues();
+        zReservation.getState()?.clearSpecificProperty('venue');
 
         const serviceParam = searchParams.get('service');
         if(!services[serviceParam]) router.push('/');

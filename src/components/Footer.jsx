@@ -38,7 +38,7 @@ const Footer = () => {
                 <nav>
                     <ul className="font-headings flex flex-col gap-2 py-2">
                         <li className="text-neutral-300 text-sm">
-                            <Link href="/about">About</Link>
+                            <Link href="">About</Link>
                         </li>
                         <li className="text-neutral-300 text-sm">
                             <Link href="/contact">Contact</Link>

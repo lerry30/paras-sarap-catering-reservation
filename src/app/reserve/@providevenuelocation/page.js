@@ -56,7 +56,6 @@ const ProvideVenueLocation = () => {
                 name: venueName,
                 description,
                 tablesnchairsprovided: tablesNChairsProvided,
-                noofguest: noOfGuest,
                 address: {
                     region, 
                     province, 
@@ -66,6 +65,7 @@ const ProvideVenueLocation = () => {
                 }
             };
 
+            zReservation.getState().saveNoOfGuest(noOfGuest);
             zReservation.getState().saveVenueData(venueData);
             router.push(`/reserve?display=menus&service=${ service }`);
         } catch(error) {
@@ -137,7 +137,7 @@ const ProvideVenueLocation = () => {
                 </div>
                 <div className="w-1/2 flex flex-col gap-4">
                     <div className="flex flex-col gap-4">
-                        <p className="text-sm font-paragraphs">By checking the box below, you confirm that you will provide the chairs and tables needed for the event. In addition to providing the venue, it's important to specify the number of guests attending your occasion. Please ensure to include the number of guests. For further discussion, click <Link href="/message" className="text-blue-700 font-semibold">Message me</Link> to collaborate on making your event even more memorable.</p>
+                        <p className="text-sm font-paragraphs">By checking the box below, you confirm that you will provide the chairs and tables needed for the event. In addition to providing the venue, it's important to specify the number of guests attending your occasion. Please ensure to include the number of guests. For further discussion, click <Link href="" className="text-blue-700 font-semibold">Message me</Link> to collaborate on making your event even more memorable.</p>
                         <Checkbox value="" text="Do you want to use your own tables and chairs" onChange={ ev => setTablesNChairsProvided(ev.target.checked) }/>
                     </div>
                     <div className="w-full">

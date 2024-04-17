@@ -12,8 +12,6 @@ const DrinksSelection = () => {
     const [ drinkMenu, setDrinkMenu] = useState({});
     const [ loading, setLoading ] = useState(false);
 
-    zMenu.getState().init();
-
     const router = useRouter();
     const searchParams = useSearchParams();
     const saveDrinksData = zMenu(state => state.saveDrinksData);
@@ -27,7 +25,7 @@ const DrinksSelection = () => {
             return;
         }
         
-        router.push(`/admin?display=addmenu&service=${ service }`);
+        router.push(`/reserve?display=createmenu&service=${ service }`);
     }
     
     const handleSelection = () => {

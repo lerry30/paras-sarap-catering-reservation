@@ -8,6 +8,7 @@ import { getData } from '@/utils/send';
 import Link from 'next/link';
 import Loading from '@/components/Loading';
 import CardSelect from '@/components/client/menus/CardSelect';
+import { zReservation } from '@/stores/reservation';
 
 const Menus = () => {
     const [ menus, setMenus ] = useState([]);
@@ -49,6 +50,7 @@ const Menus = () => {
 
     useEffect(() => {
         getMenus();
+        zReservation.getState()?.clearSpecificProperty('menu');
 
         const serviceParam = searchParams.get('service');
         if(!services[serviceParam]) router.push('/');

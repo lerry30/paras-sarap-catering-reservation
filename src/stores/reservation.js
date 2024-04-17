@@ -4,7 +4,14 @@ import { reservation as localStorageName } from '@/utils/localStorageNames';
 export const zReservation = create(set => ({
     venue: {},
     menu: {},
-    schedule: undefined,
+    schedule: {},
+    noofguest: 0,
+
+    init: () => {
+        try {
+            set(state => JSON.parse(localStorage.getItem(localStorageName)) || {});
+        } catch(error) {}
+    },
 
     saveVenueData: (data) => {
         set(state => {
@@ -22,11 +29,31 @@ export const zReservation = create(set => ({
         });
     },
 
-    saveScheduleData: (data) => {
+    saveScheduledDateData: (data) => {
         set(state => {
             const nData = { ...state, schedule: data };
             localStorage.setItem(localStorageName, JSON.stringify(nData));
             return nData;
         });
+    },
+
+    saveNoOfGuest: (noOfGuest) => {
+        set(state => {
+            const data = { ...state, noofguest: noOfGuest };
+            localStorage.setItem(localStorageName, JSON.stringify(data));
+            return data;
+        });
+    },
+
+    clearSpecificProperty: (prop) => {
+        if(!prop) return false;
+        set(state => {
+            const data = JSON.parse(localStorage.getItem(localStorageName)) || {};
+            delete data[prop];
+            localStorage.setItem(localStorageName, JSON.stringify(data));
+            return data;
+        });
+
+        return true;
     },
 }));

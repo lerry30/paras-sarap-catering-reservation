@@ -1,14 +1,14 @@
 'use client';
 import Loading from '@/components/Loading';
 import Link from 'next/link';
-import Select from '@/components/nav/Dropdown';
+import ErrorField from '@/components/ErrorField';
 import { ErrorModal } from '@/components/Modal';
 import { ChevronLeft, ChevronRight } from '@/components/icons/All';
 import { areDatesEqual } from '@/utils/date';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
-import ErrorField from '@/components/ErrorField';
 import { zReservation } from '@/stores/reservation';
+import { militaryToStandardTime } from '@/utils/time';
 
 const Schedules = () => {
     const [ loading, setLoading ] = useState(false);
@@ -85,14 +85,21 @@ const Schedules = () => {
             const emptyTimeFieldMessage = (!fromToTime?.from || !fromToTime?.to) ? 'Setting duration of service not found!' : '';
             setInvalidFieldsValue(state => ({ ...state, date: noDateSelectionMade }));
             setInvalidFieldsValue(state => ({ ...state, time: emptyTimeFieldMessage }));
-            const data = {
-                date: selectedDay,
-                time: fromToTime
-            }
 
-            zReservation?.getState()?.saveScheduledDate(data);
-            router.push(`/reserve?display=reviewbudget&service=${ service }`);
+            if(!noDateSelectionMade && !emptyTimeFieldMessage) {
+                const data = {
+                    date: selectedDay,
+                    time: {
+                        from: militaryToStandardTime(fromToTime?.from),
+                        to: militaryToStandardTime(fromToTime?.to)
+                    }
+                }
+
+                zReservation?.getState()?.saveScheduledDateData(data);
+                router.push(`/reserve?display=reviewbudget&service=${ service }`);
+            }
         } catch(error) {
+            console.log(error);
             setActionSavingError('Sorry some featuers are not available right now!');
             setTimeout(() => {
                 router.push('/');
@@ -111,6 +118,17 @@ const Schedules = () => {
         const selectedDate = new Date(dateToString);
         const selectedDateInMilli = selectedDate?.getTime();
 
+        // already selected
+        if(selectedDay) {
+            const prevDate = new Date(selectedDay);
+            if(areDatesEqual(prevDate, selectedDate)) {
+                console.log('are equal');
+                prevSelectedElement.current.style.opacity = '.01';
+                setSelectedDay('');
+                return;
+            }
+        }
+
         if(prevSelectedElement.current)
             prevSelectedElement.current.style.opacity = '.01';
 
@@ -128,6 +146,7 @@ const Schedules = () => {
         setCalNumbers(dateObj.getFullYear(), dateObj.getMonth());
         setCurrentMonth(dateObj.getMonth());
         setCurrentYear(dateObj.getFullYear());
+        zReservation.getState()?.clearSpecificProperty('schedule');
 
         const serviceParam = searchParams.get('service');
         if(!services[serviceParam]) router.push('/');
@@ -214,7 +233,7 @@ const Schedules = () => {
                     </main>
                 </div>
                 {/* list */}
-                <div className="w-[calc(50%+60px)] border-[1px] border-neutral-400 flex flex-col p-8 mt-4 md:mt-0">
+                <div className="w-full md:w-[calc(50%+60px)] border-[1px] border-neutral-400 flex flex-col p-8 mt-4 md:mt-0">
                     <div className="flex flex-col font-semibold">
                         <h3>Enter the time</h3>
                         <div className="w-full flex gap-4 py-2">
@@ -255,7 +274,7 @@ const Schedules = () => {
             }
 
             {
-                !!actionSavingError && <ErrorModal header="Oops! There\'s something wrong!" message={ actionSavingError } callback={ () => setActionSavingError('') } />
+                !!actionSavingError && <ErrorModal header="Oops! There's something wrong!" message={ actionSavingError } callback={ () => setActionSavingError('') } />
             }
         </>
     );

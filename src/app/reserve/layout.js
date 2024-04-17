@@ -1,9 +1,14 @@
 'use client';
 import CNavbar from '@/components/nav/client/CNavbar';
 import Loading from './loading';
+import Footer from '@/components/Footer';
 import { useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
-import Footer from '@/components/Footer';
+import { zMenu } from '@/stores/menu';
+import { zReservation } from '@/stores/reservation';
+
+zMenu.getState().init();
+zReservation.getState().init();
 
 export default function AdminLayout({ 
         children, 
