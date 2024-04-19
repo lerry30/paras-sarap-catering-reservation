@@ -2,13 +2,15 @@
 import Loading from '@/components/Loading';
 import Link from 'next/link';
 import ErrorField from '@/components/ErrorField';
+import SNavbar from '@/components/nav/SNavbar';
+import TimePicker from '@/components/TimePicker';
 import { ErrorModal } from '@/components/Modal';
 import { ChevronLeft, ChevronRight } from '@/components/icons/All';
 import { areDatesEqual } from '@/utils/date';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { zReservation } from '@/stores/reservation';
-import { militaryToStandardTime } from '@/utils/time';
+import { toNumber } from '@/utils/number';
 
 const Schedules = () => {
     const [ loading, setLoading ] = useState(false);
@@ -17,12 +19,18 @@ const Schedules = () => {
     const [ currentMonth, setCurrentMonth ] = useState(0);
     const [ currentYear, setCurrentYear ] = useState(2024);
     const [ noOfRows, setNoOfRows ] = useState(5);
-    const [ fromToTime, setFromNToTime ] = useState({ from: undefined, to: undefined });
 
     const [ selectedDay, setSelectedDay ] = useState(undefined);
     const [ actionCantSchedDate, setActionCantSchedDate ] = useState('');
     const [ actionSavingError, setActionSavingError ] = useState('');
     const [ invalidFieldsValue, setInvalidFieldsValue ] = useState({});
+
+    const [ fromHour, setFromHour ] = useState('');
+    const [ fromMinute, setFromMinute ] = useState('');
+    const [ fromMeridiem, setFromMeridiem ] = useState('');
+    const [ toHour, setToHour ] = useState('');
+    const [ toMinute, setToMinute ] = useState('');
+    const [ toMeridiem, setToMeridiem ] = useState('');
 
     const prevSelectedElement = useRef(undefined);
 
@@ -44,16 +52,17 @@ const Schedules = () => {
         const firstDay = new Date(year, month, 1);
         const lastDay = new Date(year, month + 1, 0);
 
+        
         setStartOfTheMonth(firstDay);
         setEndOfTheMonth(lastDay);
-
-        const startDay = firstDay?.getDay() || -1;
-        const endDay = lastDay?.getDate() || -1;
+        
+        const startDay = firstDay?.getDay();
+        const endDay = lastDay?.getDate();
         setNoOfRows(Math.ceil((startDay + endDay) / 7) * 7);
     }
 
     const updateMonth = (direction) => {
-        let nYear = 2024;
+        let nYear = currentYear;
         const nMonth = (currentMonth+direction+12)%12
         setCurrentMonth(nMonth);
 
@@ -76,22 +85,28 @@ const Schedules = () => {
         }
     }
 
+    // save button to finish things up
     const saveScheduledDate = () => {
         setLoading(true);
         setInvalidFieldsValue({});
 
         try {
             const noDateSelectionMade = !selectedDay ? 'No Date Selection Made!' : '';
-            const emptyTimeFieldMessage = (!fromToTime?.from || !fromToTime?.to) ? 'Setting duration of service not found!' : '';
-            setInvalidFieldsValue(state => ({ ...state, date: noDateSelectionMade }));
-            setInvalidFieldsValue(state => ({ ...state, time: emptyTimeFieldMessage }));
+            const errorStartTime = validateTimeInput(fromHour, fromMinute, fromMeridiem, 'Please specify the appropriate start time.');
+            const errorEndTime = validateTimeInput(toHour, toMinute, toMeridiem, 'Please indicate the appropriate end time.');
 
-            if(!noDateSelectionMade && !emptyTimeFieldMessage) {
+            setInvalidFieldsValue(state => ({ ...state, date: noDateSelectionMade }));
+            setInvalidFieldsValue(state => ({ ...state, 'time-from': errorStartTime }));
+            setInvalidFieldsValue(state => ({ ...state, 'time-to': errorEndTime }));
+
+            if(!noDateSelectionMade && !errorStartTime && !errorEndTime) {
+                const fromTime = `${ fromHour }: ${ fromMinute } ${ fromMeridiem }`;
+                const toTime = `${ toHour }: ${ toMinute } ${ toMeridiem }`;
                 const data = {
                     date: selectedDay,
                     time: {
-                        from: militaryToStandardTime(fromToTime?.from),
-                        to: militaryToStandardTime(fromToTime?.to)
+                        from: fromTime,
+                        to: toTime,
                     }
                 }
 
@@ -142,6 +157,19 @@ const Schedules = () => {
         }
     }
 
+    // validate time
+    const validateTimeInput = (hour, minute, meridiem, message) => {
+        const nHour = toNumber(hour);
+        const nMinute = toNumber(minute);
+
+        if(nHour <= 0 || nHour > 12)
+            return message;
+        if(nMinute < 0 || nMinute > 59)
+            return message;
+        if(meridiem !== 'am' && meridiem !== 'pm') 
+            return message;
+    }
+
     useEffect(() => {
         setCalNumbers(dateObj.getFullYear(), dateObj.getMonth());
         setCurrentMonth(dateObj.getMonth());
@@ -155,6 +183,7 @@ const Schedules = () => {
 
     return (
         <>
+            <SNavbar href={ `/reserve?display=menus&service=${ service }` } headerClassName="h-fit border-none" />
             <section className="flex flex-col min-h-[calc(100vh-var(--nav-height))] overflow-hidden py-4 sm:px-page-x  md:flex-row">
                 { loading && <Loading customStyle="size-full" /> }
                 <div className="grow flex flex-col">
@@ -182,9 +211,10 @@ const Schedules = () => {
                         <section className="grid grid-cols-7 gap-2 pr-2">
                             {
                                 Array(noOfRows).fill(0).map((item, index) => {
-                                    const startDay = startOfTheMonth?.getDay() || 100;
-                                    const endDay = endOfTheMonth?.getDate() || -1;
+                                    const startDay = startOfTheMonth?.getDay();
+                                    const endDay = endOfTheMonth?.getDate();
                                     const number = index - startDay + 1;
+
                                     if(number > 0) {
                                         if(number <= endDay) {
                                             const milli = new Date(`${ months[currentMonth] } ${ number }, ${ currentYear }`);
@@ -201,19 +231,22 @@ const Schedules = () => {
                                             
                                             // unpickable days start from now for preparations
                                             const range = number - today.getDate();
-                                            if(range > 0 && range <= noOfUnpickableDaysStartFromNow) {
-                                                return (
+                                            if(currentMonth === (new Date()).getMonth() && currentYear === (new Date()).getFullYear()) {
+                                                if(range > 0 && range <= noOfUnpickableDaysStartFromNow) {
+                                                    return (
                                                         <div key={ index } className="w-full aspect-square overflow-hidden p-1 border-[1px] border-neutral-400 cursor-pointer bg-neutral-400 flex flex-col">
-                                                            <span className="text-white font-bold">{ number }</span>
-                                                            <span className="text-neutral-200 text-[12px] font-semibold mt-auto">unavailable</span>
-                                                    </div>
-                                                )
+                                                            <span className="text-white font-bold min-w-[50px]">{ number }</span>
+                                                            <span className="text-neutral-200 text-[12px] font-semibold mt-auto overflow-clip">unavailable</span>
+                                                        </div>
+                                                    )
+                                                }
                                             }
 
                                             return (
                                                 <div key={ index } className="relative w-full aspect-square p-1 border-[1px] border-neutral-400 cursor-pointer">
                                                     {/* default */}
                                                     <span className="text-neutral-950">{ number }</span>
+                                                    
                                                     {/* selected display */}
                                                     <div onClick={ ev => setSched(ev, number) } className="box absolute top-0 left-0 right-0 bottom-0 opacity-[0.01] bg-blue-700 p-1">
                                                         <div className="flex flex-col">
@@ -233,21 +266,30 @@ const Schedules = () => {
                     </main>
                 </div>
                 {/* list */}
-                <div className="w-full md:w-[calc(50%+60px)] border-[1px] border-neutral-400 flex flex-col p-8 mt-4 md:mt-0">
+                <div className="w-full md:w-1/2 border-[1px] border-neutral-400 flex flex-col px-8 py-6 mt-4 md:mt-0">
                     <div className="flex flex-col font-semibold">
                         <h3>Enter the time</h3>
                         <div className="w-full flex gap-4 py-2">
                             <div className="w-1/2 flex flex-col">
-                                <label htmlFor="from">From:</label>
-                                <input type="time" name="from" id="from" onChange={ ev => setFromNToTime(state => ({ ...state, from: ev.target.value})) } />
+                                <h4>From:</h4>
+                                <TimePicker 
+                                    useHour={ [ fromHour, setFromHour ] }  
+                                    useMinute={ [ fromMinute, setFromMinute ] }  
+                                    useMeridiem={ [ fromMeridiem, setFromMeridiem ] }  
+                                />
+                                <ErrorField message={ invalidFieldsValue['time-from'] }/>
                             </div>
                             <div className="w-1/2 flex flex-col">
-                                <label htmlFor="to">To:</label>
-                                <input type="time" name="to" id="to" onChange={ ev => setFromNToTime(state => ({ ...state, to: ev.target.value})) } />
+                                <h4>To:</h4>
+                                <TimePicker 
+                                    useHour={ [ toHour, setToHour ] }  
+                                    useMinute={ [ toMinute, setToMinute ] }  
+                                    useMeridiem={ [ toMeridiem, setToMeridiem ] }  
+                                />
+                                <ErrorField message={ invalidFieldsValue['time-to'] }/>
                             </div>
                         </div>
                     </div>
-                    <ErrorField message={ invalidFieldsValue['time'] }/>
                         
                     <div className="mt-auto flex flex-col gap-2 py-2 border-t-[1px] border-neutral-400">
                         <h2 className="font-headings font-bold text-2xl">{ selectedDay && selectedDay }</h2>

@@ -1,6 +1,6 @@
 'use client';
 
-import CNavbar from '@/components/nav/client/CNavbar';
+import CNavbar from '@/components/client/nav/CNavbar';
 import Image from 'next/image';
 import HeroImg5 from '../../public/images/hero-img-5.jpg';
 import WeddingImg from '../../public/images/wedding-img.jpg';

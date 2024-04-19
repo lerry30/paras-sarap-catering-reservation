@@ -21,6 +21,9 @@ const UpdateDrink = () => {
     const [ status, setStatus ] = useState('available');
     const router = useRouter();
 
+    // reload zustan data from localstorage
+    zDrink.getState().init();
+
     const handleSubmit = async (ev) => {
         ev.preventDefault();
 

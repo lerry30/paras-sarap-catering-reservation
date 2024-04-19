@@ -26,6 +26,9 @@ const UpdateDish = () => {
     const checkboxAllergens = [ 'nuts', 'seafood', 'milk', 'eggs', 'soybeans', 'grains' ];
     const checkBoxes = useRef({});
 
+    // reload zustan data from localstorage
+    zDish.getState().init();
+
     const initCheckBox = () => {
         const prevDishAllergens = zDish.getState().allergens;
         setAllergensCheckbox(prevDishAllergens);

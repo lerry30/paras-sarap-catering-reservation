@@ -16,7 +16,7 @@ const Select = ({ children, className='', name='' }) => {
         if(!dropdown.current?.contains(ev.target)) {
             // just to specify specific element since every click 
             // triggers all instance of this dropdown event listener
-            if(dropdown.current.dataset.ui === 'active') {
+            if(dropdown?.current?.dataset?.ui === 'active') {
                 dropdown.current.dataset.ui = '';
                 dropdownArrow.current.dataset.ui = '';
             }

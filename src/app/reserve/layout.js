@@ -1,5 +1,5 @@
 'use client';
-import CNavbar from '@/components/nav/client/CNavbar';
+import CNavbar from '@/components/client/nav/CNavbar';
 import Loading from './loading';
 import Footer from '@/components/Footer';
 import { useSearchParams } from 'next/navigation';

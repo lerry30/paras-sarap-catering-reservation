@@ -2,10 +2,10 @@
 
 import Link from 'next/link';
 
-import Logo from '../Logo';
-import Select from '../Dropdown';
-import Option from '../Option'
-import Avatar from '../Avatar';
+import Logo from '../../nav/Logo';
+import Select from '../../nav/Dropdown';
+import Option from '../../nav/Option'
+import Avatar from '../../nav/Avatar';
 import CSidebar from './CSidebar';
 import { useEffect } from 'react';
 import { zUserData } from '@/stores/user';

@@ -12,7 +12,7 @@ const Card = ({ drinkData, onDelete, onUpdate, viewMore }) => {
     const pesoFormatter = new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' });
 
     return (
-        <div className="flex flex-col w-full max-w-[258px] h-[380px] rounded-lg shadow-xl hover:scale-[1.01] hover:shadow-2xl transition-transform">
+        <div className="flex flex-col w-full lg:w-[calc((100vw-var(--admin-sidebar-width)-32px)/3-12px)] lg:min-w-[220px] h-[380px] rounded-lg shadow-xl hover:scale-[1.01] hover:shadow-2xl transition-transform">
             <Image 
                 src={ image }
                 alt={ name }

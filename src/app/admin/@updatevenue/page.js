@@ -2,7 +2,7 @@
 import UploadButton from '@/components/UploadButton';
 import Loading from '@/components/Loading';
 import ErrorField from '@/components/ErrorField';
-import { Suspense, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { emptyVenueFields } from '@/utils/admin/emptyValidation';
 import { sendFormUpdate } from '@/utils/send';
 import { handleError } from '@/utils/auth/backendError';
@@ -32,6 +32,9 @@ const UpdateVenue = () => {
     const [ listOfBarangay, setListOfBarangay ] = useState([]);
 
     const [ isImageChange, setImageChange ] = useState(false);
+
+    // reload zustan data from localstorage
+    zVenue.getState().init();
 
     const handleSubmit = async (ev) => {
         ev.preventDefault();

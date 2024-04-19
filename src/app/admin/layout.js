@@ -1,16 +1,11 @@
 'use client';
-import ANavbar from '@/components/nav/admin/ANavbar';
+import ANavbar from '@/components/admin/nav/ANavbar';
 import Loading from '@/components/Loading';
 import { zDish } from '@/stores/admin/dish';
 import { zDrink } from '@/stores/admin/drink';
 import { zVenue } from '@/stores/admin/venue';
 import { useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
-
-// reload zustan data from localstorage
-zDish.getState().init();
-zDrink.getState().init();
-zVenue.getState().init();
 
 export default function AdminLayout({ 
         children, dashboard,

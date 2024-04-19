@@ -8,6 +8,7 @@ import { zReservation } from '@/stores/reservation';
 import { toNumber } from '@/utils/number';
 import { PromptAgreement, SuccessModal } from '@/components/Modal';
 import { sendJSON } from '@/utils/send';
+import SNavbar from '@/components/nav/SNavbar';
 
 const ReviewBudget = () => {
     const [ venue, setVenue ] = useState({});
@@ -94,7 +95,8 @@ const ReviewBudget = () => {
         const venuePrice = venue?.price || 0;
         const totalCostForTableNChairs = venue?.tablesnchairsprovided ? 0 : costOfTablesNChairsPerGuest;
 
-        const total = (dishesCostPerGuestServed + drinksCostPerGuestServed  + totalCostForTableNChairs) * noOfGuest + venuePrice;
+        const totalPaymentPerGuest = (dishesCostPerGuestServed + drinksCostPerGuestServed  + totalCostForTableNChairs) * noOfGuest;
+        const total = totalPaymentPerGuest + (noOfGuest ? venuePrice : 0)
         setTotalPayment(total);
     }
 
@@ -129,9 +131,10 @@ const ReviewBudget = () => {
         setService(serviceParam);
     }, []);
 
-    return <section className="px-page-x py-4">
+    return <section className="">
         { loading && <Loading customStyle="size-full" /> }
-        <main className="flex flex-col gap-10 divide-y-[1px]">
+        <SNavbar href={ `/reserve?display=schedule&service=${ service }` } headerClassName="h-fit" />
+        <main className="flex flex-col gap-10 divide-y-[1px] px-page-x py-4">
             <section className="flex flex-col gap-4 py-2">
                 <h1 className="font-headings font-semibold text-lg">Venue</h1>
                 <div className="flex gap-6">

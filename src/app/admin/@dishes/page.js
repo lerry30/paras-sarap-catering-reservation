@@ -97,7 +97,7 @@ const Dishes = () => {
                         <span className="text-sm font-medium">Add New Dish</span>
                     </Link>
                 </div>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap justify-between gap-2">
                     {
                         dishes.map((item, index) => (
                             <Card 

@@ -10,15 +10,15 @@ const BurgerMenu = ({ size='w-[30px]', className='', children }) => {
     const toggle = () => {
         setOpen(state => !state);
 
-        const dataset = !sidebar.current.dataset.ui ? 'active' : '';
+        const dataset = !sidebar?.current?.dataset.ui ? 'active' : '';
         sidebar.current.dataset.ui = dataset;
         burgerStrokeTop.current.dataset.ui = dataset;
         burgerStrokeBottom.current.dataset.ui = dataset;
     }
 
     const focusOutside = (ev) => {
-        if(!sidebar.current?.contains(ev.target)) {
-            if(sidebar.current.dataset.ui === 'active') {
+        if(!sidebar?.current?.contains(ev.target)) {
+            if(sidebar?.current?.dataset?.ui === 'active') {
                 toggle();
             }
         }

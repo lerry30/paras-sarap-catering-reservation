@@ -1,5 +1,5 @@
 'use client';
-import ASidebar from '@/components/nav/admin/ASidebar';
+import ASidebar from '@/components/admin/nav/ASidebar';
 import Logo from '@/components/nav/Logo';
 import Avatar from '@/components/nav/Avatar';
 import { zUserData } from '@/stores/user';

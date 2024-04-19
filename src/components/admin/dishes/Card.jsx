@@ -14,7 +14,7 @@ const Card = ({ dishData, onDelete, onUpdate, viewMore }) => {
     const pesoFormatter = new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' });
 
     return (
-        <div className="flex flex-col w-full max-w-[258px] h-[440px] rounded-lg shadow-xl hover:scale-[1.01] hover:shadow-2xl transition-transform">
+        <div className="flex flex-col w-full lg:w-[calc((100vw-var(--admin-sidebar-width)-32px)/3-12px)] lg:min-w-[220px] h-[460px] rounded-lg shadow-xl hover:scale-[1.01] hover:shadow-2xl transition-transform">
             <Image 
                 src={ image }
                 alt={ name }
@@ -40,7 +40,7 @@ const Card = ({ dishData, onDelete, onUpdate, viewMore }) => {
                 allergens.length > 0 &&
                     <article className="flex flex-col gap-1 px-4 pt-2 pb-0 font-semibold">
                         <h6 className="font-headings text-sm">Allergic Food Components</h6>
-                        <div className="min-h-[60px] flex flex-wrap gap-1">
+                        <div className={ `min-h-[30px] flex flex-wrap gap-1 ${ allergens > 5 && 'min-h-[60px' }` }>
                             {
                                 allergens.map((item, index) => (
                                     <span key={ index } className="size-fit p-1 rounded-full bg-yellow-500/20 text-yellow-900 text-[12px]">{ item }</span>
@@ -51,7 +51,9 @@ const Card = ({ dishData, onDelete, onUpdate, viewMore }) => {
             }
             <article className="w-full px-4 mt-auto pb-2 flex justify-between">
                 <span className="text-sm text-neutral-600">{ pesoFormatter.format(costPerHead) } per guest served</span>
-                <span className={ `text-sm rounded-full px-1 ${ status === 'available' ? 'bg-green-200/40 text-green-500' : 'bg-red-200/40 text-red-500' }` }>{ status }</span>
+            </article>
+            <article className="w-full px-4 mt-auto pb-2 flex justify-between">
+                <span className={ `text-sm rounded-full border-[1px] px-1 ${ status === 'available' ? 'bg-green-200/40 text-green-500 border-green-600' : 'bg-red-200/40 text-red-500 border-red-600' }` }>{ status }</span>
             </article>
             <div className="flex gap-2 justify-end px-4 pb-6 mt-auto">
                 <button onClick={ () => viewMore(dishData?._k) } className="rounded-full bg-neutral-500/40 font-medium py-1 px-2 cursor-pointer text-sm hover:bg-neutral-400 transition-colors">See Details</button>

@@ -3,7 +3,7 @@ import Loading from '@/components/Loading';
 import ErrorField from '@/components/ErrorField';
 import Image from 'next/image';
 import { Plus, X } from '@/components/icons/All';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { emptyMenuFields } from '@/utils/admin/emptyValidation';
 import { sendForm } from '@/utils/send';
 import { handleError } from '@/utils/auth/backendError';
@@ -16,6 +16,9 @@ const AddMenu = () => {
     const [ dishMenu, setDishMenu ] = useState({});
     const [ drinkMenu, setDrinkMenu ] = useState({});
     const [ preview, setPreview ] = useState({});
+
+    const dishListCont = useRef(null);
+    const drinkListCont = useRef(null);
 
     zMenu.getState().init();
     const removeDish = zMenu(state => state.removeDish);
@@ -58,14 +61,16 @@ const AddMenu = () => {
     }
 
     const previewItem = (ev, data) => {
-        // const children = ev.target?.parentElement?.children || [];
-        // const currentElem = ev.target.closest('li');
+        const selected = ev.target.closest('.item');
+        const listOfDishes = dishListCont.current.children || [];
+        const listOfDrinks = drinkListCont.current.children || [];
+        const everyItem = [ ...listOfDishes, ...listOfDrinks ];
 
-        // for(const child of children) {
-        //     child.style.backgroundColor = 'white';
-        // }
+        for(const item of everyItem) {
+            item.style.backgroundColor = 'transparent';
+        }
 
-        // currentElem.style.backgroundColor = 'rgb(212, 212, 212)';
+        selected.style.backgroundColor = 'rgb(212, 212, 212)';
         setPreview(data);
     }
 
@@ -119,10 +124,10 @@ const AddMenu = () => {
                             </button>
                         </header>
                         <div className="overflow-auto">
-                            <ul className="divide-y-2">
+                            <ul ref={ dishListCont } className="divide-y-2">
                                 {
                                     Object.values(dishMenu || {}).map((dish, index) => (
-                                        <li key={ index } onClick={ ev => previewItem(ev, dish) } className="flex justify-between items-center cursor-pointer pl-1 pr-2 hover:bg-neutral-300">
+                                        <li key={ index } onClick={ ev => previewItem(ev, dish) } className="item flex justify-between items-center cursor-pointer pl-1 pr-2 hover:bg-neutral-300">
                                             <span className="py-2">{ dish?.name }</span>
                                             <div onClick={ ev => removeItemFromDishTable(ev, dish?._id) } className="rounded-full">
                                                 <X size={18} className="size-[18px] rounded-full hover:bg-red-300/40 hover:stroke-red-600 cursor-pointer"/>
@@ -143,10 +148,10 @@ const AddMenu = () => {
                             </button>
                         </header>
                         <div className="overflow-auto">
-                            <ul className="divide-y-2">
+                            <ul ref={ drinkListCont } className="divide-y-2">
                                 {
                                     Object.values(drinkMenu || {}).map((drink, index) => (
-                                        <li key={ index } onClick={ ev => previewItem(ev, drink) } className="flex justify-between items-center cursor-pointer pl-1 pr-2 hover:bg-neutral-300">
+                                        <li key={ index } onClick={ ev => previewItem(ev, drink) } className="item flex justify-between items-center cursor-pointer pl-1 pr-2 hover:bg-neutral-300">
                                             <span className="py-2">{ drink?.name }</span>
                                             <div onClick={ ev => removeItemFromDrinkTable(ev, drink?._id) }>
                                                 <X size={18} className="size-[18px] rounded-full hover:bg-red-300/40 hover:stroke-red-600 cursor-pointer"/>
@@ -182,12 +187,12 @@ const AddMenu = () => {
                     <ErrorField message={ invalidFieldsValue['unauth'] }/>
                 </div> 
             </form>
-            <div className="w-full h-[calc(100vh-var(--nav-height)-380px)] flex justify-center items-center">
+            <div className="w-full h-[calc(100vh-var(--nav-height)-380px)] flex overflow-hidden">
                 {
                     Object.values(preview).length === 0 ?
-                        <h1 className="font-headings font-bold text-xl text-neutral-900/70">Preview</h1>
+                        <h1 className="font-headings font-bold text-xl text-neutral-900/70 m-auto">Preview</h1>
                     :
-                        <div className="flex items-center gap-2">
+                        <div className="flex gap-2 p-2">
                             <div className="size-36 min-w-36 flex justify-center items-center rounded-md shadow-lg cursor-pointer border border-neutral-500/40 relative">
                                 <Image 
                                     src={ preview?.filename }
@@ -212,7 +217,7 @@ const AddMenu = () => {
                                     <h4 className="text-sm font-medium">{ pesoFormatter.format(preview?.costperhead) } per guest served</h4>
                                 </div>
                                 <div>
-                                    <p className={ `text-sm text-neutral-600 italic ${ (preview?.allergens || []).length > 0 && 'max-w-md' }` }>{ preview?.description }</p>
+                                    <p className={ `text-sm text-neutral-600 italic line-clamp-5 ${ (preview?.allergens || []).length > 0 && 'max-w-md' }` }>{ preview?.description }</p>
                                 </div>
                             </div>
                             {

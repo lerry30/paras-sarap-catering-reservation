@@ -3,10 +3,8 @@ import Loading from '@/components/Loading';
 import ErrorField from '@/components/ErrorField';
 import Image from 'next/image';
 import { Plus, X } from '@/components/icons/All';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { emptyMenuFields } from '@/utils/client/emptyValidation';
-import { sendForm } from '@/utils/send';
-import { handleError } from '@/utils/auth/backendError';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { zMenu } from '@/stores/menu';
 import { zReservation } from '@/stores/reservation';
@@ -20,6 +18,9 @@ const CreateMenu = () => {
     const [ preview, setPreview ] = useState({});
     const [ service, setService ] = useState(undefined);
 
+    const dishListCont = useRef(null);
+    const drinkListCont = useRef(null);
+
     const removeDish = zMenu(state => state.removeDish);
     const removeDrink = zMenu(state => state.removeDrink);
     const clearAllData = zMenu(state => state.clear);
@@ -30,6 +31,8 @@ const CreateMenu = () => {
 
     const router = useRouter();
     const searchParams = useSearchParams();
+
+    zMenu.getState().init();
 
     const services = { wedding: true, debut: true, kidsparty: true, privateparty: true };
     const pesoFormatter = new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' });
@@ -52,8 +55,8 @@ const CreateMenu = () => {
             const menuData = {
                 name: menuName,
                 description,
-                dishMenu,
-                drinkMenu,
+                dishes: dishMenu,
+                drinks: drinkMenu,
             };
 
             zReservation.getState().saveMenuData(menuData);
@@ -67,14 +70,16 @@ const CreateMenu = () => {
     }
 
     const previewItem = (ev, data) => {
-        // const children = ev.target?.parentElement?.children || [];
-        // const currentElem = ev.target.closest('li');
+        const selected = ev.target.closest('.item');
+        const listOfDishes = dishListCont.current.children || [];
+        const listOfDrinks = drinkListCont.current.children || [];
+        const everyItem = [ ...listOfDishes, ...listOfDrinks ];
 
-        // for(const child of children) {
-        //     child.style.backgroundColor = 'white';
-        // }
+        for(const item of everyItem) {
+            item.style.backgroundColor = 'transparent';
+        }
 
-        // currentElem.style.backgroundColor = 'rgb(212, 212, 212)';
+        selected.style.backgroundColor = 'rgb(212, 212, 212)';
         setPreview(data);
     }
 
@@ -86,8 +91,6 @@ const CreateMenu = () => {
 
         if(preview?._id === _id)
             setPreview({});
-
-        location.reload();
     }
 
     const removeItemFromDrinkTable = (ev, _id) => {
@@ -98,8 +101,6 @@ const CreateMenu = () => {
 
         if(preview?._id === _id)
             setPreview({});
-
-        location.reload();
     }
 
     const saveNameNDescThenAdd = (ev, path) => {
@@ -120,7 +121,7 @@ const CreateMenu = () => {
     }, []);
 
     return (
-        <section className="flex flex-col px-4 pt-1">
+        <section className="flex flex-col px-page-x pt-1 pb-10">
             { loading && <Loading customStyle="size-full" /> }
             <div className="flex justify-between items-center p-1 rounded-lg">
                 <h2 className="font-headings font-semibold">Create New Menu</h2>
@@ -136,10 +137,10 @@ const CreateMenu = () => {
                             </button>
                         </header>
                         <div className="overflow-auto">
-                            <ul className="divide-y-2">
+                            <ul ref={ dishListCont } className="divide-y-2">
                                 {
                                     Object.values(dishMenu || {}).map((dish, index) => (
-                                        <li key={ index } onClick={ ev => previewItem(ev, dish) } className="flex justify-between items-center cursor-pointer pl-1 pr-2 hover:bg-neutral-300">
+                                        <li key={ index } onClick={ ev => previewItem(ev, dish) } className="item flex justify-between items-center cursor-pointer pl-1 pr-2 hover:bg-neutral-300">
                                             <span className="py-2">{ dish?.name }</span>
                                             <div onClick={ ev => removeItemFromDishTable(ev, dish?._id) } className="rounded-full">
                                                 <X size={18} className="size-[18px] rounded-full hover:bg-red-300/40 hover:stroke-red-600 cursor-pointer"/>
@@ -160,10 +161,10 @@ const CreateMenu = () => {
                             </button>
                         </header>
                         <div className="overflow-auto">
-                            <ul className="divide-y-2">
+                            <ul ref={ drinkListCont } className="divide-y-2">
                                 {
                                     Object.values(drinkMenu || {}).map((drink, index) => (
-                                        <li key={ index } onClick={ ev => previewItem(ev, drink) } className="flex justify-between items-center cursor-pointer pl-1 pr-2 hover:bg-neutral-300">
+                                        <li key={ index } onClick={ ev => previewItem(ev, drink) } className="item flex justify-between items-center cursor-pointer pl-1 pr-2 hover:bg-neutral-300">
                                             <span className="py-2">{ drink?.name }</span>
                                             <div onClick={ ev => removeItemFromDrinkTable(ev, drink?._id) }>
                                                 <X size={18} className="size-[18px] rounded-full hover:bg-red-300/40 hover:stroke-red-600 cursor-pointer"/>
@@ -188,7 +189,7 @@ const CreateMenu = () => {
                         <ErrorField message={ invalidFieldsValue['description'] }/>
                     </div>
                     <div className="w-full flex gap-4">
-                        <button onClick={ checkMenuData } className="w-1/2 button shadow-md border border-neutral-500/40">Save</button>
+                        <button onClick={ checkMenuData } className="w-1/2 button shadow-md border border-neutral-500/40">Next</button>
                         <button onClick={ (ev) => {
                             ev.preventDefault();
                             router.push(`/reserve?display=menus&service=${ service }`)
@@ -199,12 +200,12 @@ const CreateMenu = () => {
                     <ErrorField message={ invalidFieldsValue['unauth'] }/>
                 </div> 
             </div>
-            <div className="w-full h-[calc(100vh-var(--nav-height)-380px)] flex justify-center items-center">
+            <div className="w-full h-[calc(100vh-var(--nav-height)-380px)] flex overflow-hidden">
                 {
                     Object.values(preview).length === 0 ?
-                        <h1 className="font-headings font-bold text-xl text-neutral-900/70">Preview</h1>
+                        <h1 className="font-headings font-bold text-xl text-neutral-900/70 m-auto">Preview</h1>
                     :
-                        <div className="flex items-center gap-2">
+                        <div className="flex gap-2 p-2">
                             <div className="size-36 min-w-36 flex justify-center items-center rounded-md shadow-lg cursor-pointer border border-neutral-500/40 relative">
                                 <Image 
                                     src={ preview?.filename }
@@ -229,7 +230,7 @@ const CreateMenu = () => {
                                     <h4 className="text-sm font-medium">{ pesoFormatter.format(preview?.costperhead) } per guest served</h4>
                                 </div>
                                 <div>
-                                    <p className={ `text-sm text-neutral-600 italic ${ (preview?.allergens || []).length > 0 && 'max-w-md' }` }>{ preview?.description }</p>
+                                    <p className={ `text-sm text-neutral-600 italic line-clamp-5 ${ (preview?.allergens || []).length > 0 && 'max-w-md' }` }>{ preview?.description }</p>
                                 </div>
                             </div>
                             {
