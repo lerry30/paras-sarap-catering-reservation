@@ -14,15 +14,23 @@ export const middleware = async (request) => {
         const signInStatus = await sendJSON(`${ origin }/api/users/signed`, { encodedKey, encodedData });
         if(signInStatus.signedIn) {
             const fSegments = (!pathname?.startsWith('/') || pathname?.substr(1))?.split('/')[0];
-            if(fSegments === 'admin') {
-                const adminVResponse = await sendJSON(`${ origin }/api/admin/auth`, { encodedKey, encodedData });
-                if(!adminVResponse?.isAnAdmin) return NextResponse.redirect(new URL('/', request.url));
-                /**
-                 * since middleware runs in edge runtime, it is impossible for me to run node js api calls so fetching
-                 * credentials everytime middleware invoked is the only solution I have, eventhough it's quite pain for 
-                 * my butt.
-                 */
+            const adminVResponse = await sendJSON(`${ origin }/api/admin/auth`, { encodedKey, encodedData });
+
+            if(!adminVResponse?.isAnAdmin) {
+                if(fSegments === 'admin') {
+                    return NextResponse.redirect(new URL('/', request.url));
+                }
+            } else {
+                if(fSegments !== 'admin') {
+                    return NextResponse.redirect(new URL('/admin', request.url));
+                }
             }
+            
+            /**
+             * since middleware runs in edge runtime, it is impossible for me to run node js api calls so fetching
+             * credentials everytime middleware invoked is the only solution I have, eventhough it's quite pain for 
+             * my butt.
+             */
 
             return NextResponse.next();
         }
