@@ -31,6 +31,8 @@ const userSchema = new Schema({
         default: false
     },
 
+    filename: String,
+
     status: {
         type: String,
         enum: [ 'active', 'inactive' ],

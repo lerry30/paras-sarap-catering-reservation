@@ -37,6 +37,8 @@ export const GET = (request) => {
     return NextResponse.json({ message: '', }, { status: 201 });
 }
 
+config(2, { activeMaxRequest: 4, rest: ( 1000 * 60 * 10 ) }); // 6 requests allowed per 10 mins
+
 // SIGN UP
 export const POST = async (request) => {
     try {

@@ -32,8 +32,10 @@ export const POST = async (request) => {
         // get user id
         const encodedKey = request.cookies.get('user-json-token-key')?.value || '';
         const encodedData = request.cookies.get('user-json-token-data')?.value || '';
-        if(!encodedKey || !encodedData) return false;
+        if(!encodedKey || !encodedData) return NextResponse.json({ message: 'There\'s something wrong!' }, { status: 400 });
         const userId = decodeUserIdFromRequest(encodedKey, encodedData);
+
+        if(!userId) return NextResponse.json({ message: 'There\'s something wrong!' }, { status: 400 });
 
         const data = {
             userId: userId,

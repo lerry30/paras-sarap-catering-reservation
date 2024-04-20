@@ -2,6 +2,7 @@ import { CircleUserRound, MessageCircle, Pen } from '@/components/icons/All';
 import { useEffect, useState } from 'react';
 import { createFullname } from '@/utils/name';
 import Image from 'next/image';
+import Link from 'next/link';
 
 const Card = ({ userData={} }) => {
     const profilePic = userData?.filename;
@@ -55,13 +56,9 @@ const Card = ({ userData={} }) => {
                 <p className="font-paragraphs italic text-neutral-700">{ email }</p>
                 <p className="font-paragraphs text-neutral-700 text-sm">Joined At: { joinedAt }</p>
                 <div className="flex py-4 gap-x-2">
-                    <button className="group relative rounded-full p-1 cursor-pointer transition-colors border-2 border-pink-500">
-                        <MessageCircle size={20} strokeWidth={3} stroke="hotpink" />
-                        <div className="absolute top-full mt-2 bg-neutral-700 px-2 py-1 rounded-md text-white hidden group-hover:flex">
-                            <span className="text-sm">Message</span>
-                            <div className="size-2 absolute top-0 -mt-[2px] z-0 rotate-45 bg-neutral-700"></div>
-                        </div>
-                    </button>
+                    <Link href="">
+                        <span className="bg-pink-500 px-2 py-1 rounded-full text-white text-[12px] font-headings font-bold">Message</span>
+                    </Link>
                 </div>
             </div>
         </div>

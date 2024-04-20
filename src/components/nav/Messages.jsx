@@ -13,6 +13,7 @@ const Messages = () => {
             if(!message) return;
             const nMessage = message?.trim().toLowerCase();
             const messageData = await sendJSON('/api/messenges', { message: nMessage });
+            setMessage('');
         } catch(error) {}
     }
 
@@ -38,9 +39,9 @@ const Messages = () => {
                 <MessageCircle size={24} strokeWidth={1}/>
             </div>
             <div className={ `w-[400px] h-[calc(100vh-var(--nav-height))] flex flex-col fixed bottom-0 right-0 shadow bg-white rounded-t-lg overflow-hidden transition-transform ${ displayChats ? '-translate-y-0' : 'translate-y-full' }` }>
-                <header className="h-nav-height border-b-[1px] border-neutral-400 flex items-center">
+                <header className="h-nav-height flex items-center bg-skin-ten">
                     <button onClick={ () => setDisplayChats(false) } className="ml-auto mr-6">
-                        <X className="cursor-pointer rounded-full hover:bg-neutral-800 hover:stroke-neutral-200 stroke-neutral-700" />
+                        <X className="cursor-pointer rounded-full hover:bg-neutral-800 stroke-neutral-200" />
                     </button>
                 </header>
                 <div className="flex grow">
@@ -55,10 +56,10 @@ const Messages = () => {
                             })
                     }
                 </div>
-                <div className="flex gap-2 px-6 py-4 border-t-[1px] border-neutral-400">
-                    <input onChange={ ev => setMessage(ev.target.value) } className="h-11 grow font-paragraphs font-medium text-lg rounded-full outline-none px-4 border-[1px] border-neutral-700" placeholder="Message"/>
+                <div className="flex gap-2 px-6 py-4 bg-skin-ten rounded-t-md">
+                    <input value={ message } onChange={ ev => setMessage(ev.target.value) } className="h-8 grow font-paragraphs font-medium rounded-full outline-none px-4" placeholder="Message"/>
                     <button onClick={ sendMessage }>
-                        <SendHorizontal size={42} className="p-1 stroke-neutral-900" />
+                        <SendHorizontal size={34} className="p-1 stroke-white" />
                     </button>
                 </div>
             </div>
