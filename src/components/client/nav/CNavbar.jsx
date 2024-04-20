@@ -2,11 +2,12 @@
 
 import Link from 'next/link';
 
-import Logo from '../../nav/Logo';
-import Select from '../../nav/Dropdown';
-import Option from '../../nav/Option'
-import Avatar from '../../nav/Avatar';
+import Logo from '@/components/nav/Logo';
+import Select from '@/components/nav/Dropdown';
+import Option from '@/components/nav/Option'
+import Avatar from '@/components/nav/Avatar';
 import CSidebar from './CSidebar';
+import Messages from '@/components/nav/Messages';
 import { useEffect } from 'react';
 import { zUserData } from '@/stores/user';
 
@@ -63,9 +64,14 @@ const CNavbar = () => {
                                     </li>
                                 </>
                             :
-                                <li className="h-nav-item-height flex rounded-full">
-                                    <Avatar name={ fullName }/>
-                                </li>
+                                <>
+                                    <li className="h-nav-item-height flex rounded-full p-1">
+                                        <Messages />
+                                    </li>
+                                    <li className="h-nav-item-height flex rounded-full">
+                                        <Avatar name={ fullName }/>
+                                    </li>
+                                </>
                         }
                     </ul>
                 </ul>

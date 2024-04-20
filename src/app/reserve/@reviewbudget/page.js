@@ -50,7 +50,7 @@ const ReviewBudget = () => {
         setLoading(true);
 
         try {
-            const data ={
+            const data = {
                 venue: venue,
                 menu: {
                     name: menu?.menu,
@@ -71,7 +71,7 @@ const ReviewBudget = () => {
                 router.push('/');
             }, 4000);
         } catch(error) {
-            // setInvalidFieldsValue({  });
+            setInvalidFieldsValue({ error: error?.message || '' });
         }
 
         setLoading(false);
@@ -133,7 +133,7 @@ const ReviewBudget = () => {
 
     return <section className="">
         { loading && <Loading customStyle="size-full" /> }
-        <SNavbar href={ `/reserve?display=schedule&service=${ service }` } headerClassName="h-fit" />
+        <SNavbar href={ `/reserve?display=schedule&service=${ service }` } headerClassName="h-fit z-subnavbar" />
         <main className="flex flex-col gap-10 divide-y-[1px] px-page-x py-4">
             <section className="flex flex-col gap-4 py-2">
                 <h1 className="font-headings font-semibold text-lg">Venue</h1>
@@ -309,6 +309,7 @@ const ReviewBudget = () => {
                     </div>
                 </div>
             </div>
+            <ErrorField message={ invalidFieldsValue['error'] } />
         </main>
         {
             agreementPrompt && <PromptAgreement callback={ agree } onClose={ () => setAgreementPrompt(false) } />

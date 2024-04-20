@@ -2,8 +2,10 @@
 import ASidebar from '@/components/admin/nav/ASidebar';
 import Logo from '@/components/nav/Logo';
 import Avatar from '@/components/nav/Avatar';
+import Link from 'next/link';
 import { zUserData } from '@/stores/user';
 import { useEffect } from 'react';
+import { MessageCircle } from '@/components/icons/All';
 
 const ANavbar = () => {
     const saveUserData = zUserData(state => state.saveUserData);
@@ -23,6 +25,11 @@ const ANavbar = () => {
                 </li>
 
                 <ul className="flex items-center">
+                    <li className="h-nav-item-height flex items-center rounded-full p-1 mr-2">
+                        <Link href="/admin?display=messages" className="px-2">
+                            <MessageCircle size={24} strokeWidth={1}/>
+                        </Link>
+                    </li>
                     <li className="h-nav-item-height flex rounded-full">
                         <Avatar name={ fullName }/>
                     </li>

@@ -12,7 +12,7 @@ const TitleFormat = (sentence='') => {
     for(const word of words) {
         let cword = word;
         if(!capNotIncluded.includes(word)) {
-            cword = `${ word[0].toUpperCase() }${ word.substring(1) }`;
+            cword = `${ word[0]?.toUpperCase() }${ word.substring(1) }`;
         }
 
         fSentence = `${ fSentence } ${ cword }`;

@@ -64,7 +64,7 @@ export const POST = async (request) => {
             return Response.json({ message: 'All fields should be filled', errorData: invalidFields }, { status: 400 }); // I turn 204 to 400 since nextjs have problem with responding with status code of 204 right now
         
         const fVenueName = TitleFormat(venueName);
-        const fDescription = `${ description[0].toUpperCase() }${ description.substring(1) }`;
+        const fDescription = `${ description[0]?.toUpperCase() }${ description.substring(1) }`;
         const buffer = Buffer.from(await file.arrayBuffer());
         const isValidAddress = addressAll[region]?.province[province]?.municipality[municipality]?.barangay?.includes(barangay)
 
@@ -72,7 +72,7 @@ export const POST = async (request) => {
         const fBarangay = TitleFormat(barangay);
         const fMunicipality = TitleFormat(municipality);
         const fProvince = TitleFormat(province);
-        const fRegion = `${ region[0].toUpperCase() }${ region.substring(1) }`;
+        const fRegion = `${ region[0]?.toUpperCase() }${ region.substring(1) }`;
 
         if(!isValidAddress) return Response.json({ message: 'Invalid Address', errorData: 'unauth' }, { status: 400 });
 
@@ -149,7 +149,7 @@ export const PUT = async (request) => {
             return Response.json({ message: 'All fields should be filled', errorData: invalidFields }, { status: 400 }); // I turn 204 to 400 since nextjs have problem with responding with status code of 204 right now
 
         const fVenueName = TitleFormat(venueName);
-        const fDescription = (`${ description[0].toUpperCase() }${ description.substring(1) }`).trim();
+        const fDescription = (`${ description[0]?.toUpperCase() }${ description.substring(1) }`).trim();
         const statusValues = { available: 'available', unavailable: 'unavailable' };
         const fStatus = statusValues[status] || 'available';
         const isValidAddress = addressAll[region]?.province[province]?.municipality[municipality]?.barangay?.includes(barangay);

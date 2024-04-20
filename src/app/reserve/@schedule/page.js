@@ -183,7 +183,7 @@ const Schedules = () => {
 
     return (
         <>
-            <SNavbar href={ `/reserve?display=menus&service=${ service }` } headerClassName="h-fit border-none" />
+            <SNavbar href={ `/reserve?display=menus&service=${ service }` } headerClassName="h-fit border-none z-subnavbar" />
             <section className="flex flex-col min-h-[calc(100vh-var(--nav-height))] overflow-hidden py-4 sm:px-page-x  md:flex-row">
                 { loading && <Loading customStyle="size-full" /> }
                 <div className="grow flex flex-col">

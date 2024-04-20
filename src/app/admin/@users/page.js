@@ -1,5 +1,5 @@
 'use client';
-// import Card from '@/components/admin/users/Card';
+import Card from '@/components/admin/users/Card';
 import { useEffect, useState } from 'react';
 import { getData } from '@/utils/send';
 import Loading from '@/components/Loading';
@@ -10,20 +10,11 @@ const Users = () => {
     const [ usersObject, setUsersObject ] = useState({});
     const [ loading, setLoading ] = useState(false);
 
-    // const viewMore = (_k) => {
-    //     if(!_k) return;
-    //     const savingStatus = saveIntoStore(_k);
-    //     if(savingStatus) {
-    //         router.push('/admin?display=viewuser');
-    //         return;
-    //     }
-    // }
-
     const getUsers = async () => {
         setLoading(true);
 
         try {
-            const { data } = (await getData('/')) || { data: [] };
+            const { data } = (await getData('/api/clients')) || { data: [] };
             setUsers(data);
 
             for(const user of data) {
@@ -44,15 +35,14 @@ const Users = () => {
             <section className="flex flex-col gap-2 p-4 ">
                 <h2 className="font-headings font-semibold">Users</h2>
                 <div className="flex flex-wrap gap-2">
-                    {/* {
+                    {
                         users.map((user, index) => (
                             <Card 
                                 key={ index } 
                                 userData={ user }
-                                // viewMore={ viewMore }
                             />
                         ))
-                    } */}
+                    }
                 </div>
             </section>
         </>

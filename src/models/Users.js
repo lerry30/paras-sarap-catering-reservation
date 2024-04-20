@@ -30,6 +30,12 @@ const userSchema = new Schema({
         required: true,
         default: false
     },
+
+    status: {
+        type: String,
+        enum: [ 'active', 'inactive' ],
+        default: 'active'
+    }
 }, {
     timestamps: true
 });

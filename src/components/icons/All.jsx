@@ -280,3 +280,42 @@ export const Clock = ({ size=24, stroke='hsl(0deg 0% 10% / 100%)', strokeWidth=2
         </svg>
     );
 }
+
+export const MessageCircle = ({ size=24, stroke='hsl(0deg 0% 10% / 100%)', strokeWidth=2, className='' }) => {
+    return (
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width={ size }
+            height={ size }
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke={ stroke }
+            strokeWidth={ strokeWidth }
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className={ className }
+        >
+            <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>
+        </svg>
+    );
+}
+
+export const SendHorizontal = ({ size=24, stroke='hsl(0deg 0% 10% / 100%)', strokeWidth=2, className='' }) => {
+    return (
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width={ size }
+            height={ size }
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke={ stroke }
+            strokeWidth={ strokeWidth }
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className={ className }
+        >
+            <path d="m3 3 3 9-3 9 19-9Z"/>
+            <path d="M6 12h16"/>
+        </svg>
+    );
+}

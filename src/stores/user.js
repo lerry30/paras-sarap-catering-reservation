@@ -1,6 +1,7 @@
 import { getData } from '@/utils/send';
 import { user as localStorageName } from '@/utils/localStorageNames';
 import { create } from 'zustand';
+import { createFullname } from '@/utils/name';
 
 export const zUserData = create(set => ({
     firstname: '',
@@ -31,23 +32,3 @@ export const zUserData = create(set => ({
         set(() => ({ firstname: '', lastname: '', email: '', fullname: '' }));
     }
 }));
-
-function createFullname(firstname, lastname) {
-    if(!firstname || !lastname) return '';
-    const fName = titleFormat(firstname);
-    const lName = titleFormat(lastname);
-    const fullName = fName + ' ' + lName;
-
-    return fullName;
-}
-
-function titleFormat(uname) {
-    const lName = uname.toLowerCase().split(' ');
-
-    let fname = '';
-    for(const name of lName) {
-        fname = fname + ' ' + name[0].toUpperCase() + name.substring(1);
-    }
-
-    return fname;
-}

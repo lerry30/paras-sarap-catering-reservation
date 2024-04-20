@@ -25,6 +25,7 @@ module.exports = {
       },
       zIndex: {
         navbar: 'var(--nav-z-index)',
+        subnavbar: 'var(--subnav-z-index)',
       },
       width: {
         'admin-sidebar': 'var(--admin-sidebar-width)',

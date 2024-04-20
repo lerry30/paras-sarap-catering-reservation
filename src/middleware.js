@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
 import { sendJSON } from '@/utils/send';
 
-const legacyPrefixes = { '/signup': true, '/signin': true, '/': true, '/about': true, };
+const legacyPrefixes = { '/signup': true, '/signin': true };
 
 export const middleware = async (request) => {
     const { origin, pathname } = request.nextUrl;
-    
+
     // const fSegments = (!pathname?.startsWith('/') || pathname?.substr(1))?.split('/')[0];
     if(!legacyPrefixes[pathname]) { // to avoid loop since it will always redirect to signin
         // console.log(request.cookies.getAll())
@@ -13,9 +13,8 @@ export const middleware = async (request) => {
         const encodedData = request.cookies.get('user-json-token-data')?.value || '';
         const signInStatus = await sendJSON(`${ origin }/api/users/signed`, { encodedKey, encodedData });
         if(signInStatus.signedIn) {
-            const fSegments = (!pathname?.startsWith('/') || pathname?.substr(1))?.split('/')[0];
             const adminVResponse = await sendJSON(`${ origin }/api/admin/auth`, { encodedKey, encodedData });
-
+            const fSegments = (!pathname?.startsWith('/') || pathname?.substr(1))?.trim()?.split('/')[0];
             if(!adminVResponse?.isAnAdmin) {
                 if(fSegments === 'admin') {
                     return NextResponse.redirect(new URL('/', request.url));
@@ -32,6 +31,11 @@ export const middleware = async (request) => {
              * my butt.
              */
 
+            return NextResponse.next();
+        } 
+        
+        const accessiblePrefixes = { '/': true, '/about': true, };
+        if(accessiblePrefixes[pathname]) {
             return NextResponse.next();
         }
         
@@ -50,6 +54,6 @@ export const config = {
        * - _next/image (image optimization files)
        * - favicon.ico (favicon file)
        */
-      '/((?!api|_next/static|_next/image|favicon.ico).*)',
+      '/((?!api|_next/static|_next/image|favicon.ico|favicon.svg).*)',
     ],
 }

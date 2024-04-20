@@ -1,6 +1,8 @@
+import TitleFormat from '@/utils/titleFormat';
 import Reservation from '@/models/Reservation';
 import { decodeUserIdFromRequest } from '@/utils/auth/decode';
 import { toNumber } from '@/utils/number';
+import { addressAll } from '@/utils/philAddress';
 import { NextResponse } from 'next/server';
 
 export const POST = async (request) => {
@@ -10,32 +12,48 @@ export const POST = async (request) => {
         const menu = jsonRequest?.menu;
         const date = jsonRequest?.date;
         const noOfGuest = toNumber(jsonRequest?.noOfGuest);
+        
+        // venue
+        const street = venue?.address?.street?.trim();
+        const barangay = venue?.address?.barangay?.trim().toUpperCase();
+        const municipality = venue?.address?.municipality?.trim().toUpperCase();
+        const province = venue?.address?.province?.trim().toUpperCase();
+        const region = venue?.address?.region?.trim().toUpperCase();
 
+        const isValidAddress = addressAll[region]?.province[province]?.municipality[municipality]?.barangay?.includes(barangay);
+        if(!isValidAddress) return Response.json({ message: 'Invalid Address', errorData: 'error' }, { status: 400 });
+
+        const fStreet = TitleFormat(street);
+        const fBarangay = TitleFormat(barangay);
+        const fMunicipality = TitleFormat(municipality);
+        const fProvince = TitleFormat(province);
+        const fRegion = TitleFormat(region);
+
+        // get user id
         const encodedKey = request.cookies.get('user-json-token-key')?.value || '';
         const encodedData = request.cookies.get('user-json-token-data')?.value || '';
-
         if(!encodedKey || !encodedData) return false;
         const userId = decodeUserIdFromRequest(encodedKey, encodedData);
 
         const data = {
             userId: userId,
             venue: {
-                name: venue?.name,
-                description: venue?.description,
+                name: venue?.name || '',
+                description: venue?.description || '',
                 address: {
-                    street: venue?.address?.street,
-                    barangay: venue?.address?.barangay,
-                    municipality: venue?.address?.municipality,
-                    province: venue?.address?.province,
-                    region: venue?.address?.region,
+                    street: fStreet,
+                    barangay: fBarangay,
+                    municipality: fMunicipality,
+                    province: fProvince,
+                    region: fRegion,
                 },
-                filename: venue?.filename,
-                maximumSeatingCapacity: venue?.maximumSeatingCapacity,
-                price: venue?.price,
+                filename: venue?.filename || '',
+                maximumSeatingCapacity: venue?.maximumSeatingCapacity || 0,
+                price: venue?.price || 0,
             },
             menu: {
-                name: menu?.name,
-                description: menu?.description,
+                name: menu?.name || '',
+                description: menu?.description || '',
                 listofdishes: menu?.listofdishes,
                 listofdrinks: menu?.listofdrinks,
             },

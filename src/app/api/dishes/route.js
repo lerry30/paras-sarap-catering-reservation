@@ -58,7 +58,7 @@ export const POST = async (request) => {
             return Response.json({ message: 'All fields should be filled', errorData: invalidFields }, { status: 400 }); // I turn 204 to 400 since nextjs have problem with responding with status code of 204 right now
         
         const fDishName = TitleFormat(dishName);
-        const fDescription = (`${ description[0].toUpperCase() }${ description.substring(1) }`).trim();
+        const fDescription = (`${ description[0]?.toUpperCase() }${ description.substring(1) }`).trim();
         const buffer = Buffer.from(await file.arrayBuffer());
 
         const dishFromDb = await Dish.findOne({ name: fDishName });
@@ -131,7 +131,7 @@ export const PUT = async (request) => {
             return Response.json({ message: 'All fields should be filled', errorData: invalidFields }, { status: 400 }); // I turn 204 to 400 since nextjs have problem with responding with status code of 204 right now
         
         const fDishName = TitleFormat(dishName);
-        const fDescription = (`${ description[0].toUpperCase() }${ description.substring(1) }`).trim();
+        const fDescription = (`${ description[0]?.toUpperCase() }${ description.substring(1) }`).trim();
         const statusValues = { available: 'available', unavailable: 'unavailable' };
         const fStatus = statusValues[status] || 'available';
         

@@ -30,7 +30,7 @@ const Schedules = () => {
     }
 
     const updateMonth = (direction) => {
-        let nYear = 2024;
+        let nYear = currentYear;
         const nMonth = (currentMonth+direction+12)%12
         setCurrentMonth(nMonth);
 
@@ -85,8 +85,8 @@ const Schedules = () => {
                         <section className="grid grid-cols-7 gap-2 pr-2">
                             {
                                 Array(noOfRows).fill(0).map((item, index) => {
-                                    const startDay = startOfTheMonth?.getDay() || 100;
-                                    const endDay = endOfTheMonth?.getDate() || -1;
+                                    const startDay = startOfTheMonth?.getDay();
+                                    const endDay = endOfTheMonth?.getDate();
                                     const number = index - startDay + 1;
                                     if(number > 0) {
                                         if(number <= endDay) {
@@ -101,7 +101,6 @@ const Schedules = () => {
                                                 )
                                             }
                                                 
-
                                             return (
                                                     <div key={ index } className="w-full aspect-square p-2 border-[1px] border-neutral-400 cursor-pointer">
                                                     <span className="text-neutral-950">{ number }</span>
