@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { getData, sendFormUpdate } from '@/utils/send';
+import { Prompt } from '@/components/Modal';
 import Card from '@/components/admin/reservations/Card';
 import Loading from '@/components/Loading';
 
@@ -8,21 +9,33 @@ const ReservationList = () => {
     const [ reservations, setReservations ] = useState([]);
     const [ loading, setLoading ] = useState(false);
     const [ displayStatus, setDisplayStatus ] = useState('pending');
+    const [ approvePrompt, setApprovePrompt ] = useState(false);
+    const [ rejectPrompt, setRejectPrompt ] = useState(false);
 
-    const changeReservationStatus = async (id, status) => {
+    const [ formData, setFormData ] = useState({ id: '', status: '' });
+
+    const changeReservationStatus = (id, status) => {
+        setFormData({ id, status });
+        setApprovePrompt(status === 'approved');
+        setRejectPrompt(status === 'rejected');
+    }
+
+    const confirmChanges = async () => {
         setLoading(true);
         try {
+            const { id, status } = formData;
             const form = new FormData();
             form.append('id', id);
             form.append('status', status);
             const response = await sendFormUpdate('/api/reservations/reservation', form);
             await getResList();
             setDisplayStatus(status);
-            return;
         } catch(error) {
             console.log(error);
         }
 
+        setApprovePrompt(false);
+        setRejectPrompt(false);
         setLoading(false);
     }
 
@@ -59,25 +72,46 @@ const ReservationList = () => {
             </div>
         </div>
         <section className="w-full h-[calc(100vh-var(--nav-height))] flex flex-col px-4 py-2 overflow-auto hide-scrollbar">
-            <div className="w-full flex flex-col pb-40">
-                {
-                    reservations.map((res, index) => {
-                        // console.log(res);
-                        const status = res?.status?.trim()?.toLowerCase();
-                        if(displayStatus !== status) {
-                            return <div key={ index }></div>
-                        }
+            {
+                reservations.length === 0 ?
+                    <div className="m-auto">
+                        <h3 className="font-headings text-lg text-neutral-700">No Reservations Found</h3>
+                    </div>
+                :
+                    <div className="w-full flex flex-col pb-40">
+                        {
+                            reservations.map((res, index) => {
+                                // console.log(res);
+                                const status = res?.status?.trim()?.toLowerCase();
+                                if(displayStatus !== status) {
+                                    return <div key={ index }></div>
+                                }
 
-                        return <Card 
-                            key={ index } 
-                            reservationData={ res } 
-                            tab={ displayStatus } 
-                            changeReservationStatus={ changeReservationStatus } 
-                        />
-                    })
-                }
-            </div>
+                                return <Card 
+                                    key={ index } 
+                                    reservationData={ res } 
+                                    tab={ displayStatus } 
+                                    changeReservationStatus={ changeReservationStatus } 
+                                />
+                            })
+                        }
+                </div>
+            }
         </section>
+        {
+            approvePrompt && <Prompt callback={ confirmChanges } 
+                onClose={ () => { 
+                    setApprovePrompt(false) ;
+                    setLoading(false);
+            }} header="Confirm Approval" message="Are you sure you want to approve this reservation?"/>
+        }
+        {
+            rejectPrompt && <Prompt callback={ confirmChanges } 
+                onClose={ () => { 
+                    setRejectPrompt(false) ;
+                    setLoading(false);
+            }} header="Confirm Rejection" message="Are you sure you want to reject this reservation?"/>
+        }
     </>
 }
 
