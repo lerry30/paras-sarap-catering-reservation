@@ -100,7 +100,7 @@ const Messages = () => {
                 <MessageCircle size={24} strokeWidth={1}/>
             </div>
             <div className={ `w-[400px] h-[calc(100vh-var(--nav-height))] flex flex-col fixed bottom-0 right-0 shadow bg-white rounded-t-lg overflow-hidden transition-transform ${ chatBar ? '-translate-y-0' : 'translate-y-full' }` }>
-                <header className="h-nav-height flex items-center bg-teal-700">
+                <header className="h-nav-height flex items-center bg-teal-700 pl-4">
                     {
                         displayName ? 
                             <div className="flex items-center gap-2 p-[4px]">

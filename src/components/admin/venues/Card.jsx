@@ -21,7 +21,7 @@ const Card = ({ venueData, onDelete, onUpdate, viewMore }) => {
     }, []);
 
     return (
-        <div className="flex flex-col w-full min-w-[370px] max-w-[calc((100vw-var(--admin-sidebar-width)-(18px*4))/2)] h-[370px] rounded-lg shadow-xl hover:scale-[1.01] hover:shadow-2xl transition-transform">
+        <div className="flex flex-col w-full min-w-[370px] max-w-[calc((100vw-var(--admin-sidebar-width)-(18px*4))/2)] h-[370px] rounded-lg shadow-xl border-[1px] hover:scale-[1.01] hover:shadow-2xl transition-transform">
             <Image 
                 src={ image }
                 alt={ name }

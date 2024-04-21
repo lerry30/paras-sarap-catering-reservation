@@ -1,9 +1,45 @@
 import TitleFormat from '@/utils/titleFormat';
 import Reservation from '@/models/Reservation';
+import User from '@/models/Users';
 import { decodeUserIdFromRequest } from '@/utils/auth/decode';
 import { toNumber } from '@/utils/number';
 import { addressAll } from '@/utils/philAddress';
 import { NextResponse } from 'next/server';
+
+export const GET = async (request) => {
+    try {
+        const reservations = (await Reservation.find({}).sort({ createdAt: -1 })) || [];
+        const nReservations = [];
+        for(let i = 0; i < reservations.length; i++) {
+            const reservation = reservations[i];
+            const userId = reservation.userId;
+            const user = await User.findById(userId);
+            const userData = {
+                firstname: user?.firstname,
+                lastname: user?.lastname,
+                email: user?.email,
+                filename: user?.filename,
+                status: user?.status,
+            };
+
+            nReservations.push({ 
+                _id: reservation._id?.toString(), 
+                venue: reservation.venue,
+                menu: reservation.menu,
+                date: reservation.date,
+                user: userData,
+                noofguest: reservation.noofguest,
+                status: reservation.status,
+                createdAt: reservation.createdAt,
+            });
+        }
+
+        return NextResponse.json({ message: '', data: nReservations }, { status: 200 });
+    } catch(error) {
+        console.log(error);
+        return NextResponse.json({ message: 'There\'s something wrong!', errorData: 'unauth' }, { status: 400 });
+    }
+}
 
 export const POST = async (request) => {
     try {

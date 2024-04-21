@@ -65,7 +65,7 @@ const ReviewBudget = () => {
                 noofguest: noOfGuest,
             }
 
-            await sendJSON(`/api/reservation`, data);
+            await sendJSON(`/api/reservations`, data);
             setReservationSuccess(true);
             setTimeout(() => {
                 router.push('/');
