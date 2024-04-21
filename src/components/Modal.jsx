@@ -86,7 +86,7 @@ export const Prompt = ({ header, message, callback, onClose }) => {
     );
 }
 
-export const PromptAgreement = ({ callback, onClose }) => {
+export const PromptAgreement = ({ callback, onClose, deadline }) => {
     const modalRef = useRef();
     const [ agreed, setAgreed ] = useState(false);
 
@@ -126,10 +126,10 @@ export const PromptAgreement = ({ callback, onClose }) => {
                     4. Cancellation Policy: Cancellations made after the contract is signed may incur penalties.
                 </p>
                 <p className="font-paragraphs w-full py-0 md:py-4 text-sm md:text-base text-center text-neutral-800">
-                    5. Payment Deadline: Full payment must be received by [specific deadline] to confirm the reservation.
+                    5. Payment Deadline: Full payment must be received by { deadline } to confirm the reservation.
                 </p>
                 <p className="font-paragraphs w-full py-0 md:py-4 text-sm md:text-base text-center text-neutral-800">
-                    6. Guest Count: The final guest count must be confirmed [number] days before the event date.
+                    6. Guest Count: The final guest count must be confirmed three days before the event date.
                 </p>
                 <p className="font-paragraphs w-full py-0 md:py-4 text-sm md:text-base text-center text-neutral-800">
                     7. Additional Charges: Additional fees may apply for special requests or last-minute changes.

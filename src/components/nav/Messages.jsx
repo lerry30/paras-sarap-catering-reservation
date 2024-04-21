@@ -96,8 +96,8 @@ const Messages = () => {
 
     return (
         <>
-            <div onClick={ () => setChatBar(state => !state) } className="h-full aspect-square flex justify-center items-center rounded-full cursor-pointer">
-                <MessageCircle size={24} strokeWidth={1}/>
+            <div onClick={ () => setChatBar(state => !state) } className="group size-[calc(var(--nav-item-height)-10px)] flex justify-center items-center rounded-full cursor-pointer hover:bg-skin-ten">
+                <MessageCircle size={24} strokeWidth={2} className="group-hover:stroke-white"/>
             </div>
             <div className={ `w-[400px] h-[calc(100vh-var(--nav-height))] flex flex-col fixed bottom-0 right-0 shadow bg-white rounded-t-lg overflow-hidden transition-transform ${ chatBar ? '-translate-y-0' : 'translate-y-full' }` }>
                 <header className="h-nav-height flex items-center bg-teal-700 pl-4">

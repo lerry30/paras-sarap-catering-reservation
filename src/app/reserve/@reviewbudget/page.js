@@ -31,6 +31,7 @@ const ReviewBudget = () => {
     const [ invalidFieldsValue, setInvalidFieldsValue ] = useState({});
     const services = { wedding: true, debut: true, kidsparty: true, privateparty: true };
     const pesoFormatter = new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' });
+    const dateFormatter = new Intl.DateTimeFormat('en-PH', { month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true,});
     const costOfTablesNChairsPerGuest = 20;
 
     const searchParams = useSearchParams();
@@ -68,8 +69,9 @@ const ReviewBudget = () => {
             await sendJSON(`/api/reservations`, data);
             setReservationSuccess(true);
             setTimeout(() => {
-                router.push('/');
+                router.push('/reserve?display=myreservations');
             }, 4000);
+            return;
         } catch(error) {
             setInvalidFieldsValue({ error: error?.message || '' });
         }
@@ -312,7 +314,7 @@ const ReviewBudget = () => {
             <ErrorField message={ invalidFieldsValue['error'] } />
         </main>
         {
-            agreementPrompt && <PromptAgreement callback={ agree } onClose={ () => setAgreementPrompt(false) } />
+            agreementPrompt && <PromptAgreement callback={ agree } onClose={ () => setAgreementPrompt(false) } deadline={ dateFormatter.format(new Date(new Date(schedule?.date).getTime() + (1000 * 60 * 60 * 24))) } />
         }
         {
             reservationSuccess && <SuccessModal message="Congratulations on completing your reservation! If you have any further questions or need assistance with anything else, feel free to let us know. We're here to help make your event a success!" callback={ () => setReservationSuccess(false) } />

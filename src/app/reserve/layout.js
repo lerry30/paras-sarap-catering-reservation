@@ -21,6 +21,7 @@ export default function AdminLayout({
         drinksselection,
         schedule,
         reviewbudget,
+        myreservation,
      }) {
     const views = {
         themes: themes,
@@ -32,6 +33,7 @@ export default function AdminLayout({
         drinksselection: drinksselection,
         schedule: schedule,
         reviewbudget: reviewbudget,
+        myreservations: myreservation,
     };
 
     return (

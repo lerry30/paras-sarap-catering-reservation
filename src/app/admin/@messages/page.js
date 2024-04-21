@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
-import { CircleUserRound, MessageCircle, SendHorizontal, X } from '@/components/icons/All';
+import { CircleUserRound, SendHorizontal, X } from '@/components/icons/All';
 import { getData, sendJSON } from '@/utils/send';
 import { createFullname } from '@/utils/name';
 import { useSearchParams, useRouter } from 'next/navigation';

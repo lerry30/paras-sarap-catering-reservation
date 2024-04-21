@@ -98,10 +98,16 @@ const Schedules = () => {
             setInvalidFieldsValue(state => ({ ...state, date: noDateSelectionMade }));
             setInvalidFieldsValue(state => ({ ...state, 'time-from': errorStartTime }));
             setInvalidFieldsValue(state => ({ ...state, 'time-to': errorEndTime }));
+           
+            const fFromHour = toNumber(fromHour)?.toString()?.padStart(2, '0');
+            const fFromMinute = toNumber(fromMinute)?.toString()?.padStart(2, '0');
+
+            const fToHour = toNumber(toHour)?.toString()?.padStart(2, '0');
+            const fToMinute = toNumber(toMinute)?.toString()?.padStart(2, '0');
 
             if(!noDateSelectionMade && !errorStartTime && !errorEndTime) {
-                const fromTime = `${ fromHour }: ${ fromMinute } ${ fromMeridiem }`;
-                const toTime = `${ toHour }: ${ toMinute } ${ toMeridiem }`;
+                const fromTime = `${ fFromHour }: ${ fFromMinute } ${ fromMeridiem }`;
+                const toTime = `${ fToHour }: ${ fToMinute } ${ toMeridiem }`;
                 const data = {
                     date: selectedDay,
                     time: {

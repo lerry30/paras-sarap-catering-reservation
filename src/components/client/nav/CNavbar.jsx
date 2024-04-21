@@ -10,6 +10,7 @@ import CSidebar from './CSidebar';
 import Messages from '@/components/nav/Messages';
 import { useEffect } from 'react';
 import { zUserData } from '@/stores/user';
+import { ListChecks } from '@/components/icons/All';
 
 const CNavbar = () => {
     const saveUserData = zUserData(state => state.saveUserData);
@@ -65,6 +66,11 @@ const CNavbar = () => {
                                 </>
                             :
                                 <>
+                                    <li className="h-nav-item-height flex rounded-full p-1 items-center justify-center">
+                                        <Link href="/reserve?display=myreservations" className="group size-[calc(var(--nav-item-height)-10px)] flex items-center justify-center rounded-full hover:bg-skin-ten">
+                                            <ListChecks size={24} strokeWidth={2} className="group-hover:stroke-white"/>
+                                        </Link>
+                                    </li>
                                     <li className="h-nav-item-height flex rounded-full p-1">
                                         <Messages />
                                     </li>

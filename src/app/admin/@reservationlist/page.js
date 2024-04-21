@@ -42,7 +42,7 @@ const ReservationList = () => {
 
     return <>
         { loading && <Loading customStyle="size-full" /> }
-        <div className="flex justify-between px-4 py-2 border-b-[1px] sticky top-[var(--nav-height)] bg-white">
+        <div className="flex justify-between px-4 py-2 border-b-[1px] sticky top-[var(--nav-height)] bg-white z-subnavbar">
             <div>
                 <h2 className="font-headings font-semibold">Reservation List</h2>
             </div>
@@ -51,15 +51,15 @@ const ReservationList = () => {
                     <button onClick={ ev => setDisplayStatus('pending') } className={ `px-2 rounded-lg ${ displayStatus === 'pending' && 'bg-skin-ten text-white' }` }>Pending</button>
                 </div>
                 <div className="px-1">
-                    <button onClick={ ev => setDisplayStatus('accepted') } className={ `px-2 rounded-lg ${ displayStatus === 'accepted' && 'bg-skin-ten text-white' }` }>Accepted</button>
+                    <button onClick={ ev => setDisplayStatus('approved') } className={ `px-2 rounded-lg ${ displayStatus === 'approved' && 'bg-skin-ten text-white' }` }>Approved</button>
                 </div>
                 <div className="px-1">
-                    <button onClick={ ev => setDisplayStatus('denied') } className={ `px-2 rounded-lg ${ displayStatus === 'denied' && 'bg-skin-ten text-white' }` }>Denied</button>
+                    <button onClick={ ev => setDisplayStatus('rejected') } className={ `px-2 rounded-lg ${ displayStatus === 'rejected' && 'bg-skin-ten text-white' }` }>Rejected</button>
                 </div>
             </div>
         </div>
         <section className="w-full h-[calc(100vh-var(--nav-height))] flex flex-col px-4 py-2 overflow-auto hide-scrollbar">
-            <div className="w-full flex pb-40">
+            <div className="w-full flex flex-col pb-40">
                 {
                     reservations.map((res, index) => {
                         // console.log(res);

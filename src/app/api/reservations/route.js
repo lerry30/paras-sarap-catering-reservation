@@ -47,7 +47,7 @@ export const POST = async (request) => {
         const venue = jsonRequest?.venue;
         const menu = jsonRequest?.menu;
         const date = jsonRequest?.date;
-        const noOfGuest = toNumber(jsonRequest?.noOfGuest);
+        const noOfGuest = toNumber(jsonRequest?.noofguest);
         
         // venue
         const street = venue?.address?.street?.trim();

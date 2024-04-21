@@ -41,7 +41,7 @@ const Card = ({ reservationData={}, changeReservationStatus, tab='pending' }) =>
     const pesoFormatter = new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' });
     const dateFormatter = new Intl.DateTimeFormat('en-PH', { month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true,});
 
-    const statusSkin = { pending: 'bg-orange-200 text-orange-800 border-orange-700', accepted: 'bg-teal-200 text-teal-800 border-teal-700', denied: 'bg-red-200 text-red-800 border-red-700' };
+    const statusSkin = { pending: 'bg-orange-400 text-orange-800 border-orange-700', approved: 'bg-teal-400 text-teal-800 border-teal-700', rejected: 'bg-red-400 text-red-800 border-red-700' };
 
     const [ total, setTotal ] = useState(0);
 
@@ -53,12 +53,12 @@ const Card = ({ reservationData={}, changeReservationStatus, tab='pending' }) =>
         setTotal(totalAmout);
     }, []);
 
-    return <main className="w-full p-6 rounded-lg shadow-lg border-[1px] divide-y-[1px]">
+    return <main className="w-full p-6 rounded-lg shadow-xl border-2 divide-y-[1px] mb-6">
         <section className="flex items-center gap-2 pb-2">
             <div>
                 {
                     userFileName ?
-                        <div className="size-20">
+                        <div className="size-16">
                             <Image 
                                 src={ userFileName }
                                 alt={ firstName }
@@ -80,7 +80,7 @@ const Card = ({ reservationData={}, changeReservationStatus, tab='pending' }) =>
                         </div>
                     :
                         <div className="">
-                            <CircleUserRound size={80} strokeWidth={1} className="" />
+                            <CircleUserRound size={64} strokeWidth={1} className="" />
                         </div>
                 }
             </div>
@@ -236,7 +236,7 @@ const Card = ({ reservationData={}, changeReservationStatus, tab='pending' }) =>
         </section>
         <section className="flex items-center justify-between py-2">
             <div className="flex flex-col">
-                <article className="font-paragraphs text-sm">
+                <article className="font-paragraphs text-sm flex gap-2">
                     <span>Number of Guest:</span>
                     <span className="font-semibold">{ noOfGuest }</span>
                 </article>
@@ -247,17 +247,17 @@ const Card = ({ reservationData={}, changeReservationStatus, tab='pending' }) =>
             </div>
             <article className="font-headings font-semibold flex gap-2">
                 <span>Status: </span>
-                <span className={ `text-sm rounded-full border-[1px] px-2 text-white leading-normal ${ statusSkin[status] }` }>{ status }</span>
+                <span className={ `text-sm rounded-full border-[1px] px-2 text-neutral-700 leading-normal` }>{ status }</span>
             </article>
             <div className="font-headings flex gap-4">
                 {
-                    (tab === 'pending' || tab === 'denied') &&
-                        <button onClick={ () => changeReservationStatus(id, 'accepted') } className="bg-skin-ten text-white px-6 py-2 rounded-full text-sm font-semibold hover:bg-emerald-800 leading-normal">ACCEPT</button>
+                    (tab === 'pending' || tab === 'rejected') &&
+                        <button onClick={ () => changeReservationStatus(id, 'approved') } className="bg-skin-ten text-white px-6 py-2 rounded-full text-sm font-semibold hover:bg-emerald-800 leading-normal">APPROVE</button>
                 }
 
                 {
-                    (tab === 'pending' || tab === 'accepted') &&
-                        <button onClick={ () => changeReservationStatus(id, 'denied') } className="bg-red-600 text-white px-6 py-2 rounded-full text-sm font-semibold hover:bg-red-800 leading-normal">DENY</button>
+                    (tab === 'pending' || tab === 'approved') &&
+                        <button onClick={ () => changeReservationStatus(id, 'rejected') } className="bg-red-600 text-white px-6 py-2 rounded-full text-sm font-semibold hover:bg-red-800 leading-normal">REJECT</button>
                 }
             </div>
         </section>
@@ -265,3 +265,5 @@ const Card = ({ reservationData={}, changeReservationStatus, tab='pending' }) =>
 }
 
 export default Card;
+
+// ${ statusSkin[status] }
