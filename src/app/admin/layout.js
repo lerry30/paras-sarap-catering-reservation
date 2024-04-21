@@ -1,9 +1,6 @@
 'use client';
 import ANavbar from '@/components/admin/nav/ANavbar';
 import Loading from '@/components/Loading';
-import { zDish } from '@/stores/admin/dish';
-import { zDrink } from '@/stores/admin/drink';
-import { zVenue } from '@/stores/admin/venue';
 import { useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
 
@@ -15,7 +12,7 @@ export default function AdminLayout({
         viewweddingthemes,
         menus, addmenu, dishesselection, drinksselection, updatemenu, viewmenu,
         schedules,
-        users, messages,
+        users, messages, reservationlist
     }) {
     // Keep in mind to always restart the server every time a new slot is added.
 
@@ -43,6 +40,7 @@ export default function AdminLayout({
         dashboard: dashboard,
         users: users,
         messages: messages,
+        reservationlist: reservationlist,
     }
 
     return (

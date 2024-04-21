@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 const Card = ({ userData={} }) => {
+    const id = userData?.id;
     const profilePic = userData?.filename;
     const firstname = userData?.firstname;
     const lastname = userData?.lastname;
@@ -56,7 +57,7 @@ const Card = ({ userData={} }) => {
                 <p className="font-paragraphs italic text-neutral-700">{ email }</p>
                 <p className="font-paragraphs text-neutral-700 text-sm">Joined At: { joinedAt }</p>
                 <div className="flex py-4 gap-x-2">
-                    <Link href="">
+                    <Link href={ `/admin?display=messages&id=${ id }` }>
                         <span className="bg-pink-500 px-2 py-1 rounded-full text-white text-[12px] font-headings font-bold">Message</span>
                     </Link>
                 </div>

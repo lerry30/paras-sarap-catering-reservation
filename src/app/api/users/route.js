@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import { rateLimit } from 'x-rate-limiter';
+import { config, rateLimit } from 'x-rate-limiter';
 
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';

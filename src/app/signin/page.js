@@ -94,7 +94,7 @@ const SignInPage = () => {
                     onClick={handleSubmit}
                     className="button w-full mt-2 text-sm text-white bg-teal-500"
                 >
-                    CONTINUE
+                    SIGN IN
                 </button>
 
                 <ErrorField message={ invalidFieldsValue?.unauth } />

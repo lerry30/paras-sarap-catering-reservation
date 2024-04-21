@@ -1,4 +1,5 @@
 import User from '@/models/Users';
+import jwt from 'jsonwebtoken';
 import { apiIsAnAdmin } from '@/utils/auth/api/isanadmin';
 import { NextResponse } from 'next/server';
 
@@ -11,7 +12,16 @@ export const GET = async (request) => {
         const data = [];
         for(const user of users) {
             if(!user?.admin) {
-                data.push(user);
+                const id = user?._id?.toString();
+                const firstname = user?.firstname || '';
+                const lastname = user?.lastname || '';
+                const email = user?.email || '';
+                const filename = user?.filename || '';
+                const status = user?.status || 'active';
+                const createdAt = user?.createdAt || '';
+
+                const eId = jwt.sign({ recipientId: id }, process.env.ACTION_KEY)
+                data.push({ id: eId, firstname, lastname, email, filename, status, createdAt });
             }
         }
         

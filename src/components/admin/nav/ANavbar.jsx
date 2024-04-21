@@ -5,7 +5,7 @@ import Avatar from '@/components/nav/Avatar';
 import Link from 'next/link';
 import { zUserData } from '@/stores/user';
 import { useEffect } from 'react';
-import { MessageCircle } from '@/components/icons/All';
+import { ListChecks, MessageCircle } from '@/components/icons/All';
 
 const ANavbar = () => {
     const saveUserData = zUserData(state => state.saveUserData);
@@ -24,10 +24,15 @@ const ANavbar = () => {
                     <Logo />
                 </li>
 
-                <ul className="flex items-center">
-                    <li className="h-nav-item-height flex items-center rounded-full p-1 mr-2">
-                        <Link href="/admin?display=messages" className="px-2">
-                            <MessageCircle size={24} strokeWidth={1}/>
+                <ul className="flex items-center gap-4">
+                    <li className="h-nav-item-height flex items-center justify-center">
+                        <Link href="/admin?display=reservationlist" className="group size-[calc(var(--nav-item-height)-10px)] flex items-center justify-center rounded-full hover:bg-skin-ten">
+                            <ListChecks size={24} strokeWidth={2} className="group-hover:stroke-white"/>
+                        </Link>
+                    </li>
+                    <li className="h-nav-item-height flex items-center justify-center">
+                        <Link href="/admin?display=messages" className="group size-[calc(var(--nav-item-height)-10px)] flex items-center justify-center rounded-full hover:bg-skin-ten">
+                            <MessageCircle size={24} strokeWidth={2} className="group-hover:stroke-white"/>
                         </Link>
                     </li>
                     <li className="h-nav-item-height flex rounded-full">
