@@ -31,7 +31,7 @@ const CNavbar = () => {
 
                     <ul className="hidden lg:flex items-center gap-1">
                         <li className="h-nav-item-height flex items-center rounded-sm hover:bg-skin-ten transition-colors">
-                            <Link href="" className="py-2 px-4 max-h-[40px] hover:text-white">About</Link>
+                            <Link href="/about" className="py-2 px-4 max-h-[40px] hover:text-white">About</Link>
                         </li>
                         <li className="h-nav-item-height flex items-center rounded-sm">
                             <Select name="Services" className="py-2 max-h-[40px]">
