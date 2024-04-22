@@ -56,11 +56,11 @@ const Card = ({ userData={} }) => {
                 <h2 className="font-headings font-semibold text-xl">{ fullName }</h2>
                 <p className="font-paragraphs italic text-neutral-700">{ email }</p>
                 <p className="font-paragraphs text-neutral-700 text-sm">Joined At: { joinedAt }</p>
-                <div className="flex py-4 gap-x-2">
+                {/* <div className="flex py-4 gap-x-2">
                     <Link href={ `/admin?display=messages&id=${ id }` }>
                         <span className="bg-pink-500 px-2 py-1 rounded-full text-white text-[12px] font-headings font-bold">Message</span>
                     </Link>
-                </div>
+                </div> */}
             </div>
         </div>
     )

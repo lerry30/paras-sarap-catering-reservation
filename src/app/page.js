@@ -2,11 +2,13 @@
 
 import CNavbar from '@/components/client/nav/CNavbar';
 import Image from 'next/image';
-import HeroImg5 from '../../public/images/hero-img-5.jpg';
-import WeddingImg from '../../public/images/wedding-img.jpg';
-import DebutImg from '../../public/images/debut-img.jpg';
-import KidsPartyImg from '../../public/images/kids-party-img.jpg';
-import PrivatePartyImg from '../../public/images/private-party-img.jpg';
+import HeroImg5 from '../../public/hero.png';
+
+import WeddingImg from '../../public/wedding.jpg';
+import DebutImg from '../../public/debut.jpeg';
+import KidsPartyImg from '../../public/kids-party.jpg';
+import PrivatePartyImg from '../../public/private-party.jpeg';
+
 import Link from 'next/link';
 import Card from '@/components/client/services/Card';
 import Footer from '@/components/Footer';
