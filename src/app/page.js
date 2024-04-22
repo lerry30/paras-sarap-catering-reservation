@@ -22,7 +22,7 @@ export default function Home() {
                         <h4 className="font-headings text-lg">Your Premier Catering Reservation Solution</h4>
                         <p className="font-paragraphs text-neutral-700 text-sm">At Paras Sarap Catering Reservation, we streamline catering reservations, eliminating the hassle of coordinating food for your events. From weddings to corporate gatherings, our user-friendly platform and diverse menu options ensure culinary success, allowing you to focus on creating unforgettable moments.</p>
                         <div className="flex gap-2 mt-4">
-                            <Link href="" className="rounded-sm border-[1px] border-neutral-600 p-2">Learn More</Link>
+                            <Link href="/about" className="rounded-sm border-[1px] border-neutral-600 p-2">Learn More</Link>
                             <Link href="/services" className="rounded-sm border-[1px] bg-skin-ten p-2 text-white">Reserve Now</Link>
                         </div>
                         <ul>

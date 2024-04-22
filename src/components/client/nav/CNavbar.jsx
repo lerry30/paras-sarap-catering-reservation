@@ -41,7 +41,7 @@ const CNavbar = () => {
                                 <Option href="/reserve?display=themes&service=privateparty">Private Party Service</Option>
                             </Select>
                         </li>
-                        <li className="h-nav-item-height flex items-center rounded-sm">
+                        {/* <li className="h-nav-item-height flex items-center rounded-sm">
                             <Select name="Packages" className="py-2 max-h-[40px]">
                                 <Option href="">Wedding Package</Option>
                                 <Option href="">Debut Package</Option>
@@ -51,7 +51,7 @@ const CNavbar = () => {
                         </li>
                         <li className="h-nav-item-height flex items-center rounded-sm hover:bg-skin-ten transition-colors">
                             <Link href="" className="py-2 px-4 max-h-[40px] hover:text-white">Contact</Link>
-                        </li>
+                        </li> */}
                     </ul>
 
                     <ul className="flex items-center">

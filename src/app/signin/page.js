@@ -32,7 +32,7 @@ const SignInPage = () => {
             const signInResponse = await sendJSON('/api/users/signin', { email: emailAddress, password });
             if(signInResponse?.success) {
                 await fetch('/api/users/signin', { method: 'DELETE' });
-                const redirectTo = signInResponse?.sudosu ? '/admin' : '/';
+                const redirectTo = signInResponse?.sudosu ? '/admin' : '/services';
                 router.push(redirectTo);
                 return;
             } else {
