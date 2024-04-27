@@ -5,7 +5,7 @@ import Logo from '@/components/nav/Logo';
 import Head from 'next/head';
 
 export default function About() {
-    return <>
+    return <div className="pt-[var(--nav-height)]">
         <CNavbar/>
         <div className="flex flex-col gap-8 container mx-auto px-4 py-8 font-paragraphs">
             <h1 className="font-headings text-xl font-bold mb-4">About Paras Sarap Catering Services</h1>
@@ -94,5 +94,5 @@ export default function About() {
 
         </div>
         <Footer />
-    </>
+    </div>
 }

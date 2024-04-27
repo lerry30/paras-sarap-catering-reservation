@@ -1,5 +1,5 @@
 import User from '@/models/Users';
-import jwt from 'jsonwebtoken';
+// import jwt from 'jsonwebtoken';
 import { apiIsAnAdmin } from '@/utils/auth/api/isanadmin';
 import { NextResponse } from 'next/server';
 
@@ -20,8 +20,8 @@ export const GET = async (request) => {
                 const status = user?.status || 'active';
                 const createdAt = user?.createdAt || '';
 
-                const eId = jwt.sign({ recipientId: id }, process.env.ACTION_KEY)
-                data.push({ id: eId, firstname, lastname, email, filename, status, createdAt });
+                // const eId = jwt.sign({ recipientId: id }, process.env.ACTION_KEY)
+                data.push({ id, firstname, lastname, email, filename, status, createdAt });
             }
         }
         

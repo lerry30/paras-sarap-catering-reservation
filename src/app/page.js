@@ -15,7 +15,7 @@ import Footer from '@/components/Footer';
 
 export default function Home() {
     return (
-        <>
+        <div className="pt-[var(--nav-height)]">
             <CNavbar />
             <main className="w-full py-4 px-page-x">
                 <section className="w-full flex flex-col md:flex-row gap-4 md:h-[calc(100vh-var(--nav-height)-32px)]">
@@ -78,6 +78,6 @@ export default function Home() {
                 </section>
             </main>
             <Footer />
-        </>
+        </div>
     );
 }

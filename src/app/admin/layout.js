@@ -45,11 +45,13 @@ export default function AdminLayout({
 
     return (
         <Suspense fallback={ <Loading customStyle="size-full" />}>
-            <ANavbar />
-            <Display 
-                main={ children } 
-                slots={ views } 
-            />
+            <div className="pt-[var(--nav-height)]">
+                <ANavbar />
+                <Display 
+                    main={ children } 
+                    slots={ views } 
+                />
+            </div>
         </Suspense>
     );
 }
@@ -62,7 +64,8 @@ export default function AdminLayout({
 const Display = ({ main, slots }) => {
     const searchParams = useSearchParams();
     const slot = searchParams.get('display');
-    const display = slots[ slot ] || main;
+    const hasPageToDisplay = slots.hasOwnProperty(slot);
+    const display = hasPageToDisplay ? slots[ slot ] : main;
     return (
         <main className="sm:pl-[var(--admin-sidebar-width)]">
             { display }

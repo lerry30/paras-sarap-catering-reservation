@@ -56,7 +56,8 @@ export default function AdminLayout({
 const Display = ({ main, slots }) => {
     const searchParams = useSearchParams();
     const slot = searchParams.get('display');
-    const display = slots[ slot ] || main;
+    const hasPageToDisplay = slots.hasOwnProperty(slot);
+    const display = hasPageToDisplay ? slots[ slot ] : main;
     return (
         <main className="min-h-screen">
             { display }

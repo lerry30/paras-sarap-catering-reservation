@@ -7,7 +7,7 @@ export const middleware = async (request) => {
     const { origin, pathname } = request.nextUrl;
 
     // const fSegments = (!pathname?.startsWith('/') || pathname?.substr(1))?.split('/')[0];
-    if(!legacyPrefixes[pathname]) { // to avoid loop since it will always redirect to signin
+    if(!legacyPrefixes.hasOwnProperty(pathname)) { // to avoid loop since it will always redirect to signin
         // console.log(request.cookies.getAll())
         const encodedKey = request.cookies.get('user-json-token-key')?.value || '';
         const encodedData = request.cookies.get('user-json-token-data')?.value || '';
@@ -35,7 +35,7 @@ export const middleware = async (request) => {
         } 
         
         const accessiblePrefixes = { '/': true, '/about': true, };
-        if(accessiblePrefixes[pathname]) {
+        if(accessiblePrefixes.hasOwnProperty(pathname)) {
             return NextResponse.next();
         }
         

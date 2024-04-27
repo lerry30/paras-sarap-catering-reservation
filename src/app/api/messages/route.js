@@ -12,6 +12,8 @@ export const GET = async (request) => {
         if(!encodedKey || !encodedData) return NextResponse.json({ message: 'There\'s something wrong!' }, { status: 400 });
         const userId = decodeUserIdFromRequest(encodedKey, encodedData);
         if(!userId) return NextResponse.json({ message: 'There\'s something wrong!' }, { status: 400 });
+        const user = await User.findById(userId);
+        const amIAnAdmin = user?.admin || false;
         
         const messages = await Message.find({ to: userId }) || [];
         const sentMessages = await Message.find({ from: userId }) || [];
@@ -60,7 +62,7 @@ export const GET = async (request) => {
                 recipientChats[recipientId] = { ...recipientChats[recipientId], recipient: {} };  
             recipientChats[recipientId].recipient = userData;
 
-            const nId = jwt.sign({ recipientId }, process.env.ACTION_KEY);
+            const nId = amIAnAdmin ? recipientId : jwt.sign({ recipientId }, process.env.ACTION_KEY);
             vChats.push({ [nId]: recipientChats[recipientId] });
         }
 
@@ -92,7 +94,7 @@ export const POST = async (request) => {
         if(!recipientId) {
             const admin = await User.find({ admin: true });
             recipientId = admin[0]._id.toString();
-        } else {
+        } else if(!user?.admin) {
             const recipientIdObject = jwt.verify(recipientId, process.env.ACTION_KEY);
             recipientId = recipientIdObject?.recipientId;
         }

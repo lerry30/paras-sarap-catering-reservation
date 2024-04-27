@@ -1,3 +1,0 @@
-admin
-    email: parassarap@gmail.com
-    password: Admin123!

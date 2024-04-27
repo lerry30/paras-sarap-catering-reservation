@@ -14,6 +14,7 @@ const Messages = () => {
     const [ displayChats, setDisplayChats ] = useState([]);
     const [ displayName, setDisplayName ] = useState('');
     const [ recipeintIndex, setRecipientIndex ] = useState(0);
+    const [ fCount, setFCount ] = useState(0);
     
     const [ loading, setLoading ] = useState(false);
 
@@ -35,34 +36,49 @@ const Messages = () => {
         }
     }
 
-    const chatAPerson = async () => {
-        const id = searchParams.get('id');
-        if(!id) return;
-
-        for(let i = 0; i < chats.length; i++) {
-            const chatData = chats[i];
-            if(chatData[id]) {
-                setRecipientIndex(i);
-                haveValue = true;
-                break;
-            }
-        }
-
-        if(chats.length === 0) {
+    const checkIfTheresAUserSelected = async (allChatsData) => {
+        try {
+            const id = searchParams.get('id');
+            if(!id) return;
+            
             const response = await sendJSON('/api/messages/message', { userId: id });
             const data = response?.data || {};
-            setViewChat(data);
-            // setChats(state => [ ...state, data ]);
+            const userIds = Object.keys(data);
+            if(userIds.length === 0) return;
 
-            router.replace('/admin?display=messages', undefined, { shallow: true });
+            setChats([ data, ...allChatsData ]);
+            setViewChat(data);
+        } catch(error) {
+            console.log(error);
+        }
+    }
+
+    const chatAPerson = async (allChatsData) => {
+        let contains = false;
+        try {
+            const id = searchParams.get('id');
+            if(!id) return;
+
+            for(let i = 0; i < allChatsData.length; i++) {
+                const chatData = allChatsData[i];
+                if(chatData[id]) {
+                    setRecipientIndex(i);
+                    contains = true;
+                    break;
+                }
+            }
+        } catch(error) {
+            console.log(error);
+        } finally {
+            return contains;
         }
     }
 
     const selectRecipient = (index) => {
         if(index < 0 || index >= chats.length) return;
         setRecipientIndex(index);
-        const recipientData = chats[index] || {};
-        setViewChat(recipientData);
+        // const recipientData = chats[index] || {};
+        // setViewChat(recipientData);
     }
 
     const recipientInfo = () => {
@@ -74,58 +90,62 @@ const Messages = () => {
     }
 
     const formatChats = () => {
-        const postedConversation = Object.values(viewChat || {})[0];
-        const recipientMessages = postedConversation?.messages || [];
-        let repliesMessages = postedConversation?.replies || [];
+        try {
+            const postedConversation = Object.values(viewChat || {})[0];
+            const recipientMessages = postedConversation?.messages || [];
+            let repliesMessages = postedConversation?.replies || [];
 
-        const messagesHolder = [];
-        for(const recMsg of recipientMessages) {
-            const timeRecSent = new Date(recMsg?.createdAt).getTime();
-            const holder = [ ...repliesMessages ];
-            repliesMessages = [];
-            for(const repMsg of holder) {
-                const timeRepSent = new Date(repMsg?.createdAt).getTime();
-                if(timeRepSent < timeRecSent) {
-                    messagesHolder.push({ ...repMsg, user: 'me' });
-                    continue;
+            const messagesHolder = [];
+            for(const recMsg of recipientMessages) {
+                const timeRecSent = new Date(recMsg?.createdAt).getTime();
+                const holder = [ ...repliesMessages ];
+                repliesMessages = [];
+                for(const repMsg of holder) {
+                    const timeRepSent = new Date(repMsg?.createdAt).getTime();
+                    if(timeRepSent < timeRecSent) {
+                        messagesHolder.push({ ...repMsg, user: 'me' });
+                        continue;
+                    }
+
+                    repliesMessages.push(repMsg);
                 }
 
-                repliesMessages.push(repMsg);
+                messagesHolder.push({ ...recMsg, user: 'stranger' });
             }
 
-            messagesHolder.push({ ...recMsg, user: 'stranger' });
-        }
+            for(const repMsg of repliesMessages) {
+                messagesHolder.push({ ...repMsg, user: 'me' });
+            }
 
-        for(const repMsg of repliesMessages) {
-            messagesHolder.push({ ...repMsg, user: 'me' });
+            // console.log(messagesHolder, '=====');
+            const prevMessageHolderLength = displayChats.length;
+            setDisplayChats(messagesHolder);
+            
+            // since it will always scroll through the bottom every request
+            // made I have added a condition to scroll it once a new message 
+            // occur and components are mounted
+            if(messagesHolder.length > prevMessageHolderLength)
+                chatCont.current.scrollTop = chatCont.current.scrollHeight;
+        } catch(error) {
+            console.log(error);
         }
-
-        // console.log(messagesHolder, '=====');
-        setDisplayChats(messagesHolder);
-        chatCont.current.scrollTop = chatCont.current.scrollHeight;
     }
 
     const fetchMessageUpdate = async () => {
         try {
             const chatsResponse = await getData('/api/messages');
             const allChatsData = chatsResponse?.data || [];
-
-            setRecipientIndex(state => {
-                const latest = allChatsData[state];
-                if(latest)
-                    setViewChat(latest);
-                return state;
-            });
-
-            setChats(allChatsData);
-            setLoading(false);
+            return allChatsData;
         } catch(error) {}
+
+        return null;
     }
 
     useEffect(() => {
         setLoading(true);
+
         const intervalId = setInterval(() => {
-            fetchMessageUpdate();
+            setFCount(state => state+1);
         }, 3_000);
 
         return () => clearInterval(intervalId);
@@ -136,16 +156,52 @@ const Messages = () => {
         recipientInfo();
     }, [ viewChat ]);
 
-    // useEffect(() => {
-    //     chatAPerson();
-    // }, [ chats ]);
+    useEffect(() => {
+        (async () => {
+            const allChatsData = await fetchMessageUpdate();
 
+            // I stored all data into chats instead of
+            // list of client's data only so could display
+            // the last message
+            setChats(state => {
+                const nData = [];
+                for(const chatData of state) {
+                    const chatsId = Object.keys(chatData)[0];
+                    let equal = false;
+                    for(const fData of allChatsData) {
+                        const fDataId = Object.keys(fData)[0];
+                        if(fDataId === chatsId) {
+                            equal = true;
+                            break;
+                        }
+                    }
+
+                    if(!equal) nData.push(chatData);
+                }
+
+                return [ ...nData, ...allChatsData ];
+            });
+
+            const contains = await chatAPerson(allChatsData);
+            if(!contains) await checkIfTheresAUserSelected(allChatsData);
+            router.replace('/admin?display=messages', undefined, { shallow: true });    
+        
+            if(fCount < 1) chatCont.current.scrollTop = chatCont.current.scrollHeight;
+            setLoading(false);
+        })();
+    }, [ fCount ]);
+
+    useEffect(() => {
+        console.log(recipeintIndex);
+        const currentRescipient = chats[recipeintIndex || 0] || {};
+        setViewChat(currentRescipient);
+    }, [ recipeintIndex ]);
 
     return (
         <>
             { loading && <Loading customStyle="size-full" /> }
             <section className="w-full pr-[var(--admin-sidebar-width)] h-[calc(100vh-var(--nav-height))] flex flex-col shadow bg-white overflow-hidden">
-                <div ref={ chatCont } className="flex grow h-[calc(100vh-var(--nav-height)-70px)] overflow-auto hide-scrollbar">
+                <div ref={ chatCont } className="flex grow h-[calc(100vh-var(--nav-height)-70px)] overflow-auto hide-scrollbar scroll-smooth">
                     {
                         Object.values(chats)?.length === 0 ?
                             <div className="size-full flex justify-center pt-[calc(50vh-var(--nav-height)-20px)]">
@@ -155,7 +211,7 @@ const Messages = () => {
                             <div className="w-full">
                                 {
                                     displayName && 
-                                        <div className="flex items-center gap-2 p-[4px] border-b-[1px] border-neutral-500 sticky top-0 bg-white">
+                                        <div className="flex items-center gap-2 p-[4px] border-b-[1px] border-[var(--skin-ten)] sticky top-0 bg-white">
                                             <CircleUserRound size={40} strokeWidth={1} stroke="black" className="" />
                                             <h3 className="font-headings font-semibold text-lg">{ displayName }</h3>
                                         </div>
@@ -185,8 +241,8 @@ const Messages = () => {
                             </div>
                     }
                 </div>
-                <div className="h-[70px] flex items-center gap-2 px-6 py-4 border-t-[1px] border-neutral-500">
-                    <input value={ message } onChange={ ev => setMessage(ev.target.value) } className="h-8 grow font-paragraphs font-medium rounded-full outline-none px-4 border-2 border-emerald-600" placeholder="Message"/>
+                <div className="h-[70px] flex items-center gap-2 px-6 py-4">
+                    <input value={ message } onChange={ ev => setMessage(ev.target.value) } onKeyDown={ ev => ev.key === 'Enter' && sendMessage() } className="h-8 grow font-paragraphs font-medium rounded-full outline-none px-4 border-2 border-emerald-600" placeholder="Message"/>
                     <button onClick={ sendMessage }>
                         <SendHorizontal size={34} className={ `p-1 stroke-emerald-600 
                         ${ !(Object.keys(viewChat || {})[0]) && 'stroke-neutral-400' }` } />

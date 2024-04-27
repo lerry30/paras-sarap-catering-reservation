@@ -1,16 +1,18 @@
 import User from '@/models/Users';
-import jwt from 'jsonwebtoken';
+import { apiIsAnAdmin } from '@/utils/auth/api/isanadmin';
 import { NextResponse } from 'next/server';
 
 export const POST = async (request) => {
     try {    
+        const isAnAdmin = await apiIsAnAdmin(request);
+        if(!isAnAdmin) return NextResponse.json({ message: 'There\'s something wrong!' }, { status: 400 });
+
         const requestObject = await request.json();
-        const recipientIdEnc = requestObject?.userId;
-        const recipientId = jwt.verify(recipientIdEnc, process.env.ACTION_KEY)?.recipientId || '';
+        const recipientId = requestObject?.userId;
         const recipientChats = {};
 
         if(!recipientId) return NextResponse.json({ message: 'There\'s something wrong!' }, { status: 400 });
-        
+
         const user = await User.findById(recipientId);
         const firstname = user?.firstname || '';
         const lastname = user?.lastname || '';
@@ -20,7 +22,7 @@ export const POST = async (request) => {
         const createdAt = user?.createdAt || '';
 
         const userData = { firstname, lastname, email, filename, status, createdAt };
-        recipientChats[recipientIdEnc] = { recipient: userData, messages: [], replies: [] };
+        recipientChats[recipientId] = { recipient: userData, messages: [], replies: [] };
         
         return NextResponse.json({ message: '', data: recipientChats }, { status: 200 });
     } catch(error) {

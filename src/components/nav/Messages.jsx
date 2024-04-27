@@ -12,6 +12,7 @@ const Messages = () => {
     const [ viewChat, setViewChat ] = useState({});
     const [ displayChats, setDisplayChats ] = useState([]);
     const [ displayName, setDisplayName ] = useState('');
+    const [ fCount, setFCount ] = useState(0);
 
     const [ chatBar, setChatBar ] = useState(false);
 
@@ -63,9 +64,14 @@ const Messages = () => {
             messagesHolder.push({ ...repMsg, user: 'me' });
         }
 
-        // console.log(messagesHolder);
+        const prevMessageHolderLength = displayChats.length;
+        // console.log(messagesHolder, '=====');
         setDisplayChats(messagesHolder);
-        chatCont.current.scrollTop = chatCont.current.scrollHeight;
+        
+        // since it will always scroll through the bottom every request
+        // made I have added a condition to scroll it once a new message occur only
+        if(messagesHolder.length > prevMessageHolderLength)
+            chatCont.current.scrollTop = chatCont.current.scrollHeight;
     }
 
     const fetchMessageUpdate = async () => {
@@ -77,13 +83,14 @@ const Messages = () => {
             setViewChat(latest);
 
             setLoading(false);
+            if(fCount < 1) chatCont.current.scrollTop = chatCont.current.scrollHeight;
         } catch(error) {}
     }
 
     useEffect(() => {
         setLoading(true);
         const intervalId = setInterval(() => {
-            fetchMessageUpdate();
+            setFCount(state => state + 1);
         }, 3_000);
 
         return () => clearInterval(intervalId);
@@ -93,6 +100,10 @@ const Messages = () => {
         formatChats();
         recipientInfo();
     }, [ viewChat ]);
+
+    useEffect(() => {
+        fetchMessageUpdate();
+    }, [ fCount ]);
 
     return (
         <>
@@ -116,7 +127,7 @@ const Messages = () => {
                         <X className="cursor-pointer rounded-full hover:bg-neutral-800 stroke-neutral-200" />
                     </button>
                 </header>
-                <div ref={ chatCont } className="w-full flex flex-col gap-6 py-4 overflow-auto hide-scrollbar">
+                <div ref={ chatCont } className="w-full flex flex-col gap-6 py-4 overflow-auto hide-scrollbar scroll-smooth">
                     {
                         displayChats?.map((item, index) => {
                             if(item?.user === 'me') {
@@ -139,7 +150,7 @@ const Messages = () => {
                     }
                 </div>
                 <div className="flex items-center gap-2 px-6 py-4 bg-teal-700 rounded-t-md mt-auto">
-                    <input value={ message } onChange={ ev => setMessage(ev.target.value) } className="h-8 grow font-paragraphs font-medium rounded-full outline-none px-4" placeholder="Message"/>
+                    <input value={ message } onChange={ ev => setMessage(ev.target.value) } onKeyDown={ ev => ev.key === 'Enter' && sendMessage() } className="h-8 grow font-paragraphs font-medium rounded-full outline-none px-4" placeholder="Message"/>
                     <button onClick={ sendMessage }>
                         <SendHorizontal size={34} className="p-1 stroke-white" />
                     </button>

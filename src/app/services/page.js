@@ -10,7 +10,7 @@ import CNavbar from '@/components/client/nav/CNavbar';
 import Footer from '@/components/Footer';
 
 const Services = () => {
-    return <>
+    return <div className="pt-[var(--nav-height)]">
         <CNavbar />
         <main className="mb-4">
             <section className="w-screen min-h-screen flex justify-center items-center">
@@ -35,7 +35,7 @@ const Services = () => {
             </section>
         </main>
         <Footer/>
-    </>
+    </div>
 }
 
 export default Services;
