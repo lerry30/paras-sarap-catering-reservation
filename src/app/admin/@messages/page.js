@@ -48,6 +48,7 @@ const Messages = () => {
 
             setChats([ data, ...allChatsData ]);
             setViewChat(data);
+            router.replace('/admin?display=messages', undefined, { shallow: true }); 
         } catch(error) {
             console.log(error);
         }
@@ -69,9 +70,10 @@ const Messages = () => {
             }
         } catch(error) {
             console.log(error);
-        } finally {
-            return contains;
         }
+
+        router.replace('/admin?display=messages', undefined, { shallow: true }); 
+        return contains;
     }
 
     const selectRecipient = (index) => {
@@ -184,18 +186,18 @@ const Messages = () => {
 
             const contains = await chatAPerson(allChatsData);
             if(!contains) await checkIfTheresAUserSelected(allChatsData);
-            router.replace('/admin?display=messages', undefined, { shallow: true });    
-        
+            
             if(fCount < 1) chatCont.current.scrollTop = chatCont.current.scrollHeight;
             setLoading(false);
         })();
     }, [ fCount ]);
 
     useEffect(() => {
-        console.log(recipeintIndex);
+        if(chats.length === 0) return;
+        console.log(recipeintIndex, chats);
         const currentRescipient = chats[recipeintIndex || 0] || {};
         setViewChat(currentRescipient);
-    }, [ recipeintIndex ]);
+    }, [ recipeintIndex, chats ]);
 
     return (
         <>
