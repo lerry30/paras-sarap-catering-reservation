@@ -134,7 +134,7 @@ const Messages = () => {
                                 return (
                                     <div key={ index } className="w-full flex justify-end items-center gap-2 px-4">
                                         <span className="text-[12px] font-paragraphs">{ timeFormat.format(new Date(item?.createdAt)) }</span>
-                                        <span className="p-2 bg-blue-600 text-white rounded-full rounded-br-none px-4 text-sm">{ item?.message }</span>
+                                        <span className="p-2 bg-blue-600 text-white rounded-2xl rounded-br-none px-4 text-sm">{ item?.message }</span>
                                     </div>
                                 )
                             }
@@ -142,7 +142,7 @@ const Messages = () => {
                             return (
                                 <div key={ index } className="w-full flex items-center gap-2 px-4">
                                     <CircleUserRound size={40} strokeWidth={1} stroke="black" className="" />
-                                    <span className="p-2 bg-neutral-800 text-white rounded-full rounded-bl-none px-4 text-sm">{ item?.message }</span>
+                                    <span className="p-2 bg-neutral-800 text-white rounded-2xl rounded-bl-none px-4 text-sm">{ item?.message }</span>
                                     <span className="text-[12px] font-paragraphs">{ timeFormat.format(new Date(item?.createdAt)) }</span>
                                 </div>
                             )

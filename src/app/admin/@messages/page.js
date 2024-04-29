@@ -47,7 +47,7 @@ const Messages = () => {
             if(userIds.length === 0) return;
 
             setChats([ data, ...allChatsData ]);
-            setViewChat(data);
+            // setViewChat(data);
             router.replace('/admin?display=messages', undefined, { shallow: true }); 
         } catch(error) {
             console.log(error);
@@ -194,7 +194,6 @@ const Messages = () => {
 
     useEffect(() => {
         if(chats.length === 0) return;
-        console.log(recipeintIndex, chats);
         const currentRescipient = chats[recipeintIndex || 0] || {};
         setViewChat(currentRescipient);
     }, [ recipeintIndex, chats ]);
@@ -225,16 +224,16 @@ const Messages = () => {
                                                 return (
                                                     <div key={ index } className="w-full flex justify-end items-center gap-2 px-4">
                                                         <span className="text-sm font-paragraphs">{ timeFormat.format(new Date(item?.createdAt)) }</span>
-                                                        <span className="p-2 bg-blue-600 text-white rounded-full rounded-br-none px-4">{ item?.message }</span>
+                                                        <span className="max-w-[60%] p-2 bg-blue-600 text-white rounded-2xl rounded-br-none px-4">{ item?.message }</span>
                                                     </div>
                                                 )
                                             }
 
                                             return (
-                                                <div key={ index } className="w-full flex items-center gap-2 px-4">
+                                                <div key={ index } className="w-full max-w-1/2 flex items-center gap-2 px-4">
                                                     <CircleUserRound size={40} strokeWidth={1} stroke="black" className="" />
-                                                    <span className="p-2 bg-neutral-800 text-white rounded-full rounded-bl-none px-4">{ item?.message }</span>
-                                                    <span className="text-sm font-paragraphs">{ timeFormat.format(new Date(item?.createdAt)) }</span>
+                                                    <span className="p-2 bg-neutral-800 text-white rounded-2xl rounded-bl-none px-4">{ item?.message }</span>
+                                                    <span on={ ev => console.log(ev.target) } className="max-w-[60%] text-sm font-paragraphs">{ timeFormat.format(new Date(item?.createdAt)) }</span>
                                                 </div>
                                             )
                                         })
@@ -251,6 +250,9 @@ const Messages = () => {
                     </button>
                 </div>
                 <aside className="w-admin-sidebar fixed top-[var(--nav-height)] right-0 bottom-0 border-l-[1px] border-neutral-300">
+                    <div className="h-[40px] flex items-center gap-2 px-2 py-4">
+                        <input className="h-8 grow font-paragraphs font-medium rounded-full outline-none px-4 border-2 border-emerald-600" placeholder="Search"/>
+                    </div>
                     {
                         chats?.map((chat, index) => {
                             const chatData = Object.values(chat)[0] || [];
