@@ -116,6 +116,10 @@ const Venues = () => {
                         ))
                     }
                 </div>
+                {
+                    venues.length === 0 && 
+                        <h3 className="text-neutral-500 font-paragraphs text-lg font-bold mx-auto mt-40">No Venues Found</h3>
+                }
             </section>
             {
                 deletionPrompt && <Prompt callback={ onDeleteVenue } onClose={ () => setDeletionPrompt(false) } header="Confirm Venue Removal" message="Are you sure you want to remove this venue? Removing it will completely erase all data associated with it and cannot be undone."/>

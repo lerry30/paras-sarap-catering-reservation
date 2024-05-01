@@ -114,6 +114,10 @@ const Dishes = () => {
                         ))
                     }
                 </div>
+                {
+                    dishes.length === 0 && 
+                        <h3 className="text-neutral-500 font-paragraphs text-lg font-bold mx-auto mt-40">No Dishes Found</h3>
+                }
             </section>
             {
                 deletionPrompt && <Prompt callback={ onDeleteDish } onClose={ () => setDeletionPrompt(false) } header="Confirm Dish Removal" message="Are you sure you want to remove this dish? Removing it will completely erase all data associated with it and cannot be undone."/>

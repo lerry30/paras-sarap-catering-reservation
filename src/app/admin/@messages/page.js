@@ -36,6 +36,18 @@ const Messages = () => {
         }
     }
 
+    const sendSearch = async (ev) => {
+        try {
+            const text = ev.target?.value;
+            if(!text) return;
+            const nText = text?.trim().toLowerCase();
+            const { data } = await sendJSON('/api/clients/search', { text: nText });
+            console.log(data);
+        } catch(error) {
+            console.log(error);
+        }
+    }
+
     const checkIfTheresAUserSelected = async (allChatsData) => {
         try {
             const id = searchParams.get('id');
@@ -251,7 +263,7 @@ const Messages = () => {
                 </div>
                 <aside className="w-admin-sidebar fixed top-[var(--nav-height)] right-0 bottom-0 border-l-[1px] border-neutral-300">
                     <div className="h-[40px] flex items-center gap-2 px-2 py-4">
-                        <input className="h-8 grow font-paragraphs font-medium rounded-full outline-none px-4 border-2 border-emerald-600" placeholder="Search"/>
+                        <input onChange={ ev => sendSearch(ev) } className="h-8 grow font-paragraphs font-medium rounded-full outline-none px-4 border-2 border-emerald-600" placeholder="Search"/>
                     </div>
                     {
                         chats?.map((chat, index) => {

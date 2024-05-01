@@ -8,9 +8,11 @@ export const POST = async (request) => {
         const isAnAdmin = await apiIsAnAdmin(request);
         if(!isAnAdmin) return NextResponse.json({ message: 'There\'s something wrong!' }, { status: 400 });
 
-        const text = String(request.json()).trim();
+        const text = String(request.json()?.text).toLowerCase().trim();
 
-        const users = await User.findOne({  });
+        const users = await User.find({ firstname: { $regex: text, $options: 'i' } });
+        console.log(users);
+        
         const data = [];
         for(const user of users) {
             if(!user?.admin) {

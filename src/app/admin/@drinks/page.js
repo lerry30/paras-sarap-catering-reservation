@@ -114,6 +114,10 @@ const Drinks = () => {
                         ))
                     }
                 </div>
+                {
+                    drinks.length === 0 && 
+                        <h3 className="text-neutral-500 font-paragraphs text-lg font-bold mx-auto mt-40">No Drinks Found</h3>
+                }
             </section>
             {
                 deletionPrompt && <Prompt callback={ onDeleteDrink } onClose={ () => setDeletionPrompt(false) } header="Confirm Drink Removal" message="Are you sure you want to remove this drink? Removing it will completely erase all data associated with it and cannot be undone."/>

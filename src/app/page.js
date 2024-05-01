@@ -2,7 +2,7 @@
 
 import CNavbar from '@/components/client/nav/CNavbar';
 import Image from 'next/image';
-import HeroImg5 from '../../public/hero.png';
+import HeroImg5 from '../../public/Hero.png';
 
 import WeddingImg from '../../public/wedding.jpg';
 import DebutImg from '../../public/debut.jpeg';
