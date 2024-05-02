@@ -29,6 +29,7 @@ const Users = () => {
         getUsers();
     }, []);
 
+    if(loading) return <Loading customStyle="size-full" />
     
     if(users.length === 0) {
         return (
@@ -41,22 +42,19 @@ const Users = () => {
     }
     
     return (
-        <>
-        { loading && <Loading customStyle="size-full" /> }
-            <section className="flex flex-col gap-2 p-4 ">
-                <h2 className="font-headings font-semibold">Users</h2>
-                <div className="flex flex-wrap gap-2">
-                    {
-                        users.map((user, index) => (
-                            <Card 
-                                key={ index } 
-                                userData={ user }
-                            />
-                        ))
-                    }
-                </div>
-            </section>
-        </>
+        <section className="flex flex-col gap-2 p-4 ">
+            <h2 className="font-headings font-semibold">Users</h2>
+            <div className="flex flex-wrap gap-2">
+                {
+                    users.map((user, index) => (
+                        <Card 
+                            key={ index } 
+                            userData={ user }
+                        />
+                    ))
+                }
+            </div>
+        </section>
     );
 }
 

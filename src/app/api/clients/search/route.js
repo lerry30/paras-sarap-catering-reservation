@@ -8,10 +8,14 @@ export const POST = async (request) => {
         const isAnAdmin = await apiIsAnAdmin(request);
         if(!isAnAdmin) return NextResponse.json({ message: 'There\'s something wrong!' }, { status: 400 });
 
-        const text = String(request.json()?.text).toLowerCase().trim();
+        const requestData = await request.json();
+        const text = String(requestData?.text).toLowerCase().trim();
 
-        const users = await User.find({ firstname: { $regex: text, $options: 'i' } });
-        console.log(users);
+        const regexCondition = { $regex: text, $options: 'i' };
+        const users = await User.find({ $or: [
+            { firstname: regexCondition }, 
+            { lastname: regexCondition }
+        ]});
         
         const data = [];
         for(const user of users) {
