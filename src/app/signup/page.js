@@ -8,6 +8,7 @@ import Loading from '@/components/Loading';
 import { sendJSON, getData } from '@/utils/send';
 import { emptySignUpFields } from '@/utils/auth/emptyValidation';
 import { handleError } from '@/utils/auth/backendError';
+import { Eye, EyeOff } from '@/components/icons/All';
 
 /**
  * a bit of validation in client, then in server
@@ -19,6 +20,7 @@ const SignUpPage = () => {
     const [ name, setName ] = useState({ firstname: '', lastname: '' });
     const [ emailAddress, setEmailAddress ] = useState('');
     const [ password, setPassword ] = useState('');
+    const [ togglePasswordDisplay, setTogglePasswordDisplay ] = useState(false);
     const [ invalidFieldsValue, setInvalidFieldsValue ] = useState({});
     const [ loading, setLoading ] = useState(false);
     const router = useRouter();
@@ -91,11 +93,11 @@ const SignUpPage = () => {
     }, []);
     
     return (
-        <div className="-mt-[var(--nav-height)] card w-96 shadow-lg border-[1px] border-neutral-600">
+        <div className="card w-screen sm:w-96 mt-6 sm:mt-24 sm:shadow-lg sm:border-[1px] sm:border-neutral-400">
             { loading && <Loading customStyle="w-full min-h-screen" /> }
-            <form>
+            <form onSubmit={ handleSubmit } className="w-full px-2 flex flex-col gap-2 sm:gap-0">
                 <h3 className="font-headings text-center font-extrabold text-3xl">Sign Up</h3>
-                <div className="flex flex-col md:flex-row md:gap-2">
+                <div className="flex flex-col md:flex-row gap-2">
                     <div className="w-full md:w-1/2">
                         <label htmlFor="firstname">First Name</label>
                         <input 
@@ -103,7 +105,8 @@ const SignUpPage = () => {
                             className="input w-full border-[1px] border-neutral-600/60"
                             id="firstname" 
                             name="firstname" 
-                            type="text" 
+                            type="text"
+                            required
                         />
                         <ErrorField message={ invalidFieldsValue['firstname'] }/>
                     </div>
@@ -114,7 +117,8 @@ const SignUpPage = () => {
                             className="input w-full border-[1px] border-neutral-600/60"
                             id="lastname" 
                             name="lastname" 
-                            type="text" 
+                            type="text"
+                            required
                         />
                         <ErrorField message={ invalidFieldsValue['lastname'] }/>
                     </div>
@@ -125,25 +129,36 @@ const SignUpPage = () => {
                         onChange={(e) => setEmailAddress(e.target.value)} 
                         className="input w-full border-[1px] border-neutral-600/60"
                         id="email" 
-                        name="email" 
-                        type="email" 
+                        name="new-email"
+                        type="email"
+                        autoComplete="new-email"
+                        required
                     />
                     <ErrorField message={ invalidFieldsValue['email'] }/>
                 </div>
                 <div>
                     <label htmlFor="password">Password</label>
-                    <input 
-                        onChange={(e) => setPassword(e.target.value)} 
-                        className="input w-full border-[1px] border-neutral-600/60"
-                        id="password" 
-                        name="password" 
-                        type="password" 
-                    />
+                    <div className="w-full flex rounded border-[1px] border-neutral-600/60">
+                        <input 
+                            onChange={(e) => setPassword(e.target.value)} 
+                            className="grow input"
+                            id="password" 
+                            name="new-password"
+                            autoComplete="new-password"
+                            required
+                            type={ togglePasswordDisplay ? 'text': 'password' }
+                        />
+                        <button onClick={ ev => {
+                            ev.preventDefault();
+                            setTogglePasswordDisplay(state => !state);
+                         } } className="px-2">
+                            { togglePasswordDisplay ? <Eye /> : <EyeOff /> }
+                        </button>
+                    </div>
                     <ErrorField message={ invalidFieldsValue['password'] }/>
                 </div>
                 <button 
                     type="submit"
-                    onClick={handleSubmit}
                     className="button w-full mt-2 text-sm text-white bg-teal-500"
                 >
                     SIGN UP
@@ -151,7 +166,7 @@ const SignUpPage = () => {
 
                 <ErrorField message={ invalidFieldsValue?.unauth }/>
                 
-                <small className="text-center">
+                <small className="text-center sm:mt-2">
                     <span>Already have an account?</span>
                     <Link 
                         href="/signin"
