@@ -108,9 +108,9 @@ const Messages = () => {
     return (
         <>
             <div onClick={ () => setChatBar(state => !state) } className="group size-[calc(var(--nav-item-height)-10px)] flex justify-center items-center rounded-full cursor-pointer hover:bg-skin-ten">
-                <MessageCircle size={24} strokeWidth={2} className="group-hover:stroke-white"/>
+                <MessageCircle size={24} strokeWidth={2} className="size-36 sm:size-6 group-hover:stroke-white"/>
             </div>
-            <div className={ `w-[400px] h-[calc(100vh-var(--nav-height))] flex flex-col fixed bottom-0 right-0 shadow bg-white rounded-t-lg overflow-hidden transition-transform ${ chatBar ? '-translate-y-0' : 'translate-y-full' }` }>
+            <div className={ `w-full sm:w-[400px] h-[calc(100vh-var(--nav-height))] flex flex-col fixed bottom-0 right-0 shadow bg-white rounded-t-lg overflow-hidden transition-transform ${ chatBar ? '-translate-y-0' : 'translate-y-full' }` }>
                 <header className="h-nav-height flex items-center bg-teal-700 pl-4">
                     {
                         displayName ? 
@@ -149,7 +149,7 @@ const Messages = () => {
                         })
                     }
                 </div>
-                <div className="flex items-center gap-2 px-6 py-4 bg-teal-700 rounded-t-md mt-auto">
+                <div className="flex items-center gap-2 px-4 sm:px-6 py-4 bg-teal-700 rounded-t-md mt-auto">
                     <input value={ message } onChange={ ev => setMessage(ev.target.value) } onKeyDown={ ev => ev.key === 'Enter' && sendMessage() } className="h-8 grow font-paragraphs font-medium rounded-full outline-none px-4" placeholder="Message"/>
                     <button onClick={ sendMessage }>
                         <SendHorizontal size={34} className="p-1 stroke-white" />

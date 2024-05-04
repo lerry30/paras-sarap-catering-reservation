@@ -66,12 +66,12 @@ const CNavbar = () => {
                                 </>
                             :
                                 <>
-                                    <li className="h-nav-item-height flex rounded-full p-1 items-center justify-center">
+                                    <li className="h-nav-item-height hidden rounded-full p-1 items-center justify-center sm:flex">
                                         <Link href="/reserve?display=myreservations" className="group size-[calc(var(--nav-item-height)-10px)] flex items-center justify-center rounded-full hover:bg-skin-ten">
                                             <ListChecks size={24} strokeWidth={2} className="group-hover:stroke-white"/>
                                         </Link>
                                     </li>
-                                    <li className="h-nav-item-height flex rounded-full p-1">
+                                    <li className="h-nav-item-height hidden rounded-full p-1 sm:flex">
                                         <Messages />
                                     </li>
                                     <li className="h-nav-item-height flex rounded-full">

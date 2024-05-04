@@ -2,15 +2,14 @@
 import Footer from '@/components/Footer';
 import CNavbar from '@/components/client/nav/CNavbar';
 import Logo from '@/components/nav/Logo';
-import Head from 'next/head';
 
 export default function About() {
     return <div className="pt-[var(--nav-height)]">
         <CNavbar/>
         <div className="flex flex-col gap-8 container mx-auto px-4 py-8 font-paragraphs">
-            <h1 className="font-headings text-xl font-bold mb-4">About Paras Sarap Catering Services</h1>
+            <h1 className="font-headings text-xl font-bold sm:mb-4">About Paras Sarap Catering Services</h1>
 
-            <section className="w-full flex gap-4">
+            <section className="w-full flex flex-col gap-8 sm:flex-row sm:gap-4">
                 <article className="w-full flex flex-col gap-4 p-4 border-l-2 border-[var(--skin-ten)] shadow-sm shadow-[var(--skin-ten)]">
                     <h2 className="font-headings text-lg font-bold">Owner Information</h2>
                     <p>
@@ -29,7 +28,7 @@ export default function About() {
                 </article>
             </section>
 
-            <section className="w-full flex gap-4">
+            <section className="w-full flex flex-col gap-8 sm:flex-row sm:gap-4">
                 <article className="w-full p-4 border-l-2 border-[var(--skin-ten)] shadow-sm shadow-[var(--skin-ten)]">
                     <h2 className="font-headings text-lg font-bold mb-2">Contact Information</h2>
                     <p>
@@ -87,7 +86,7 @@ export default function About() {
 
             <section className="p-4 border-[1px]">
                 <h2 className="font-headings text-lg font-bold mb-2 pb-4">Logo</h2>
-                <div className="w-[400px]">
+                <div className="md:w-[400px]">
                     <Logo />
                 </div>
             </section>

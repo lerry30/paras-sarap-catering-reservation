@@ -14,7 +14,7 @@ const Services = () => {
         <CNavbar />
         <main className="mb-4">
             <section className="w-screen min-h-screen flex justify-center items-center">
-                <div className="w-full flex flex-col p-4 md:min-h-[calc(100vh-var(--nav-height)-32px)]">
+                <div className="w-full flex flex-col px-page-x md:px-4 py-4 md:min-h-[calc(100vh-var(--nav-height)-32px)]">
                     <h3 className="font-headings w-full text-center text-lg font-semibold leading-none">Services</h3>
                     <p className="font-paragraphs w-full text-center text-neutral-700 text-sm">Choose Service</p>
                     <div className="w-full flex justify-center gap-4 mt-4 flex-wrap">
