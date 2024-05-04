@@ -59,7 +59,7 @@ const Display = ({ main, slots }) => {
     const hasPageToDisplay = slots.hasOwnProperty(slot);
     const display = hasPageToDisplay ? slots[ slot ] : main;
     return (
-        <main className="min-h-screen">
+        <main className="min-h-screen pt-[var(--nav-height)]">
             { display }
         </main>
     );
