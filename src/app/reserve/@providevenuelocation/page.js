@@ -105,7 +105,7 @@ const ProvideVenueLocation = () => {
 
     useEffect(() => {
         const serviceParam = searchParams.get('service');
-        if(!services[serviceParam]) router.push('/');
+        if(!services.hasOwnProperty(serviceParam)) router.push('/');
         setService(serviceParam);
     }, []);
 

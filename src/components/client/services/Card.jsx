@@ -1,9 +1,12 @@
 'use client';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
-const Card = ({ name, image, description }) => {
+const Card = ({ name, image, description, link='/' }) => {
+    const router = useRouter();
+
     return (
-        <div className={ `flex flex-col w-full sm:max-w-[280px] min-w-[280px] h-[360px] rounded-lg shadow-xl hover:scale-[1.01] hover:shadow-2xl transition-transform cursor-pointer` }>
+        <div className={ `flex flex-col w-full sm:max-w-[280px] min-w-[280px] h-[360px] rounded-lg shadow-xl hover:scale-[1.01] hover:shadow-2xl transition-transform` }>
             <Image 
                 src={ image }
                 alt={ name }
@@ -23,6 +26,9 @@ const Card = ({ name, image, description }) => {
                 <h3 className="font-headings font-semibold">{ name }</h3>
                 <p className="font-paragraphs text-sm line-clamp-3">{ description }</p>
             </article>
+            <section className="grow p-4 flex justify-end items-end">
+                <button onClick={ () => router.push(link) } className="font-headings bg-skin-ten px-2 py-[2px] text-white mb-2">Reserve Now</button>
+            </section>
         </div>
     );
 }

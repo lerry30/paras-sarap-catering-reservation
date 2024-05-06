@@ -20,7 +20,7 @@ export const metadata = {
 		icon: 'favicon.svg',
 	},
 	metadataBase: new URL('https://paras-catering.vercel.app'),
-	keywords: [ 'catering', 'online', 'cater', 'reservation', 'paras', 'sarap' ],
+	keywords: [ 'catering', 'online', 'cater', 'reservation', 'paras', 'sarap', 'events' ],
 	openGraph: {
 		description: 'Your Premier Catering Reservation Solution'
 	}

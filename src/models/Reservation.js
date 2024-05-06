@@ -10,6 +10,11 @@ const reservationSchema = new Schema({
         required: true,
     },
 
+    event: {
+        type: String,
+        required: true,
+    },
+
     venue: {},
 
     menu: {

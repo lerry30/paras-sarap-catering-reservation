@@ -50,8 +50,10 @@ const ReviewBudget = () => {
         setAgreementPrompt(false);
         setLoading(true);
 
+        if(!services.hasOwnProperty(service)) router.push('/');
         try {
             const data = {
+                event: String(service).toLowerCase().trim(),
                 venue: venue,
                 menu: {
                     name: menu?.menu,
@@ -129,7 +131,7 @@ const ReviewBudget = () => {
         setListOfDrinks(listOfDrinks);
 
         const serviceParam = searchParams.get('service');
-        if(!services[serviceParam]) router.push('/');
+        if(!services.hasOwnProperty(serviceParam)) router.push('/');
         setService(serviceParam);
     }, []);
 
@@ -300,7 +302,7 @@ const ReviewBudget = () => {
                 </div>
                 <div className="w-full sm:w-1/2 flex flex-col gap-2">
                     <label htmlFor="noofguest">Number of Guest</label>
-                    <input name="noofguest" defaultValue={ noOfGuest } id="noofguest" className="input w-full border border-neutral-500/40" placeholder="Number of Guest" onChange={ ev => guestNoInput(ev) } />
+                    <input inputMode="numeric" name="noofguest" defaultValue={ noOfGuest } id="noofguest" className="input w-full border border-neutral-500/40" placeholder="Number of Guest" onChange={ ev => guestNoInput(ev) } />
                     <ErrorField message={ invalidFieldsValue['noofguest'] } />
 
                     <div className="flex gap-2">

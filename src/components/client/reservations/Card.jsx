@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
+import TitleFormat from '@/utils/titleFormat';
 
 const Card = ({ reservationData={} }) => {
+    const event = TitleFormat(reservationData?.event);
+
     // venue
     const venueName = reservationData?.venue?.name || '';
     const venueDescription = reservationData?.venue?.description || '';
@@ -43,10 +46,11 @@ const Card = ({ reservationData={} }) => {
     }, []);
 
     return <main className="w-full rounded-lg shadow-xl border-2 divide-y-[1px] pb-6 mb-6 overflow-hidden">
-         <section className="flex items-center gap-2 pb-2 bg-neutral-800 px-4">
-            <div className="flex ml-auto font-paragraphs text-white pt-4 pb-2">
-                <h2 className="font-semibold text-sm">Reserved At:</h2>
-                <span className="text-sm">{ dateFormatter.format(new Date(reservedAt)) }</span>
+         <section className="h-14 flex items-center justify-between bg-neutral-800 px-4 text-sm">
+            <h2 className="font-headings text-white font-semibold">{ event }</h2>
+            <div className="flex font-paragraphs text-white">
+                <h2 className="font-semibold">Reserved At:&nbsp;&nbsp;</h2>
+                <span>{ dateFormatter.format(new Date(reservedAt)) }</span>
             </div>
         </section>
         <section>

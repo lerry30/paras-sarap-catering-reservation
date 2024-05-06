@@ -24,6 +24,7 @@ export const GET = async (request) => {
 
             nReservations.push({ 
                 _id: reservation._id?.toString(), 
+                event: reservation.event,
                 venue: reservation.venue,
                 menu: reservation.menu,
                 date: reservation.date,
@@ -44,6 +45,7 @@ export const GET = async (request) => {
 export const POST = async (request) => {
     try {
         const jsonRequest = await request.json();
+        const event = String(jsonRequest?.event).toLowerCase().trim();
         const venue = jsonRequest?.venue;
         const menu = jsonRequest?.menu;
         const date = jsonRequest?.date;
@@ -75,6 +77,7 @@ export const POST = async (request) => {
 
         const data = {
             userId: userId,
+            event,
             venue: {
                 name: venue?.name || '',
                 description: venue?.description || '',

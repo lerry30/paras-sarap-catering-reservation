@@ -9,6 +9,8 @@ const Themes = () => {
     const [ service, setService ] = useState(undefined);
     const [ loading, setLoading ] = useState(false);
 
+    const services = { wedding: true, debut: true, kidsparty: true, privateparty: true };
+
     const router = useRouter();
     const searchParams = useSearchParams();
 
@@ -25,7 +27,7 @@ const Themes = () => {
 
     useEffect(() => {
         const serviceParam = searchParams.get('service');
-        if(!serviceParam) router.push('/');
+        if(!services.hasOwnProperty(serviceParam)) router.push('/');
         setService(serviceParam);
     }, []);
 

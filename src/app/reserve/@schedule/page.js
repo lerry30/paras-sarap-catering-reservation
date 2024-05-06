@@ -183,7 +183,7 @@ const Schedules = () => {
         zReservation.getState()?.clearSpecificProperty('schedule');
 
         const serviceParam = searchParams.get('service');
-        if(!services[serviceParam]) router.push('/');
+        if(!services.hasOwnProperty(serviceParam)) router.push('/');
         setService(serviceParam);
     }, []);
 
@@ -198,7 +198,7 @@ const Schedules = () => {
                             <div className="flex items-center justify-between pr-2 pb-2">
                                 {/* dateObj.toLocaleString('default', { month: 'long' }); // The best way to get the month name from a date */}
                                 <h2 className="font-headings">{ `${ months[currentMonth] } ${ currentYear }` }</h2>
-                                <h2 className="font-headings font-semibold">Schedules</h2>
+                                <h2 className="font-headings font-semibold">Calendar</h2>
                                 <div className="flex gap-4">
                                     <button onClick={ () => updateMonth(-1) }><ChevronLeft size={20} /></button>
                                     <button onClick={ () => updateMonth(1) }><ChevronRight size={20} /></button>
@@ -214,7 +214,7 @@ const Schedules = () => {
                                 }
                             </div>
                         </header>
-                        <section className="grid grid-cols-7 gap-2 pr-2">
+                        <section className="grid grid-cols-7 gap-2 pr-2 font-paragraphs">
                             {
                                 Array(noOfRows).fill(0).map((item, index) => {
                                     const startDay = startOfTheMonth?.getDay();
@@ -246,6 +246,15 @@ const Schedules = () => {
                                                         </div>
                                                     )
                                                 }
+                                            }
+
+                                            // past
+                                            if(milli.getTime() < today.getTime()) {
+                                                return (
+                                                    <div key={ index } className="w-full aspect-square overflow-hidden p-1 border-[1px] border-neutral-600 cursor-pointer bg-neutral-600 flex flex-col">
+                                                        <span className="text-white font-bold min-w-[50px]">{ number }</span>
+                                                    </div>
+                                                )
                                             }
 
                                             return (

@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import Reservation from '@/models/Reservation';
-import User from '@/models/Users';
 import { decodeUserIdFromHeader } from '@/utils/auth/decode';
 
 export const GET = async (request) => {
@@ -11,7 +10,8 @@ export const GET = async (request) => {
         for(let i = 0; i < reservations.length; i++) {
             const reservation = reservations[i];
 
-            nReservations.push({ 
+            nReservations.push({
+                event: reservation.event,
                 venue: reservation.venue,
                 menu: reservation.menu,
                 date: reservation.date,
