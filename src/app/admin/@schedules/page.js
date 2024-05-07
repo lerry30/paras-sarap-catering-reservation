@@ -1,19 +1,28 @@
 'use client';
 import Loading from '@/components/Loading';
-import { ChevronLeft, ChevronRight } from '@/components/icons/All';
+import Image from 'next/image';
+import TitleFormat from '@/utils/titleFormat';
+import { ChevronLeft, ChevronRight, CircleUserRound } from '@/components/icons/All';
 import { areDatesEqual } from '@/utils/date';
 import { getData } from '@/utils/send';
 import { useEffect, useState } from 'react';
+import { createFullname } from '@/utils/name';
+import { Prompt } from '@/components/Modal';
 
 const Schedules = () => {
-	const [loading, setLoading] = useState(false);
-	const [startOfTheMonth, setStartOfTheMonth] = useState(undefined);
-	const [endOfTheMonth, setEndOfTheMonth] = useState(undefined);
-	const [currentMonth, setCurrentMonth] = useState(0);
-	const [currentYear, setCurrentYear] = useState(2024);
-	const [noOfRows, setNoOfRows] = useState(5);
+	const [ loading, setLoading ] = useState(false);
+	const [ startOfTheMonth, setStartOfTheMonth ] = useState(undefined);
+	const [ endOfTheMonth, setEndOfTheMonth ] = useState(undefined);
+	const [ currentMonth, setCurrentMonth ] = useState(0);
+	const [ currentYear, setCurrentYear ] = useState(2024);
+	const [ noOfRows, setNoOfRows ] = useState(5);
+	const [ displayData, setDisplayData ] = useState({});
+	const [ eventStatus, setEventStatus ] = useState({ id: '', status: '' });
 
-	const [reservations, setReservations] = useState([]);
+	const [ approvePrompt, setApprovePrompt ] = useState(false);
+    const [ rejectPrompt, setRejectPrompt ] = useState(false);
+
+	const [ reservations, setReservations ] = useState([]);
 
 	const today = new Date();
 	const dateObj = new Date();
@@ -21,7 +30,7 @@ const Schedules = () => {
 	const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 	const noOfUnpickableDaysStartFromNow = 3;
-	const noOfDaysCanSched = 1000 * 60 * 60 * 24 * noOfUnpickableDaysStartFromNow;
+	// const noOfDaysCanSched = 1000 * 60 * 60 * 24 * noOfUnpickableDaysStartFromNow;
 
 	const setCalNumbers = (year, month) => {
 		const firstDay = new Date(year, month, 1);
@@ -70,14 +79,35 @@ const Schedules = () => {
 		return { isDateReserved: false, data: {} };
 	}
 
+	const changeReservationStatus = (id, status) => {
+        setEventStatus({ id, status });
+        setApprovePrompt(status === 'approved');
+        setRejectPrompt(status === 'rejected');
+    }
+
+    const confirmChanges = async () => {
+        setLoading(true);
+        try {
+            const { id, status } = eventStatus;
+            const form = new FormData();
+            form.append('id', id);
+            form.append('status', status);
+            await sendFormUpdate('/api/reservations/reservation', form);
+        } catch(error) {
+            console.log(error);
+        }
+
+        setApprovePrompt(false);
+        setRejectPrompt(false);
+        setLoading(false);
+    }
+
 	const getReservations = async () => {
 		setLoading(true);
 
 		try {
 			const { data } = (await getData('/api/reservations')) || { data: [] };
 			setReservations(data);
-
-			console.log(data);
 		} catch (error) {
 			console.log(error);
 		}
@@ -95,8 +125,8 @@ const Schedules = () => {
 
 	return (
 		<>
+			{loading && <Loading customStyle="size-full" />}
 			<section className="flex h-[calc(100vh-var(--nav-height))] max-h-screen overflow-hidden p-4">
-				{loading && <Loading customStyle="size-full" />}
 				<div className="grow flex flex-col">
 					<main className="flex flex-col gap-2">
 						<header>
@@ -145,9 +175,9 @@ const Schedules = () => {
 											if (currentMonth === (new Date()).getMonth() && currentYear === (new Date()).getFullYear()) {
 												if (range > 0 && range <= noOfUnpickableDaysStartFromNow) {
 													return (
-														<div key={index} className="w-full aspect-square overflow-hidden p-1 border-[1px] border-neutral-400 cursor-pointer bg-neutral-400 flex flex-col">
+														<div key={index} className="w-full aspect-square p-1 border-[1px] border-neutral-400 cursor-pointer bg-neutral-400 flex flex-col text-wrap overflow-hidden">
 															<span className="text-white font-bold min-w-[50px]">{number}</span>
-															<span className="text-neutral-200 text-[12px] font-semibold mt-auto overflow-clip">unavailable</span>
+															<span className="w-full text-[12px] text-neutral-200 font-semibold overflow-clip mt-auto">unavailable</span>
 														</div>
 													)
 												}
@@ -164,12 +194,19 @@ const Schedules = () => {
 
 											const fResult = filterReservationDate(milli);
 											if (fResult?.isDateReserved) {
-												return (
-													<div key={index} className="w-full aspect-square overflow-hidden p-1 border-[1px] border-blue-700 cursor-pointer bg-blue-700 flex flex-col">
-														<span className="text-white font-bold min-w-[50px]">{number}</span>
-														<span className="text-neutral-200 text-[12px] font-semibold mt-auto overflow-clip">res</span>
-													</div>
-												)
+												const data = fResult?.data;
+												if(Object.keys(data).length > 0) {
+													const event = data?.event;
+													return (
+														<div key={index} onClick={ () => {
+																setDisplayData(data);
+																setEventStatus({ id: '', status: data?.status });
+															}} className="w-full aspect-square overflow-hidden p-1 border-[1px] border-blue-700 cursor-pointer bg-blue-700 flex flex-col">
+															<span className="text-white font-bold min-w-[50px]">{number}</span>
+															<span className="text-neutral-200 text-[12px] font-semibold mt-auto overflow-clip">{ event }</span>
+														</div>
+													)
+												}
 											}
 
 											return (
@@ -196,10 +233,104 @@ const Schedules = () => {
 					</main>
 				</div>
 				{/* list */}
-				<div className="w-1/2 border-[1px] border-neutral-400">
+				<div className="w-1/2 p-4 border-[1px] border-neutral-400">
+					{ console.log(displayData) }
+					{
+						Object.keys(displayData).length > 0 &&
+							<article className="size-full flex flex-col gap-2">
+								<div className="flex gap-2">
+									{
+										displayData?.user?.filename ?
+											<div className="size-14">
+												<Image 
+													src={ displayData?.user?.filename }
+													alt={ displayData?.user?.firstname || '' }
+													width={ 200 }
+													height={ 200 }
+													sizes='100%'
+													style={{
+														width: '100%',
+														height: '100%',
+														objectFit: 'cover',
+														transformOrigin: 'center',
+														borderRadius: '4px',
+													}}
+													priority
+												/>
+											</div>
+										:
+											<div className="">
+												<CircleUserRound size={56} strokeWidth={1} className="" />
+											</div>
+									}
+									<div>
+										<h3 className="font-headings font-semibold text-lg">{ createFullname(displayData?.user?.firstname, displayData?.user?.lastname) }</h3>
+										<span className="font-paragraphs italic text-sm">{ displayData?.user?.email }</span>
+									</div>
+								</div>
 
+								<hr />
+
+								<h2 className="font-headings font-semibold">{ TitleFormat(displayData?.event) }</h2>
+
+								<hr />
+								
+								<h2 className="font-headings font-semibold">Date:</h2>
+								<div className="flex gap-2 font-paragraphs">
+									<h2 className="font-semibold text-sm text-neutral-500">Reserved At:</h2>
+									<span className="text-sm text-neutral-500">{ displayData?.date?.day }</span>
+								</div>
+
+								<div className="flex gap-2 flex-wrap">
+									<div className="flex gap-2 font-paragraphs">
+										<h2 className="font-semibold text-sm text-neutral-500">From:</h2>
+										<span className="text-sm text-neutral-500">{ displayData?.date?.time?.from }</span>
+									</div>
+
+									<div className="flex gap-2 font-paragraphs">
+										<h2 className="font-semibold text-sm text-neutral-500">To:</h2>
+										<span className="text-sm text-neutral-500">{ displayData?.date?.time?.from }</span>
+									</div>
+								</div>
+
+								<hr />
+
+								<article className="font-headings font-semibold flex gap-2">
+									<span>Status: </span>
+									<span className={ `text-sm rounded-full border-[1px] px-2 text-neutral-700 leading-normal` }>{ eventStatus?.status }</span>
+								</article>
+
+								<hr />
+
+								<div className="font-headings flex gap-4 py-4">
+									{
+										(eventStatus?.status === 'pending' || eventStatus?.status === 'rejected') &&
+											<button onClick={ () => changeReservationStatus(displayData?._id, 'approved') } className="bg-skin-ten text-white px-6 py-2 rounded-full text-sm font-semibold hover:bg-emerald-800 leading-normal">APPROVE</button>
+									}
+
+									{
+										(eventStatus?.status === 'pending' || eventStatus?.status === 'approved') &&
+											<button onClick={ () => changeReservationStatus(displayData?._id, 'rejected') } className="bg-red-600 text-white px-6 py-2 rounded-full text-sm font-semibold hover:bg-red-800 leading-normal">REJECT</button>
+									}
+								</div>
+							</article>
+					}
 				</div>
 			</section>
+			{
+				approvePrompt && <Prompt callback={ confirmChanges } 
+					onClose={ () => { 
+						setApprovePrompt(false) ;
+						setLoading(false);
+				}} header="Confirm Approval" message="Are you sure you want to approve this reservation?"/>
+			}
+			{
+				rejectPrompt && <Prompt callback={ confirmChanges } 
+					onClose={ () => { 
+						setRejectPrompt(false) ;
+						setLoading(false);
+				}} header="Confirm Rejection" message="Are you sure you want to reject this reservation?"/>
+			}
 		</>
 	);
 }
