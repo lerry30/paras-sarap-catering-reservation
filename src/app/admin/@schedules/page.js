@@ -4,7 +4,7 @@ import Image from 'next/image';
 import TitleFormat from '@/utils/titleFormat';
 import { ChevronLeft, ChevronRight, CircleUserRound } from '@/components/icons/All';
 import { areDatesEqual } from '@/utils/date';
-import { getData } from '@/utils/send';
+import { getData, sendFormUpdate } from '@/utils/send';
 import { useEffect, useState } from 'react';
 import { createFullname } from '@/utils/name';
 import { Prompt } from '@/components/Modal';
@@ -18,6 +18,8 @@ const Schedules = () => {
 	const [ noOfRows, setNoOfRows ] = useState(5);
 	const [ displayData, setDisplayData ] = useState({});
 	const [ eventStatus, setEventStatus ] = useState({ id: '', status: '' });
+	const [ tab, setTab ] = useState('pending');
+	const [ shiftStatus, setShiftStatus ] = useState({}); // { id: 'pending' }
 
 	const [ approvePrompt, setApprovePrompt ] = useState(false);
     const [ rejectPrompt, setRejectPrompt ] = useState(false);
@@ -93,6 +95,9 @@ const Schedules = () => {
             form.append('id', id);
             form.append('status', status);
             await sendFormUpdate('/api/reservations/reservation', form);
+
+			setDisplayData({}); // { data }
+			setShiftStatus(state => ({ ...state, [id]: status }));
         } catch(error) {
             console.log(error);
         }
@@ -101,6 +106,11 @@ const Schedules = () => {
         setRejectPrompt(false);
         setLoading(false);
     }
+
+	const shiftTab = (status) => {
+		setTab(status);
+		setDisplayData({}); // { data }
+	}
 
 	const getReservations = async () => {
 		setLoading(true);
@@ -196,16 +206,26 @@ const Schedules = () => {
 											if (fResult?.isDateReserved) {
 												const data = fResult?.data;
 												if(Object.keys(data).length > 0) {
+													const id  = data?._id;
 													const event = data?.event;
-													return (
-														<div key={index} onClick={ () => {
-																setDisplayData(data);
-																setEventStatus({ id: '', status: data?.status });
-															}} className="w-full aspect-square overflow-hidden p-1 border-[1px] border-blue-700 cursor-pointer bg-blue-700 flex flex-col">
-															<span className="text-white font-bold min-w-[50px]">{number}</span>
-															<span className="text-neutral-200 text-[12px] font-semibold mt-auto overflow-clip">{ event }</span>
-														</div>
-													)
+													let status = data?.status;
+
+													if(Object.keys(shiftStatus).length === 0)
+														setShiftStatus(state => ({ ...state, [id]: status }));
+													else
+														status = shiftStatus[id] || status;
+
+													if(tab === status) {
+														return (
+															<div key={index} onClick={ () => {
+																	setDisplayData(data);
+																	setEventStatus({ id: '', status });
+																}} className={ `w-full aspect-square overflow-hidden p-1 border-[1px] cursor-pointer flex flex-col border-blue-700 bg-blue-700 ${ status === 'rejected' && 'border-red-700 bg-red-700' }` }>
+																<span className="text-white font-bold min-w-[50px]">{number}</span>
+																<span className="text-neutral-200 text-[12px] font-semibold mt-auto overflow-clip">{ event }</span>
+															</div>
+														)
+													}
 												}
 											}
 
@@ -234,10 +254,15 @@ const Schedules = () => {
 				</div>
 				{/* list */}
 				<div className="w-1/2 p-4 border-[1px] border-neutral-400">
-					{ console.log(displayData) }
+					<div className="h-[calc(var(--nav-height)-28px)] flex divide-x-[1px] divide-[var(--skin-ten)] mb-[14px]">
+						<button onClick={ () => shiftTab('pending') } className={ `w-full py-2 leading-none ${ tab === 'pending' && 'bg-skin-ten text-white font-semibold' }` }>Pending</button>
+						<button onClick={ () => shiftTab('approved') } className={ `w-full py-2 leading-none ${ tab === 'approved' && 'bg-skin-ten text-white font-semibold' }` }>Approved</button>
+						<button onClick={ () => shiftTab('rejected') } className={ `w-full py-2 leading-none ${ tab === 'rejected' && 'bg-skin-ten text-white font-semibold' }` }>Rejected</button>
+					</div>
+					{/* { console.log(tab) } */}
 					{
-						Object.keys(displayData).length > 0 &&
-							<article className="size-full flex flex-col gap-2">
+						Object.keys(displayData).length > 0 ?
+							<article className="w-full h-[calc(100%-var(--nav-height)+18px)] flex flex-col gap-2">
 								<div className="flex gap-2">
 									{
 										displayData?.user?.filename ?
@@ -313,6 +338,10 @@ const Schedules = () => {
 											<button onClick={ () => changeReservationStatus(displayData?._id, 'rejected') } className="bg-red-600 text-white px-6 py-2 rounded-full text-sm font-semibold hover:bg-red-800 leading-normal">REJECT</button>
 									}
 								</div>
+							</article>
+						:
+							<article className="w-full h-[calc(100%-var(--nav-height)+18px)] flex items-center justify-center">
+								<h1 className="font-headings font-bold text-lg text-neutral-900/70">Preview</h1>
 							</article>
 					}
 				</div>
