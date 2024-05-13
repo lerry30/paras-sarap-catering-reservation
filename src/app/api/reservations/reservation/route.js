@@ -35,7 +35,7 @@ export const PUT = async (request) => {
         const nStatus = form.get('status')?.trim();
         const statusVariants = { pending: true, approved: true, rejected: true };
 
-        if(!id || !nStatus || !statusVariants[nStatus]) return NextResponse.json({ message: 'There\'s something wrong!', errorData: 'error' }, { status: 400 });
+        if(!id || !nStatus || !statusVariants.hasOwnProperty(nStatus)) return NextResponse.json({ message: 'There\'s something wrong!', errorData: 'error' }, { status: 400 });
 
         await Reservation.findByIdAndUpdate(id, { status: nStatus });
         return NextResponse.json({ message: '', success: true }, { status: 200 });

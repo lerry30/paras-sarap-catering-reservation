@@ -4,10 +4,10 @@ import Image from 'next/image';
 import TitleFormat from '@/utils/titleFormat';
 import { ChevronLeft, ChevronRight, CircleUserRound } from '@/components/icons/All';
 import { areDatesEqual } from '@/utils/date';
-import { getData, sendFormUpdate } from '@/utils/send';
+import { deleteWithJSON, getData, sendForm, sendFormUpdate } from '@/utils/send';
 import { useEffect, useState } from 'react';
 import { createFullname } from '@/utils/name';
-import { Prompt } from '@/components/Modal';
+import { Prompt, PromptTextBox } from '@/components/Modal';
 
 const Schedules = () => {
 	const [ loading, setLoading ] = useState(false);
@@ -23,6 +23,7 @@ const Schedules = () => {
 
 	const [ approvePrompt, setApprovePrompt ] = useState(false);
     const [ rejectPrompt, setRejectPrompt ] = useState(false);
+	const [ reasonForRejection, setReasonForRejection ] = useState(false);
 
 	const [ reservations, setReservations ] = useState([]);
 
@@ -98,6 +99,12 @@ const Schedules = () => {
 
 			setDisplayData({}); // { data }
 			setShiftStatus(state => ({ ...state, [id]: status }));
+
+
+			if(status === 'rejected') 
+				setReasonForRejection(true);
+			if(status === 'approved')
+				await deleteWithJSON('/api/reservations/reservation/rejection', { id });
         } catch(error) {
             console.log(error);
         }
@@ -359,6 +366,16 @@ const Schedules = () => {
 						setRejectPrompt(false) ;
 						setLoading(false);
 				}} header="Confirm Rejection" message="Are you sure you want to reject this reservation?"/>
+			}
+			{
+				reasonForRejection && <PromptTextBox 
+				callback={ async (form) => {
+					const { id } = eventStatus;
+					const formData = new FormData(form);
+					formData.append('id', id);
+					await sendForm('/api/reservations/reservation/rejection', formData);
+					setReasonForRejection(false);
+				} } header="Reason for Rejection" message="Please provide a brief and concise reason for rejecting the client's reservation. This will help communicate the decision effectively."/>
 			}
 		</>
 	);

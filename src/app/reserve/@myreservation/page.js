@@ -21,6 +21,13 @@ const MyReservations = () => {
 
     useEffect(() => {
         getResList();
+
+        // fetch all reason for reservation rejection
+        const intervalId = setInterval(() => {
+            
+        }, 4_000);
+
+        return () => clearInterval(intervalId);
     }, []);
 
     return <>

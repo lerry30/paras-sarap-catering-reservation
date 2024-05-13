@@ -2,13 +2,13 @@
 import Loading from '@/components/Loading';
 import ErrorField from '@/components/ErrorField';
 import Image from 'next/image';
+import SNavbar from '@/components/nav/SNavbar';
 import { useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { zReservation } from '@/stores/reservation';
 import { toNumber } from '@/utils/number';
 import { PromptAgreement, SuccessModal } from '@/components/Modal';
 import { sendJSON } from '@/utils/send';
-import SNavbar from '@/components/nav/SNavbar';
 
 const ReviewBudget = () => {
     const [ venue, setVenue ] = useState({});
