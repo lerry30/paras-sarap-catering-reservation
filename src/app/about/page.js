@@ -6,7 +6,7 @@ import Logo from '@/components/nav/Logo';
 export default function About() {
     return <div className="pt-[var(--nav-height)]">
         <CNavbar/>
-        <div className="flex flex-col gap-8 container mx-auto px-4 py-8 font-paragraphs">
+        <div className="flex flex-col gap-8 container mx-auto px-4 sm:px-page-x py-8 font-paragraphs">
             <h1 className="font-headings text-xl font-bold sm:mb-4">About Paras Sarap Catering Services</h1>
 
             <section className="w-full flex flex-col gap-8 sm:flex-row sm:gap-4">

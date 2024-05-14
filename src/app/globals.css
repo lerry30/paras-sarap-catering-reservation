@@ -13,6 +13,8 @@
 
         --admin-sidebar-width: 260px;
 
+        --footer-z-index: 30;
+
         --skin-ten: #0c8f63;
         --skin-thirty: rgb(16, 185, 129);
         --color-background: 210deg 40% 98%;

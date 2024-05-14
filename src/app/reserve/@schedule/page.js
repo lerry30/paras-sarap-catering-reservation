@@ -190,7 +190,7 @@ const Schedules = () => {
     return (
         <>
             <SNavbar href={ `/reserve?display=menus&service=${ service }` } headerClassName="h-fit border-none z-subnavbar" />
-            <section className="flex flex-col min-h-[calc(100vh-var(--nav-height))] overflow-hidden py-4 sm:px-page-x  md:flex-row">
+            <section className="flex flex-col min-h-[calc(100vh-(var(--nav-height)*2))] overflow-hidden py-4 sm:px-page-x  md:flex-row">
                 { loading && <Loading customStyle="size-full" /> }
                 <div className="grow flex flex-col">
                     <main className="flex flex-col gap-2">
@@ -310,7 +310,7 @@ const Schedules = () => {
                         <h2 className="font-headings font-bold text-2xl">{ selectedDay && selectedDay }</h2>
                         <article className="font-paragraphs">{ selectedDay && `Day of the ${ service }` }</article>
 
-                        <div className="p-8 md:p4 bg-blue-500/40 rounded-md">
+                        <div className="p-8 bg-blue-500/40 rounded-md">
                             <p className="font-paragraphs text-sm text-blue-900">Keep in mind that preparations and planning takes time so there's unpickable date starts today, usually it's not taking 3 or 5 days from the date you would reserved. Additionally there are certain date where already taken, and some date where unavailble our services, any request and questions or any concern may ask in our contact page <Link href="/contact">Message me</Link>.</p>
                         </div>
 

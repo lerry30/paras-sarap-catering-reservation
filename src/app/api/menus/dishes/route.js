@@ -4,9 +4,9 @@ import { apiIsAnAdmin } from '@/utils/auth/api/isanadmin';
 
 export const GET = async (request) => {
     try {
-        console.log('add dishes');
-        const isAnAdmin = await apiIsAnAdmin(request);
-        if(!isAnAdmin) return NextResponse.json({ message: 'There\'s something wrong!' }, { status: 400 });
+        // console.log('add dishes');
+        // const isAnAdmin = await apiIsAnAdmin(request);
+        // if(!isAnAdmin) return NextResponse.json({ message: 'There\'s something wrong!' }, { status: 400 });
 
         const allDishes = (await Dish.find({}).sort({ createdAt: -1 })) || [];
         return NextResponse.json({ message: '', data: allDishes }, { status: 200 });

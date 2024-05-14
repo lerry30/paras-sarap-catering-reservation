@@ -39,6 +39,7 @@ const DishesSelection = () => {
 
         try {
             const { data } = (await getData('/api/menus/dishes')) || { data: [] };
+            console.log(data);
             setDishes(data);
         } catch(error) {}
 

@@ -26,6 +26,7 @@ const ReviewBudget = () => {
     const [loading, setLoading] = useState(false);
     const [reservationSuccess, setReservationSuccess] = useState(false);
     const [invalidFieldsValue, setInvalidFieldsValue] = useState({});
+    const [displaySummary, setDisplaySummary] = useState(false);
 
     // Constants
     const services = { wedding: true, debut: true, kidsparty: true, privateparty: true };
@@ -85,9 +86,6 @@ const ReviewBudget = () => {
     const guestNoInput = (ev) => {
         const value = ev.target.value;
         const noOfGuest = toNumber(value);
-
-        if(noOfGuest <= 0) return;
-
         ev.target.value = noOfGuest;
         setNoOfGuest(noOfGuest);
         zReservation.getState().saveNoOfGuest(noOfGuest);
@@ -102,7 +100,7 @@ const ReviewBudget = () => {
         const venuePrice = venue?.price || 0;
         const totalCostForTableNChairs = venue?.tablesnchairsprovided ? 0 : costOfTablesNChairsPerGuest;
         const totalPaymentPerGuest = (dishesCostPerGuestServed + drinksCostPerGuestServed + totalCostForTableNChairs) * noOfGuest;
-        const total = totalPaymentPerGuest + venuePrice;
+        const total = totalPaymentPerGuest + (noOfGuest ? venuePrice : 0);
         setTotalPayment(total);
     };
 
@@ -140,7 +138,7 @@ const ReviewBudget = () => {
     }, []);
 
     return (
-        <section className="flex flex-col mb-10">
+        <section className="flex flex-col">
             {loading && <Loading customStyle="size-full" />}
             <SNavbar href={ `/reserve?display=schedule&service=${ service }` } headerClassName="fixed top-[var(--nav-height)] h-fit z-subnavbar bg-white" />
             <div className="flex flex-col md:flex-row md:pr-[calc(24vw-8px)]">
@@ -223,6 +221,7 @@ const ReviewBudget = () => {
                                         })}
                                     </div>
                                 )}
+                                
                                 {Object.values(menu?.drinks || {}).length > 0 && (
                                     <div className="w-full md:w-1/2 flex flex-col gap-4">
                                         <h3 className="font-headings text-sm font-semibold">Drinks</h3>
@@ -275,27 +274,27 @@ const ReviewBudget = () => {
                     </section>
                 </main>
                 {/* ------------------------------------Summarize-------------------------------- */}
-                <aside className="md:fixed md:right-0 w-full md:w-1/4 flex flex-col gap-4 p-4 bg-gray-100 border-[1px] border-l-neutral-300">
+                <aside className="md:fixed md:right-0 md:top-[calc(var(--nav-height)*2)] md:bottom-0 w-full md:w-1/4 flex flex-col gap-4 p-4 bg-gray-100 border-[1px] border-l-neutral-300">
                     <div className="flex flex-col gap-4">
                         {/* {
-                            toNumber(noOfGuest) > 0 && (
+                            displaySummary && (
                                 <article className="bg-white p-6 rounded-lg shadow-lg">
-                                    <ul className="space-y-4">
+                                    <ul className="space-y-2">
                                         <li className="flex justify-between items-center">
-                                            <h4 className="font-headings font-semibold text-sm">Venue Cost:</h4>
-                                            <span className="font-paragraphs font-semibold text-sm">{pesoFormatter.format(venue?.price)}</span>
+                                            <h4 className="font-headings font-semibold text-[12px]">Venue Cost:</h4>
+                                            <span className="font-paragraphs font-semibold text-[12px]">{pesoFormatter.format(venue?.price)}</span>
                                         </li>
                                         <li className="flex justify-between items-center">
-                                            <h4 className="font-headings font-semibold text-sm">Cost per Guest for Dishes:</h4>
-                                            <span className="font-paragraphs font-semibold text-sm">{pesoFormatter.format(listOfDishes.reduce((holder, dish) => holder + (dish?.costperhead || 0), 0))}</span>
+                                            <h4 className="font-headings font-semibold text-[12px]">Cost per Guest for Dishes:</h4>
+                                            <span className="font-paragraphs font-semibold text-[12px]">{pesoFormatter.format(listOfDishes.reduce((holder, dish) => holder + (dish?.costperhead || 0), 0))}</span>
                                         </li>
                                         <li className="flex justify-between items-center">
-                                            <h4 className="font-headings font-semibold text-sm">Cost per Guest for Drinks:</h4>
-                                            <span className="font-paragraphs font-semibold text-sm">{pesoFormatter.format(listOfDrinks.reduce((holder, drink) => holder + (drink?.costperhead || 0), 0))}</span>
+                                            <h4 className="font-headings font-semibold text-[12px]">Cost per Guest for Drinks:</h4>
+                                            <span className="font-paragraphs font-semibold text-[12px]">{pesoFormatter.format(listOfDrinks.reduce((holder, drink) => holder + (drink?.costperhead || 0), 0))}</span>
                                         </li>
                                         <li className="flex justify-between items-center">
-                                            <h4 className="font-headings font-semibold text-sm">Cost per Guest for Table & Chair Rental:</h4>
-                                            <span className="font-paragraphs font-semibold text-sm">
+                                            <h4 className="font-headings font-semibold text-[12px]">Cost per Guest for Table & Chair Rental:</h4>
+                                            <span className="font-paragraphs font-semibold text-[12px]">
                                                 {pesoFormatter.format(venue?.tablesnchairsprovided ? 0 : costOfTablesNChairsPerGuest)}
                                             </span>
                                         </li>
@@ -305,7 +304,7 @@ const ReviewBudget = () => {
                                     </small>
                                 </article>
                             )
-                        } */}
+                        }    */}
 
                         <div className="flex flex-col gap-2 text-xl">
                             <h3 className="font-headings">Total Payment: </h3>
@@ -316,25 +315,33 @@ const ReviewBudget = () => {
                         </p>
                     </div>
                     <div className="flex flex-col gap-2">
-                        <label htmlFor="noofguest">Number of Guests</label>
-                        <input
-                            inputMode="numeric"
-                            name="noofguest"
-                            defaultValue={noOfGuest}
-                            id="noofguest"
-                            className="input w-full border border-neutral-500/40"
-                            placeholder="Number of Guests"
-                            onChange={(ev) => guestNoInput(ev)}
-                        />
-                        <ErrorField message={invalidFieldsValue['noofguest']} />
-                        <div className="flex gap-2">
-                            <button onClick={checkNoOfGuest} className="w-full button shadow-md border border-neutral-500/40 text-white">
-                                Confirm
-                            </button>
-                            <button onClick={() => router.push(`/`)} className="w-full button shadow-md border border-neutral-500/40 text-white">
-                                Cancel
-                            </button>
-                        </div>
+                        {/* {
+                            !displaySummary && <> */}
+                                <label htmlFor="noofguest">Number of Guests</label>
+                                <input
+                                    inputMode="numeric"
+                                    name="noofguest"
+                                    defaultValue={noOfGuest}
+                                    id="noofguest"
+                                    className="input w-full border border-neutral-500/40"
+                                    placeholder="Number of Guests"
+                                    onChange={(ev) => guestNoInput(ev)}
+                                />
+                                <ErrorField message={invalidFieldsValue['noofguest']} />
+                                <div className="flex gap-2">
+                                    <button onClick={checkNoOfGuest} className="w-full button shadow-md border border-neutral-500/40 text-white">
+                                        Confirm
+                                    </button>
+                                    <button onClick={() => router.push(`/`)} className="w-full button shadow-md border border-neutral-500/40 text-white">
+                                        Cancel
+                                    </button>
+                                </div>
+                            {/* </>
+                        }
+
+                        <button onClick={ () => setDisplaySummary(!displaySummary) } className="w-fit px-2 text-sm text-blue-800 mt-4">
+                            View More Details
+                        </button> */}
                     </div>
                     <ErrorField message={invalidFieldsValue['error']} />
                 </aside>

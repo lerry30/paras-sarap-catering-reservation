@@ -4,15 +4,14 @@ import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin } from 'react-icons/fa';
 
 const Footer = () => {
     return (
-        <footer className="w-full bg-gray-900 text-white py-10 px-6">
-            <div className="container mx-auto flex flex-wrap justify-between items-start gap-10">
-                <div className="w-full sm:w-1/4">
+        <footer className="w-full bg-gray-900 text-white py-10 px-page-x relative z-footer mt-10">
+            <div className="container mx-auto flex flex-wrap justify-between items-start gap-y-10">
+                <div className="w-full sm:w-[30%]">
                     <Link href="/">
-                        {/* <span className="text-2xl font-bold">Logo</span> */}
-                        <span><LogoWhite /></span>
+                        <span><LogoWhite className="w-full" /></span>
                     </Link>
                 </div>
-                <div className="w-full sm:w-1/4">
+                <div className="w-full sm:w-[30%]">
                     <h2 className="font-bold text-lg mb-4">About Us</h2>
                     <nav>
                         <ul className="space-y-2">
@@ -29,7 +28,7 @@ const Footer = () => {
                         </ul>
                     </nav>
                 </div>
-                <div className="w-full sm:w-1/4">
+                <div className="w-full sm:w-[30%]">
                     <h2 className="font-bold text-lg mb-4">Services</h2>
                     <nav>
                         <ul className="space-y-2">
@@ -56,7 +55,7 @@ const Footer = () => {
                         </ul>
                     </nav>
                 </div>
-                <div className="w-full sm:w-1/4">
+                <div className="w-full sm:w-[30%]">
                     <h2 className="font-bold text-lg mb-4">Contact Us</h2>
                     <div className="space-y-2">
                         <div>
@@ -69,7 +68,7 @@ const Footer = () => {
                         </div>
                     </div>
                 </div>
-                <div className="w-full sm:w-1/4">
+                <div className="w-full sm:w-[30%]">
                     <h2 className="font-bold text-lg mb-4">Follow Us</h2>
                     <div className="flex space-x-4">
                         <Link href="https://facebook.com">
@@ -94,7 +93,7 @@ const Footer = () => {
                         </Link>
                     </div>
                 </div>
-                <div className="w-full sm:w-1/4">
+                <div className="w-full sm:w-[30%]">
                     <h2 className="font-bold text-lg mb-4">Subscribe to Our Newsletter</h2>
                     <form className="space-y-2">
                         <input
