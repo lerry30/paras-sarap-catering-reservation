@@ -321,7 +321,7 @@ const Schedules = () => {
 
 									<div className="flex gap-2 font-paragraphs">
 										<h2 className="font-semibold text-sm text-neutral-500">To:</h2>
-										<span className="text-sm text-neutral-500">{ displayData?.date?.time?.from }</span>
+										<span className="text-sm text-neutral-500">{ displayData?.date?.time?.to }</span>
 									</div>
 								</div>
 

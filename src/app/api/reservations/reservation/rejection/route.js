@@ -1,5 +1,30 @@
 import { NextResponse } from 'next/server';
+import { decodeUserIdFromHeader } from '@/utils/auth/decode';
 import reservationRejectionReason from '@/models/ReservationRejectionReason';
+import Reservation from '@/models/Reservation';
+
+export const GET = async () => {
+    try {
+        const userId = decodeUserIdFromHeader();
+        const reservations = (await Reservation.find({ userId }).sort({ createdAt: -1 })) || [];
+        const reservationRejectionReasonData = [];
+        for(let i = 0; i < reservations.length; i++) {
+            const reservation = reservations[i];
+            const reservationId = reservation._id;
+
+            const rejectionReasonData = await reservationRejectionReason.findOne({ reservationId });
+            if(!rejectionReasonData) continue;
+            const { reason } = rejectionReasonData;
+            const { createdAt } = reservation;
+            reservationRejectionReasonData.push({ reason, createdAt });
+        }
+
+        return NextResponse.json({ message: '', data: reservationRejectionReasonData }, { status: 200 });
+    } catch(error) {
+        console.log(error);
+        return NextResponse.json({ message: 'There\'s something wrong!', errorData: 'unauth' }, { status: 400 });
+    }
+}
 
 export const POST = async (request) => {
     try {
