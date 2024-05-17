@@ -66,7 +66,7 @@ export const DELETE = async (request) => {
             const reservationCreation = reservation.createdAt;
 
             const dateInMilli = new Date(reservationCreation).getTime();
-            console.log(dateInMilli, Number(dateAsKey))
+            // console.log(dateInMilli, Number(dateAsKey))
             if(dateInMilli === Number(dateAsKey)) {
                 const reservationId = reservation._id;
                 await Reservation.findByIdAndDelete(reservationId);

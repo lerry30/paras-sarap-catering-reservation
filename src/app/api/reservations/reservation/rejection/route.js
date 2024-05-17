@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { decodeUserIdFromHeader } from '@/utils/auth/decode';
+import { apiIsAnAdmin } from '@/utils/auth/api/isanadmin';
 import reservationRejectionReason from '@/models/ReservationRejectionReason';
 import Reservation from '@/models/Reservation';
 
@@ -28,6 +29,9 @@ export const GET = async () => {
 
 export const POST = async (request) => {
     try {
+        const isAnAdmin = await apiIsAnAdmin(request);
+        if(!isAnAdmin) return NextResponse.json({ message: 'There\'s something wrong!' }, { status: 400 });
+
         const form = await request.formData();
         const id = String(form.get('id'))?.trim();
         const reason = String(form.get('textbox'))?.trim();

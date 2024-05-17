@@ -41,7 +41,7 @@ const Card = ({ reservationData={}, changeReservationStatus, tab='pending' }) =>
     const pesoFormatter = new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' });
     const dateFormatter = new Intl.DateTimeFormat('en-PH', { month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true,});
 
-    const statusSkin = { pending: 'bg-orange-400 text-orange-800 border-orange-700', approved: 'bg-teal-400 text-teal-800 border-teal-700', rejected: 'bg-red-400 text-red-800 border-red-700' };
+    // const statusSkin = { pending: 'bg-orange-400 text-orange-800 border-orange-700', approved: 'bg-teal-400 text-teal-800 border-teal-700', rejected: 'bg-red-400 text-red-800 border-red-700' };
 
     const [ total, setTotal ] = useState(0);
 
@@ -98,7 +98,7 @@ const Card = ({ reservationData={}, changeReservationStatus, tab='pending' }) =>
         </section>
         <section className="flex flex-col gap-1 py-2">
             <h1 className="font-headings font-semibold text-lg">Venue</h1>
-            <div className="flex gap-6">
+            <div className="flex flex-col md:flex-row gap-6">
                 {
                     venueFileName && 
                         <div className="w-[150px] aspect-square">

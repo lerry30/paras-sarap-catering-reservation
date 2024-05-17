@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { getData, sendFormUpdate } from '@/utils/send';
-import { Prompt } from '@/components/Modal';
+import { deleteWithJSON, getData, sendForm, sendFormUpdate } from '@/utils/send';
+import { Prompt, PromptTextBox } from '@/components/Modal';
 import Card from '@/components/admin/reservations/Card';
 import Loading from '@/components/Loading';
 
@@ -9,8 +9,10 @@ const ReservationList = () => {
     const [ reservations, setReservations ] = useState([]);
     const [ loading, setLoading ] = useState(false);
     const [ displayStatus, setDisplayStatus ] = useState('pending');
+
     const [ approvePrompt, setApprovePrompt ] = useState(false);
     const [ rejectPrompt, setRejectPrompt ] = useState(false);
+	const [ reasonForRejection, setReasonForRejection ] = useState(false);
 
     const [ formData, setFormData ] = useState({ id: '', status: '' });
 
@@ -30,6 +32,11 @@ const ReservationList = () => {
             const response = await sendFormUpdate('/api/reservations/reservation', form);
             await getResList();
             setDisplayStatus(status);
+
+            if(status === 'rejected')
+                setReasonForRejection(true);
+            if(status === 'approved')
+				await deleteWithJSON('/api/reservations/reservation/rejection', { id });
         } catch(error) {
             console.log(error);
         }
@@ -111,6 +118,16 @@ const ReservationList = () => {
                     setRejectPrompt(false) ;
                     setLoading(false);
             }} header="Confirm Rejection" message="Are you sure you want to reject this reservation?"/>
+        }
+        {
+            reasonForRejection && <PromptTextBox 
+            callback={ async (form) => {
+                const { id } = formData;
+                const nFormData = new FormData(form);
+                nFormData.append('id', id);
+                await sendForm('/api/reservations/reservation/rejection', nFormData);
+                setReasonForRejection(false);
+            } } header="Reason for Rejection" message="Please provide a brief and concise reason for rejecting the client's reservation. This will help communicate the decision effectively."/>
         }
     </>
 }
