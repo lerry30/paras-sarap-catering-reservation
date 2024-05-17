@@ -41,7 +41,7 @@ const Menus = () => {
         try {
             const { data } = (await getData('/api/menus')) || { data: [] };
             setMenus(data);
-            console.log(data);
+            // console.log(data);
             setAllSelects(Array(data.length).fill(false));
         } catch(error) {}
 

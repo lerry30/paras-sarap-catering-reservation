@@ -118,7 +118,7 @@ const CardSelect = ({ menuData, index, allSelects, setAllSelects }) => {
                         <h1 className="absolute font-headings text-transparent group-hover:text-white font-bold text-2xl">UNAVAILABLE</h1>
                     </div>
                 :
-                    <div onClick={ addMenu } className="group absolute top-0 left-0 right-0 bottom-0 rounded-lg hover:bg-green-900 opacity-90 border-2 border-green-600 shadow-lg hover:shadow-green-600 flex justify-center items-center">
+                    <div onClick={ addMenu } className="group absolute top-0 left-0 right-0 bottom-0 rounded-lg hover:bg-green-900 opacity-90 border-2 border-green-600 shadow-lg hover:shadow-green-600 flex justify-center items-center hover:cursor-pointer">
                         <CirclePlus size={ 90 } className="stroke-transparent group-hover:stroke-white -mt-[60px]" />
                         <h1 className="absolute font-headings text-transparent group-hover:text-white font-bold text-2xl mt-[60px]">SELECT MENU</h1>
                     </div>
@@ -126,7 +126,7 @@ const CardSelect = ({ menuData, index, allSelects, setAllSelects }) => {
 
             {
                 allSelects[index] && 
-                    <div onClick={ removeMenu } className="group absolute top-0 left-0 right-0 bottom-0 rounded-lg bg-green-900 opacity-90 border-2 border-green-600 shadow-lg shadow-green-600 flex flex-col justify-center items-center px-8">
+                    <div onClick={ removeMenu } className="group absolute top-0 left-0 right-0 bottom-0 rounded-lg bg-green-900 opacity-90 border-2 border-green-600 shadow-lg shadow-green-600 flex flex-col justify-center items-center px-8 hover:cursor-pointer">
                         <CircleCheck size={ 90 } className="stroke-white -mt-[40px]" />
                         <p className="font-paragraphs text-white">{ name }</p>
                         <h1 className="font-headings text-white font-bold text-2xl text-center">SELECTED AS YOUR MENU</h1>

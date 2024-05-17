@@ -10,8 +10,12 @@ const MyReservations = () => {
     const [loading, setLoading] = useState(false);
     const [rejectionReasons, setRejectionReasons] = useState({});
 
+    const removeItem = (dateAsKey) => {
+        if(!dateAsKey) return;
+        setReservations(state => state.filter(item => item.dateAsKey !== dateAsKey));
+    }
+
     const fetchReservations = async () => {
-        setLoading(true);
         try {
             const { data } = (await getData('/api/reservations/reservation')) || { data: [] };
             const newReservations = data.map(fData => {
@@ -19,6 +23,7 @@ const MyReservations = () => {
                 const dateAsKey = reservationDate.getTime();
                 return { ...fData, dateAsKey };
             });
+
             setReservations(newReservations);
         } catch (error) {
             console.error("Error fetching reservations", error);
@@ -35,17 +40,20 @@ const MyReservations = () => {
                 acc[dateAsKey] = fData.reason;
                 return acc;
             }, {});
-            setRejectionReasons(prevReasons => ({ ...prevReasons, ...newReasons }));
+            setRejectionReasons(newReasons);
+            // setRejectionReasons(prevReasons => ({ ...prevReasons, ...newReasons }));
         } catch (error) {
             console.error("Error fetching rejection reasons", error);
         }
     };
 
     useEffect(() => {
+        setLoading(true);
         fetchReservations();
 
         const intervalId = setInterval(() => {
             fetchRejectionReasons();
+            fetchReservations();
         }, 4000);
 
         return () => clearInterval(intervalId);
@@ -78,6 +86,7 @@ const MyReservations = () => {
                                     key={index} 
                                     reservationData={res} 
                                     rejectionReason={reason} 
+                                    removeItself={removeItem}
                                 />
                             );
                         })}

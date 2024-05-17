@@ -17,7 +17,6 @@ const ProvideVenueLocation = () => {
     const [ venueName, setVenueName ] = useState('');
     const [ description, setDescription ] = useState('');
     const [ tablesNChairsProvided, setTablesNChairsProvided ] = useState(false);
-    const [ noOfGuest, setNoOfGuest ] = useState(0);
     const [ service, setService ] = useState(undefined);
     const [ loading, setLoading ] = useState(false);
     const [ invalidFieldsValue, setInvalidFieldsValue ] = useState({});
@@ -41,8 +40,6 @@ const ProvideVenueLocation = () => {
         for(const [field, message] of Object.entries(invalidFields))
             setInvalidFieldsValue(prev => ({ ...prev, [field]: message }));
 
-        if(!noOfGuest) setInvalidFieldsValue(prev => ({ ...prev, noofguest: 'Enter a numerical value greater than zero for the number of guest' }));
-
         if(Object.values(invalidFields).length === 0) {
             setConfirmationPrompt(true);
         }
@@ -65,7 +62,6 @@ const ProvideVenueLocation = () => {
                 }
             };
 
-            zReservation.getState().saveNoOfGuest(noOfGuest);
             zReservation.getState().saveVenueData(venueData);
             router.push(`/reserve?display=menus&service=${ service }`);
         } catch(error) {
@@ -73,15 +69,6 @@ const ProvideVenueLocation = () => {
         }
 
         setLoading(false);
-    }
-
-    const guestNoInput = (ev) => {
-        const value = ev.target.value;
-        const noOfGuest = toNumber(value);
-        ev.target.value = noOfGuest;
-        setNoOfGuest(noOfGuest);
-
-        if(isNaN(Number(value))) setInvalidFieldsValue(prev => ({ ...prev, noofguest: 'Please enter a numerical value for the number of guest.' }));
     }
 
     const select = (ev, key) => {
@@ -139,16 +126,6 @@ const ProvideVenueLocation = () => {
                     <div className="flex flex-col gap-4">
                         <p className="text-sm font-paragraphs">By checking the box below, you confirm that you will provide the chairs and tables needed for the event. In addition to providing the venue, it's important to specify the number of guests attending your occasion. Please ensure to include the number of guests. For further discussion, click <Link href="" className="text-blue-700 font-semibold">Message me</Link> to collaborate on making your event even more memorable.</p>
                         <Checkbox value="" text="Do you want to use your own tables and chairs" onChange={ ev => setTablesNChairsProvided(ev.target.checked) }/>
-                    </div>
-                    <div className="w-full">
-                        <label className="font-paragraph text-sm font-semibold">Number of Guest</label>
-                        <input 
-                            name="noofguest" 
-                            onChange={ guestNoInput } 
-                            className="input w-full border border-neutral-500/40" 
-                            placeholder="Number of Guest"
-                        />
-                        <ErrorField message={ invalidFieldsValue['noofguest'] }/>
                     </div>
                     <div className="w-full">
                         <label htmlFor="" className="font-paragraph text-sm font-semibold">Street/Building Name</label>

@@ -95,8 +95,10 @@ const ReviewBudget = () => {
             return;
         }
 
-        const dishesCostPerGuestServed = listOfDishes.reduce((holder, dish) => holder + (dish?.costperhead || 0), 0);
-        const drinksCostPerGuestServed = listOfDrinks.reduce((holder, drink) => holder + (drink?.costperhead || 0), 0);
+        console.table(listOfDishes);
+
+        const dishesCostPerGuestServed = listOfDishes.reduce((holder, dish) => holder + (dish?.status !== 'available' ? 0 : (dish?.costperhead || 0)), 0);
+        const drinksCostPerGuestServed = listOfDrinks.reduce((holder, drink) => holder + (drink?.status !== 'available' ? 0 : (drink?.costperhead || 0)), 0);
         const venuePrice = venue?.price || 0;
         const totalCostForTableNChairs = venue?.tablesnchairsprovided ? 0 : costOfTablesNChairsPerGuest;
         const totalPaymentPerGuest = (dishesCostPerGuestServed + drinksCostPerGuestServed + totalCostForTableNChairs) * noOfGuest;
@@ -145,7 +147,7 @@ const ReviewBudget = () => {
                 <main className="flex flex-col gap-10 divide-y-[1px] px-page-x py-4 flex-1">
                     <section className="flex flex-col gap-4 py-2">
                         <h1 className="font-headings font-semibold text-lg">Venue</h1>
-                        <div className="flex gap-6">
+                        <div className="flex flex-col md:flex-row gap-6">
                             {venue?.filename && (
                                 <div className="w-[150px] aspect-square">
                                     <Image

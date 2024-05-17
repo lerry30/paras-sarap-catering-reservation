@@ -87,7 +87,7 @@ const Menus = () => {
                         <span className="text-sm font-medium">Add New Menu</span>
                     </Link>
                 </div>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-4">
                     {
                         menus?.map((menu, index) => (
                             <Card 

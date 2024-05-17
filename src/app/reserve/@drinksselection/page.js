@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { getData } from '@/utils/send';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { zMenu } from '@/stores/menu';
-import CardSelect from '@/components/admin/drinks/CardSelect';
+import CardSelect from '@/components/drinks/CardSelect';
 import Loading from '@/components/Loading';
 
 const DrinksSelection = () => {
@@ -56,7 +56,7 @@ const DrinksSelection = () => {
     return (
         <>
             { loading && <Loading customStyle="size-full" /> }
-            <section className="relative flex flex-col gap-2">
+            <section className="relative flex flex-col gap-4">
                 <div className="sticky w-full top-[var(--nav-height)] left-0 z-navbar border-b-[1px] bg-white flex justify-between items-center py-1 px-4">
                     <div className="flex gap-4">
                         <button onClick={ goBack }>
@@ -66,7 +66,7 @@ const DrinksSelection = () => {
                     </div>
                     <button onClick={ handleSelection } className="font-headings bg-skin-ten text-white text-sm font-bold py-2 px-4 rounded-full leading-4">CONTINUE</button>
                 </div>
-                <div className="flex flex-wrap gap-2 px-4">
+                <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 px-page-x">
                     {
                         drinks.map((item, index) => (
                             <CardSelect

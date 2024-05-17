@@ -16,14 +16,11 @@
 // export default Dashboard;
 
 'use client';
-import { useEffect, useState } from 'react';
-import { Bar, Pie, Line } from 'react-chartjs-2';
-import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, Title, PointElement, LineElement } from 'chart.js';
+import { useState } from 'react';
+import { Bar, Doughnut, Line } from 'react-chartjs-2';
+import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement, BarElement } from 'chart.js';
 
-ChartJS.register(
-    ArcElement, Tooltip, Legend,
-    CategoryScale, LinearScale, BarElement, Title, PointElement, LineElement
-);
+ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement, BarElement);
 
 const Dashboard = () => {
     const [reservations, setReservations] = useState({ pending: 10, approved: 50, rejected: 5 });
@@ -52,42 +49,87 @@ const Dashboard = () => {
             {
                 label: 'Reservations Comparison',
                 data: monthlyComparison,
-                backgroundColor: '#36A2EB'
+                backgroundColor: '#36A2EB',
+                hoverBackgroundColor: '#36A2EB'
+            }
+        ]
+    };
+
+    const userGrowthData = {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+        datasets: [
+            {
+                label: 'User Growth',
+                data: [10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65],
+                borderColor: '#FF6384',
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                fill: true,
+                tension: 0.4
+            }
+        ]
+    };
+
+    const venuePopularityData = {
+        labels: ['Venue 1', 'Venue 2', 'Venue 3', 'Venue 4', 'Venue 5'],
+        datasets: [
+            {
+                label: 'Venue Popularity',
+                data: [20, 15, 30, 10, 25],
+                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF']
+            }
+        ]
+    };
+
+    const satisfactionData = {
+        labels: ['Satisfied', 'Neutral', 'Dissatisfied'],
+        datasets: [
+            {
+                label: 'Service Satisfaction',
+                data: [serviceSatisfactionRate, 100 - serviceSatisfactionRate - 5, 5],
+                backgroundColor: ['#4BC0C0', '#FFCE56', '#FF6384']
             }
         ]
     };
 
     return (
-        <section className="p-6 bg-gray-100 min-h-screen">
-            <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div className="bg-white p-6 rounded-lg shadow-md flex flex-col items-center">
-                    <h2 className="font-semibold text-lg mb-4">Reservations</h2>
-                    <Pie data={reservationData} />
+        <section className="p-4 bg-gray-100 min-h-screen">
+            <h1 className="text-3xl font-bold mb-4">Dashboard</h1>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-center">
+                    <h2 className="font-semibold text-lg mb-2">Reservations</h2>
+                    <Bar data={reservationData} />
                 </div>
-                <div className="bg-white p-6 rounded-lg shadow-md flex flex-col items-center">
-                    <h2 className="font-semibold text-lg mb-4">Users</h2>
-                    <p className="text-4xl font-bold">{users}</p>
+                <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-center">
+                    <h2 className="font-semibold text-lg mb-2">Users</h2>
+                    <p className="text-3xl font-bold">{users}</p>
                 </div>
-                <div className="bg-white p-6 rounded-lg shadow-md flex flex-col items-center">
-                    <h2 className="font-semibold text-lg mb-4">Venues</h2>
-                    <p className="text-4xl font-bold">{venues}</p>
+                <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-center">
+                    <h2 className="font-semibold text-lg mb-2">Venues</h2>
+                    <p className="text-3xl font-bold">{venues}</p>
                 </div>
-                <div className="bg-white p-6 rounded-lg shadow-md flex flex-col items-center">
-                    <h2 className="font-semibold text-lg mb-4">Dishes</h2>
-                    <p className="text-4xl font-bold">{dishes}</p>
+                <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-center">
+                    <h2 className="font-semibold text-lg mb-2">Dishes</h2>
+                    <p className="text-3xl font-bold">{dishes}</p>
                 </div>
-                <div className="bg-white p-6 rounded-lg shadow-md flex flex-col items-center">
-                    <h2 className="font-semibold text-lg mb-4">Drinks</h2>
-                    <p className="text-4xl font-bold">{drinks}</p>
+                <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-center">
+                    <h2 className="font-semibold text-lg mb-2">Drinks</h2>
+                    <p className="text-3xl font-bold">{drinks}</p>
                 </div>
-                <div className="bg-white p-6 rounded-lg shadow-md flex flex-col items-center">
-                    <h2 className="font-semibold text-lg mb-4">Service Satisfaction Rate</h2>
-                    <p className="text-4xl font-bold">{serviceSatisfactionRate}%</p>
+                <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-center">
+                    <h2 className="font-semibold text-lg mb-2">Service Satisfaction Rate</h2>
+                    <Doughnut data={satisfactionData} />
                 </div>
-                <div className="col-span-1 md:col-span-2 lg:col-span-3 bg-white p-6 rounded-lg shadow-md">
-                    <h2 className="font-semibold text-lg mb-4">Monthly Reservations Comparison</h2>
+                <div className="col-span-1 md:col-span-2 lg:col-span-3 bg-white p-4 rounded-lg shadow-md">
+                    <h2 className="font-semibold text-lg mb-2">Monthly Reservations Comparison</h2>
                     <Bar data={monthlyData} />
+                </div>
+                <div className="col-span-1 md:col-span-2 lg:col-span-3 bg-white p-4 rounded-lg shadow-md">
+                    <h2 className="font-semibold text-lg mb-2">User Growth Over Months</h2>
+                    <Line data={userGrowthData} />
+                </div>
+                <div className="col-span-1 md:col-span-2 lg:col-span-3 bg-white p-4 rounded-lg shadow-md">
+                    <h2 className="font-semibold text-lg mb-2">Venue Popularity</h2>
+                    <Bar data={venuePopularityData} />
                 </div>
             </div>
         </section>

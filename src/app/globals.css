@@ -64,6 +64,7 @@ body {
 }
 
 .button {
+    border: none;
     border-radius: 0.25rem;
     font-weight: bold;
     font-size: medium;
@@ -71,6 +72,15 @@ body {
     padding: 18px;
     background-color: rgb(6 78 59 / var(--tw-bg-opacity));
     line-height: 0;
+
+    cursor: pointer;
+    transition: box-shadow 0.2s, transform 0.2s;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+.button:active {
+    box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.4);
+    transform: translateY(2px);
 }
 
 .hide-scrollbar::-webkit-scrollbar {

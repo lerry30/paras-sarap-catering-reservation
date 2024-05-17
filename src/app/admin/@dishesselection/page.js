@@ -1,5 +1,5 @@
 'use client';
-import CardSelect from '@/components/admin/dishes/CardSelect';
+import CardSelect from '@/components/dishes/CardSelect';
 import Loading from '@/components/Loading';
 import { ArrowLeft } from '@/components/icons/All';
 import { useEffect, useState } from 'react';
@@ -52,7 +52,7 @@ const DishesSelection = () => {
     return (
         <>
             { loading && <Loading customStyle="size-full" /> }
-            <section className="relative flex flex-col gap-2">
+            <section className="relative flex flex-col gap-4">
                 <div className="sticky w-full top-[var(--nav-height)] left-0 z-navbar border-b-[1px] bg-white flex justify-between items-center py-1 px-4">
                     <div className="flex gap-4">
                         <button onClick={ goBack }>
@@ -62,11 +62,11 @@ const DishesSelection = () => {
                     </div>
                     <button onClick={ handleSelection } className="font-headings bg-skin-ten text-white text-sm font-bold py-2 px-4 rounded-full leading-4">CONTINUE</button>
                 </div>
-                <div className="flex flex-wrap gap-2 px-4">
+                <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 px-4">
                     {
                         dishes.map((item, index) => (
                             <CardSelect
-                                key={ index } 
+                                key={ index }
                                 dishData={ item } 
                                 dishMenu={ dishMenu }
                                 setDishMenu={ setDishMenu }
