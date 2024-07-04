@@ -21,11 +21,11 @@ const CNavbar = () => {
     }, [])
 
     return (
-        <header className="w-full h-nav-height flex items-center font-headings border-b-[1px] border-neutral-240 fixed top-0 left-0 z-navbar bg-white">
+        <header className="w-screen h-nav-height flex items-center font-headings border-b-[1px] border-neutral-240 fixed top-0 left-0 z-navbar bg-white">
             <nav className="w-full py-2">
                 <ul className="px-2 sm:px-page-x flex flex-grow justify-between items-center">
                     <CSidebar />
-                    <li className="p-2 h-nav-item-height max-w-[30%] min-w-[230px] rounded-full">
+                    <li className="sm:px-2 py-2 h-nav-item-height max-w-[30%] min-w-[200px] rounded-full">
                         <Logo />
                     </li>
 
@@ -58,10 +58,10 @@ const CNavbar = () => {
                         { !fullName ?
                                 <>
                                     <li className="h-nav-item-height flex items-center rounded-sm">
-                                        <Link href="/signin" className="py-2 px-4 max-h-[40px] text-neutral-600">LogIn</Link>
+                                        <Link href="/signin" className="p-2 sm:px-4 max-h-[40px] text-neutral-600">LogIn</Link>
                                     </li>
                                     <li className="h-nav-item-height flex items-center rounded-sm hover:bg-skin-ten transition-colors">
-                                        <Link href="/signup" className="py-2 px-4 max-h-[40px] hover:text-white font-semibold">Register</Link>
+                                        <Link href="/signup" className="p-2 sm:px-4 max-h-[40px] hover:text-white font-semibold">Register</Link>
                                     </li>
                                 </>
                             :

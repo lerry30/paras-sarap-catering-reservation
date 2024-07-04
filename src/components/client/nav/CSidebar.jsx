@@ -4,7 +4,7 @@ import ParentOption from '@/components/nav/SubDrawer';
 
 const CSidebar = () => {
     return  (
-        <BurgerMenu size="h-nav-item-height" className="mr-2 lg:hidden">
+        <BurgerMenu size="h-nav-item-height" className="mr-1 lg:hidden">
             <Option href="/about" className="!rounded-full px-4">About</Option>
             <Option href="/reserve?display=myreservations" className="!rounded-full px-4">Reservations</Option>
             <ParentOption text="Services" className="px-4">
