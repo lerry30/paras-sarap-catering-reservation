@@ -34,7 +34,7 @@ export const middleware = async (request) => {
             return NextResponse.next();
         } 
         
-        const accessiblePrefixes = { '/': true, '/about': true, };
+        const accessiblePrefixes = { '/': true, '/about': true, '/services': true };
         if(accessiblePrefixes.hasOwnProperty(pathname)) {
             return NextResponse.next();
         }

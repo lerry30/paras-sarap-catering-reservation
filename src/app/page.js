@@ -30,6 +30,8 @@ export default function Home() {
                             alt={ 'Background Image' }
                             sizes='100%'
                             style={{
+                                width: '100%',
+                                height: '100%',
                                 objectFit: 'cover',
                                 transformOrigin: 'center',
                                 position: 'absolute',
@@ -41,7 +43,7 @@ export default function Home() {
                             priority
                         />
                     </div>
-                    <div className="absolute size-full flex flex-col gap-4 lg:flex-row">
+                    <div className="absolute z-[3] size-full flex flex-col gap-4 lg:flex-row">
                         <div className="w-full lg:w-1/2 flex flex-col justify-center text-white">
                             <h2 className="font-headings text-4xl font-bold">Welcome to Paras Sarap Catering Reservation</h2>
                             <h4 className="font-headings text-lg">Your Premier Catering Reservation Solution</h4>

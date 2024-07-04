@@ -151,7 +151,7 @@ const SignUpPage = () => {
                         <button onClick={ ev => {
                             ev.preventDefault();
                             setTogglePasswordDisplay(state => !state);
-                         } } className="px-2">
+                         } } className="px-2" tabIndex="-1">
                             { togglePasswordDisplay ? <Eye /> : <EyeOff /> }
                         </button>
                     </div>
