@@ -2,11 +2,13 @@
 import Image from 'next/image';
 import { CloudUpload } from '@/components/icons/All';
 import { useRef, useState, useEffect } from 'react';
+import { toNumber } from '@/utils/number';
 
 const imageMimeType = /image\/(png|jpg|jpeg)/i;
 
-const UploadButton = ({ fileData: [ file, setFile ], initialImageSrc=undefined }) => {
+const UploadButton = ({ fileData: [ file, setFile ], className='', DisplaySvg=undefined, initialImageSrc=undefined }) => {
     const inputFileRef = useRef();
+    const containersSize = useRef('');
     const [ imageSrc, setImageSrc ] = useState(null);
 
     // tooltip
@@ -57,27 +59,35 @@ const UploadButton = ({ fileData: [ file, setFile ], initialImageSrc=undefined }
     }, [ file ]);
 
     useEffect(() => {
+        console.log('upload button load', initialImageSrc);
         // initial image source
         if(!imageSrc && initialImageSrc)
             setImageSrc(initialImageSrc);
+
+        const matchedClassSize = className?.match(/size-(\w+)/gi) || [];
+        const classSize = matchedClassSize.length > 0 ? matchedClassSize[0] : 'size-full';
+        const size = toNumber(classSize.split('-')[1]);
+        containersSize.current = classSize;
+        if(size > 0)
+            containersSize.current = `size-[${ size * 4 + 100 }px]`;
+
         // tooltip
         uploadBtn?.current?.addEventListener('mousemove', toolTipOverMouse);
         return () => uploadBtn?.current?.removeEventListener('mousemove', toolTipOverMouse);
     }, []);
 
     return (
-        <div>   
+        <div className={ containersSize.current }> 
             <label htmlFor="file" className="pl-1 font-paragraphs">Click to add image</label>
             <div 
                 ref={ uploadBtn }
                 onClick={ () => inputFileRef.current.click() }
-                className="size-96 flex justify-center items-center rounded-md shadow-lg cursor-pointer border border-neutral-500/40 relative group"
-            >
+                className={ `size-96 flex justify-center items-center rounded-md shadow-lg border border-neutral-500/40 cursor-pointer relative group ${ className }` }>
                 {
                     imageSrc ? 
                         <Image 
                             src={ imageSrc }
-                            alt='recipelistcious logo'
+                            alt='Preview Image'
                             width={ 400 }
                             height={ 400 }
                             sizes='100%'
@@ -91,7 +101,7 @@ const UploadButton = ({ fileData: [ file, setFile ], initialImageSrc=undefined }
                             priority
                         />
                     :
-                        <CloudUpload size={200} className="" />
+                        DisplaySvg ? <DisplaySvg /> : <CloudUpload size={200} className="" />
                 }
                 {/* tooltip */}
                 <div ref={ toolTip } className="absolute top-full mt-2 bg-neutral-700 px-2 py-1 rounded-md text-white hidden group-hover:flex">
