@@ -8,7 +8,7 @@ import Option from '@/components/nav/Option'
 import Avatar from '@/components/nav/Avatar';
 import CSidebar from './CSidebar';
 import Messages from '@/components/nav/Messages';
-import { useEffect } from 'react';
+import { useMemo } from 'react';
 import { zUserData } from '@/stores/user';
 import { ListChecks } from '@/components/icons/All';
 
@@ -16,7 +16,7 @@ const CNavbar = () => {
     const saveUserData = zUserData(state => state.saveUserData);
     const fullName = zUserData(state => state.fullname);
 
-    useEffect(() => {
+    useMemo(() => {
         saveUserData();
     }, [])
 
@@ -58,10 +58,10 @@ const CNavbar = () => {
                         { !fullName ?
                                 <>
                                     <li className="h-nav-item-height flex items-center rounded-sm">
-                                        <Link href="/signin" className="p-2 sm:px-4 max-h-[40px] text-neutral-600">LogIn</Link>
+                                        <Link href="/signin" className="py-2 pl-3 sm:px-4 max-h-[40px] text-neutral-600">LogIn</Link>
                                     </li>
                                     <li className="h-nav-item-height flex items-center rounded-sm hover:bg-skin-ten transition-colors">
-                                        <Link href="/signup" className="p-2 sm:px-4 max-h-[40px] hover:text-white font-semibold">Register</Link>
+                                        <Link href="/signup" className="py-2 pl-3 sm:px-4 max-h-[40px] hover:text-white font-semibold">Register</Link>
                                     </li>
                                 </>
                             :
