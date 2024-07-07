@@ -8,6 +8,7 @@ export const zUserData = create(set => ({
     lastname: '',
     email: '',
     fullname: '',
+    filename: '',
 
     saveUserData: async () => {
         try {
@@ -17,11 +18,11 @@ export const zUserData = create(set => ({
                 localStorage.setItem(localStorageName, JSON.stringify(data));
             }
             
-            const { firstname, lastname, email } = JSON.parse(localStorage.getItem(localStorageName) || '{}');
+            const { firstname, lastname, email, filename } = JSON.parse(localStorage.getItem(localStorageName) || '{}');
 
             set(state => {
                 const fullname = createFullname(firstname, lastname);
-                return { firstname, lastname, email, fullname };
+                return { firstname, lastname, email, fullname, filename };
             });
         } catch(error) {
             console.log(error, ', get user data error!');
@@ -29,6 +30,6 @@ export const zUserData = create(set => ({
     },
 
     wipeOutData: () => {
-        set(() => ({ firstname: '', lastname: '', email: '', fullname: '' }));
+        set(() => ({ firstname: '', lastname: '', email: '', fullname: '', filename: '' }));
     }
 }));
