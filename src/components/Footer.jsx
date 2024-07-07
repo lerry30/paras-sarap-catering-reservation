@@ -94,7 +94,7 @@ const Footer = () => {
                     </div>
                 </div>
                 <div className="w-full sm:w-[30%]">
-                    <h2 className="font-bold text-lg mb-4">Subscribe to Our Newsletter</h2>
+               {/*     <h2 className="font-bold text-lg mb-4">Subscribe to Our Newsletter</h2>
                     <form className="space-y-2">
                         <input
                             type="email"
@@ -105,6 +105,7 @@ const Footer = () => {
                             Subscribe
                         </button>
                     </form>
+                */}
                 </div>
             </div>
             <div className="mt-10 text-center text-neutral-500">
