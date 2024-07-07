@@ -11,7 +11,8 @@ export const GET = async () => {
         const userData = { 
             firstname: user?.firstname || '', 
             lastname: user?.lastname || '', 
-            email: user?.email || ''
+            email: user?.email || '',
+            filename: user?.filename || '',
         };
         
         if(!state)
