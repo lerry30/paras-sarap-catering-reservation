@@ -1,22 +1,12 @@
-// 'use client';
-// import Loading from '@/components/Loading';
-// import { useState } from 'react';
-
-// const Dashboard = () => {
-//     const [ loading, setLoading ] = useState(false);
-
-//     return (
-//         <section className="w-full h-[calc(100vh-var(--nav-height))] flex justify-center gap-2 p-4">
-//             { loading && <Loading customStyle="size-full" /> }
-//             <h2 className="font-bold text-4xl text-neutral-400">Dashboard</h2>
-//         </section>
-//     );
-// }
-
-// export default Dashboard;
-
 'use client';
-import { useState } from 'react';
+
+import Loading from '@/components/Loading';
+import AnimateNumber from '@/components/AnimateNumber';
+
+import { getData } from '@/utils/send';
+import { toNumber } from '@/utils/number';
+
+import { useState, useEffect } from 'react';
 import { Bar, Doughnut, Line } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement, BarElement } from 'chart.js';
 
@@ -24,12 +14,14 @@ ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, PointE
 
 const Dashboard = () => {
     const [reservations, setReservations] = useState({ pending: 10, approved: 50, rejected: 5 });
-    const [users, setUsers] = useState(150);
-    const [venues, setVenues] = useState(20);
-    const [dishes, setDishes] = useState(50);
-    const [drinks, setDrinks] = useState(30);
+    const [users, setUsers] = useState(0);
+    const [venues, setVenues] = useState(0);
+    const [dishes, setDishes] = useState(0);
+    const [drinks, setDrinks] = useState(0);
     const [serviceSatisfactionRate, setServiceSatisfactionRate] = useState(85);
     const [monthlyComparison, setMonthlyComparison] = useState([30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140]);
+
+    const [ loading, setLoading ] = useState(false);
 
     const reservationData = {
         labels: ['Pending', 'Approved', 'Rejected'],
@@ -91,8 +83,33 @@ const Dashboard = () => {
         ]
     };
 
+    const countDocuments = async () => {
+        try {
+            setLoading(true);
+
+            const response = await getData('/api/dashboard');
+            const countData = response?.data;
+            const userCount = toNumber(countData?.users);
+            const dishCount = toNumber(countData?.dishes);
+            const drinkCount = toNumber(countData?.drinks);
+            const venueCount = toNumber(countData?.venues);
+
+            setUsers(userCount);
+            setDishes(dishCount);
+            setDrinks(drinkCount);
+            setVenues(venueCount);
+        } catch(error) {
+            console.log(error);
+        }
+
+        setLoading(false);
+    }
+
+    useEffect(() => countDocuments, []);
+
     return (
         <section className="p-4 bg-gray-100 min-h-screen">
+            { loading && <Loading customStyle="size-full" /> }
             <h1 className="text-3xl font-bold mb-4">Dashboard</h1>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-center">
@@ -101,19 +118,19 @@ const Dashboard = () => {
                 </div>
                 <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-center">
                     <h2 className="font-semibold text-lg mb-2">Users</h2>
-                    <p className="text-3xl font-bold">{users}</p>
+                    <AnimateNumber number={ users } size={ 40 } />
                 </div>
                 <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-center">
                     <h2 className="font-semibold text-lg mb-2">Venues</h2>
-                    <p className="text-3xl font-bold">{venues}</p>
+                    <AnimateNumber number={ venues } size={ 40 } />
                 </div>
                 <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-center">
                     <h2 className="font-semibold text-lg mb-2">Dishes</h2>
-                    <p className="text-3xl font-bold">{dishes}</p>
+                    <AnimateNumber number={ dishes } size={ 40 } />
                 </div>
                 <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-center">
                     <h2 className="font-semibold text-lg mb-2">Drinks</h2>
-                    <p className="text-3xl font-bold">{drinks}</p>
+                    <AnimateNumber number={ drinks } size={ 40 } />
                 </div>
                 <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-center">
                     <h2 className="font-semibold text-lg mb-2">Service Satisfaction Rate</h2>

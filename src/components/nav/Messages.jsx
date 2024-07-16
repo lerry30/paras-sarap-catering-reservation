@@ -11,6 +11,7 @@ const Messages = () => {
     const [ viewChat, setViewChat ] = useState({});
     const [ displayChats, setDisplayChats ] = useState([]);
     const [ displayName, setDisplayName ] = useState('');
+    const [ recipientImage, setRecipientImage ] = useState('');
     const [ fCount, setFCount ] = useState(0);
 
     const [ chatBar, setChatBar ] = useState(false);
@@ -31,9 +32,10 @@ const Messages = () => {
     const recipientInfo = () => {
         const recipient = Object.values(viewChat || {})[0]?.recipient; 
         if(Object.values(recipient || {}).length === 0) return;
-        const { firstname, lastname } = recipient;
+        const { firstname, lastname, profilePic } = recipient;
         const fullname = createFullname(firstname, lastname);
         setDisplayName(fullname);
+        setRecipientImage(profilePic);
     }
 
     const formatChats = () => {
@@ -114,7 +116,7 @@ const Messages = () => {
                     {
                         displayName ? 
                             <div className="flex items-center gap-2 p-[4px]">
-                                <CircleUserRound size={40} strokeWidth={1} stroke="black" className="stroke-white" />
+                                        <CircleUserRound size={40} strokeWidth={1} stroke="black" className="stroke-white" />
                                 <h3 className="font-headings font-semibold text-lg text-white">{ displayName }</h3>
                             </div>
                         :

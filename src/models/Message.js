@@ -24,8 +24,14 @@ const messageSchema = new Schema({
 
     status: {
         type: String,
-        enum: [ 'available', 'unavailable' ],
-        default: 'available'
+        enum: [ 'sent', 'unsent' ],
+        default: 'unsent'
+    },
+
+    viewed: {
+        type: Boolean,
+        required: true,
+        default: false,
     },
 }, {
     timestamps: true

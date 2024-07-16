@@ -6,6 +6,7 @@ import { createFullname } from '@/utils/name';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useThrottle } from '@/utils/hooks/throttle';
 import Loading from '@/components/Loading';
+import ProfileImage from '@/components/ProfileImage';
 
 const Messages = () => {
     const [ message, setMessage ] = useState('');
@@ -14,6 +15,7 @@ const Messages = () => {
     const [ chats, setChats ] = useState([]);
     const [ displayChats, setDisplayChats ] = useState([]);
     const [ displayName, setDisplayName ] = useState('');
+    const [ displayUserProfileImage, setDisplayUserProfileImage ] = useState(undefined);
     const [ recipeintIndex, setRecipientIndex ] = useState(0);
     const [ fCount, setFCount ] = useState(0);
 
@@ -113,9 +115,10 @@ const Messages = () => {
     const recipientInfo = () => {
         const recipient = Object.values(viewChat || {})[0]?.recipient; 
         if(Object.values(recipient || {}).length === 0) return;
-        const { firstname, lastname } = recipient;
+        const { firstname, lastname, profilePic } = recipient;
         const fullname = createFullname(firstname, lastname);
         setDisplayName(fullname);
+        setDisplayUserProfileImage(profilePic);
     }
 
     const formatChats = () => {
@@ -240,7 +243,7 @@ const Messages = () => {
                                 {
                                     displayName && 
                                         <div className="flex items-center gap-2 p-[4px] border-b-[1px] border-[var(--skin-ten)] sticky top-0 bg-white">
-                                            <CircleUserRound size={40} strokeWidth={1} stroke="black" className="" />
+                                            <ProfileImage image={ displayUserProfileImage } size={ 40 } className="size-[40px]" /> 
                                             <h3 className="font-headings font-semibold text-lg">{ displayName }</h3>
                                         </div>
                                 }
@@ -258,9 +261,9 @@ const Messages = () => {
 
                                             return (
                                                 <div key={ index } className="w-full max-w-1/2 flex items-center gap-2 px-4">
-                                                    <CircleUserRound size={40} strokeWidth={1} stroke="black" className="" />
+                                                    <ProfileImage image={ displayUserProfileImage } size={ 40 } className="size-[40px]" /> 
                                                     <span className="p-2 bg-neutral-800 text-white rounded-2xl rounded-bl-none px-4">{ item?.message }</span>
-                                                    <span on={ ev => console.log(ev.target) } className="max-w-[60%] text-sm font-paragraphs">{ timeFormat.format(new Date(item?.createdAt)) }</span>
+                                                    <span className="max-w-[60%] text-sm font-paragraphs">{ timeFormat.format(new Date(item?.createdAt)) }</span>
                                                 </div>
                                             )
                                         })
@@ -293,32 +296,7 @@ const Messages = () => {
                                             <div key={ index } onClick={ () => clickingUserThrottle(id) } className="cursor-pointer">
                                                 <span>
                                                     <div className="p-2 shadow-sm flex gap-4 min-w-[calc((100vw-var(--admin-sidebar-width))/2-32px)]">
-                                                        <div>
-                                                            {
-                                                                profilePic ? 
-                                                                    <div className="">
-                                                                        <Image 
-                                                                            src={ profilePic }
-                                                                            alt={ firstname }
-                                                                            width={ 200 }
-                                                                            height={ 200 }
-                                                                            sizes='100%'
-                                                                            style={{
-                                                                                width: '100%',
-                                                                                height: '44%',
-                                                                                objectFit: 'cover',
-                                                                                transformOrigin: 'center',
-                                                                                borderRadius: '8px 8px 0 0',
-                                                                                minHeight: '170px',
-                                                                                maxHeight: '170px',
-                                                                            }}
-                                                                            priority
-                                                                        />
-                                                                    </div>
-                                                                :
-                                                                    <CircleUserRound size={40} strokeWidth={1} stroke="black" className="" />
-                                                            }
-                                                        </div>
+                                                        <ProfileImage image={ displayUserProfileImage } size={ 40 } className="size-[40px]" /> 
                                                         <div className="flex flex-col justify-center">
                                                             <h2 className="font-headings font-semibold">{ fullName }</h2>
                                                         </div>
@@ -340,32 +318,7 @@ const Messages = () => {
                                 <div key={ index } onClick={ () => selectRecipient(index) } className="cursor-pointer">
                                     <span>
                                         <div className="p-2 shadow-sm flex gap-4 min-w-[calc((100vw-var(--admin-sidebar-width))/2-32px)]">
-                                            <div>
-                                                {
-                                                    profilePic ? 
-                                                        <div className="">
-                                                            <Image 
-                                                                src={ profilePic }
-                                                                alt={ firstname }
-                                                                width={ 200 }
-                                                                height={ 200 }
-                                                                sizes='100%'
-                                                                style={{
-                                                                    width: '100%',
-                                                                    height: '44%',
-                                                                    objectFit: 'cover',
-                                                                    transformOrigin: 'center',
-                                                                    borderRadius: '8px 8px 0 0',
-                                                                    minHeight: '170px',
-                                                                    maxHeight: '170px',
-                                                                }}
-                                                                priority
-                                                            />
-                                                        </div>
-                                                    :
-                                                        <CircleUserRound size={40} strokeWidth={1} stroke="black" className="" />
-                                                }
-                                            </div>
+                                            <ProfileImage image={ displayUserProfileImage } size={ 40 } className="size-[40px]" /> 
                                             <div className="flex flex-col justify-center">
                                                 <h2 className="font-headings font-semibold">{ fullName }</h2>
                                             </div>

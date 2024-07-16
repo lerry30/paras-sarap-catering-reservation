@@ -1,7 +1,7 @@
 import { CircleUserRound, MessageCircle, Pen } from '@/components/icons/All';
 import { useEffect, useState } from 'react';
 import { createFullname } from '@/utils/name';
-import Image from 'next/image';
+import ProfileImage from '@/components/ProfileImage';
 import Link from 'next/link';
 
 const Card = ({ userData={} }) => {
@@ -25,33 +25,8 @@ const Card = ({ userData={} }) => {
     });
 
     return (
-        <div className="p-4 rounded-xl shadow-md flex gap-4 min-w-[calc((100vw-var(--admin-sidebar-width))/2-32px)]">
-            <div>
-                {
-                    profilePic ? 
-                        <div className="">
-                            <Image 
-                                src={ profilePic }
-                                alt={ firstname }
-                                width={ 200 }
-                                height={ 200 }
-                                sizes='100%'
-                                style={{
-                                    width: '100%',
-                                    height: '44%',
-                                    objectFit: 'cover',
-                                    transformOrigin: 'center',
-                                    borderRadius: '8px 8px 0 0',
-                                    minHeight: '170px',
-                                    maxHeight: '170px',
-                                }}
-                                priority
-                            />
-                        </div>
-                    :
-                        <CircleUserRound size={100} strokeWidth={1} stroke="black" className="" />
-                }
-            </div>
+        <div className="p-4 rounded-xl shadow-md flex gap-4 min-w-[calc((100vw-var(--admin-sidebar-width))/2-20px)]">
+            <ProfileImage image={ profilePic } size={ 130 } className="size-[130px]" /> 
             <div className="flex flex-col justify-center">
                 <h2 className="font-headings font-semibold text-xl">{ fullName }</h2>
                 <p className="font-paragraphs italic text-neutral-700">{ email }</p>

@@ -8,16 +8,37 @@ import Option from '@/components/nav/Option'
 import Avatar from '@/components/nav/Avatar';
 import CSidebar from './CSidebar';
 import Messages from '@/components/nav/Messages';
-import { useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import { zUserData } from '@/stores/user';
+import { getData, sendJSON } from '@/utils/send';
 import { ListChecks } from '@/components/icons/All';
 
 const CNavbar = () => {
-    const saveUserData = zUserData(state => state.saveUserData);
-    const fullName = zUserData(state => state.fullname);
+    const saveUserData = zUserData(state => state?.saveUserData);
+    const fullName = zUserData(state => state?.fullname);
+    const image = zUserData(state => state?.filename);
 
-    useMemo(() => {
+    const [ messageCount, setMessageCount ] = useState(0);
+
+    const notification = async () => {
+        try {
+            const getNotifResponse = await getData('/api/notification'); 
+            const noOfMessages = getNotifResponse?.data?.messageCount || 0;
+
+            setMessageCount(noOfMessages);
+        } catch(error) {}
+    }
+
+    const handleViewedNofication = async (notif) => {
+        try {
+            setMessageCount(0);
+            const handleStatusResponse = await sendJSON('/api/notification/viewed', { notif });
+        } catch(error) {}
+    }
+
+    useEffect(() => {
         saveUserData();
+        notification();
     }, [])
 
     return (
@@ -71,11 +92,12 @@ const CNavbar = () => {
                                             <ListChecks size={24} strokeWidth={2} className="group-hover:stroke-white"/>
                                         </Link>
                                     </li>
-                                    <li className="h-nav-item-height hidden rounded-full p-1 sm:flex">
+                                    <li onClick={ () => handleViewedNofication('messages') } className="relative h-nav-item-height hidden rounded-full p-1 sm:flex">
                                         <Messages />
+                                        { messageCount > 0 && <span className="absolute size-[20px] right-0 top-[4px] text-[12px] text-white font-semibold font-paragraphs bg-red-600 flex items-center justify-center rounded-full animate-bounce">{ messageCount }</span> }
                                     </li>
                                     <li className="h-nav-item-height flex rounded-full">
-                                        <Avatar name={ fullName }/>
+                                        <Avatar name={ fullName } image={ image }/>
                                     </li>
                                 </>
                         }

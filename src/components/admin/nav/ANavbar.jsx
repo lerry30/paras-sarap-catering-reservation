@@ -4,15 +4,36 @@ import Logo from '@/components/nav/Logo';
 import Avatar from '@/components/nav/Avatar';
 import Link from 'next/link';
 import { zUserData } from '@/stores/user';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { getData, sendJSON } from '@/utils/send';
 import { ListChecks, MessageCircle } from '@/components/icons/All';
 
 const ANavbar = () => {
     const saveUserData = zUserData(state => state.saveUserData);
     const fullName = zUserData(state => state.fullname);
+    const image = zUserData(state => state?.filename);
+
+    const [ messageCount, setMessageCount ] = useState(0);
+
+    const notification = async () => {
+        try {
+            const getNotifResponse = await getData('/api/notification'); 
+            const noOfMessages = getNotifResponse?.data?.messageCount || 0;
+
+            setMessageCount(noOfMessages);
+        } catch(error) {}
+    }
+
+    const handleViewedNofication = async (notif) => {
+        try {
+            setMessageCount(0);
+            const handleStatusResponse = await sendJSON('/api/notification/viewed', { notif });
+        } catch(error) {}
+    }
 
     useEffect(() => {
         saveUserData();
+        notification();
     }, [])
 
     return (
@@ -30,13 +51,14 @@ const ANavbar = () => {
                             <ListChecks size={24} strokeWidth={2} className="group-hover:stroke-white"/>
                         </Link>
                     </li>
-                    <li className="h-nav-item-height flex items-center justify-center">
-                        <Link href="/admin?display=messages" className="group size-[calc(var(--nav-item-height)-10px)] flex items-center justify-center rounded-full hover:bg-skin-ten">
+                    <li className="relative h-nav-item-height flex items-center justify-center">
+                        <Link href="/admin?display=messages" onClick={ () => handleViewedNofication('messages') } className="group size-[calc(var(--nav-item-height)-10px)] flex items-center justify-center rounded-full hover:bg-skin-ten">
                             <MessageCircle size={24} strokeWidth={2} className="group-hover:stroke-white"/>
                         </Link>
+                        { messageCount > 0 && <span className="absolute size-[20px] right-0 top-[4px] text-[12px] text-white font-semibold font-paragraphs bg-red-600 flex items-center justify-center rounded-full animate-bounce">{ messageCount }</span> }
                     </li>
                     <li className="h-nav-item-height flex rounded-full">
-                        <Avatar name={ fullName }/>
+                        <Avatar name={ fullName } image={ image }/>
                     </li>
                 </ul>
             </ul>

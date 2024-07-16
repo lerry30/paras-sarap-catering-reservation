@@ -59,7 +59,6 @@ const UploadButton = ({ fileData: [ file, setFile ], className='', DisplaySvg=un
     }, [ file ]);
 
     useEffect(() => {
-        console.log('upload button load', initialImageSrc);
         // initial image source
         if(!imageSrc && initialImageSrc)
             setImageSrc(initialImageSrc);

@@ -1,9 +1,5 @@
 'use client';
 
-import CNavbar from '@/components/client/nav/CNavbar';
-import FixMiniNavBar from '@/components/client/nav/FixMiniNavBar'; 
-import Footer from '@/components/Footer';
-
 import { CircleUserRound, Eye, EyeOff } from '@/components/icons/All';
 import { zUserData } from '@/stores/user';
 import { useEffect, useState } from 'react';
@@ -62,7 +58,7 @@ const Profile = () => {
                 setInvalidFieldsValue(prev => ({ ...prev, ...backendErrors }));
             }
         }
-        
+
         setEditMode(false);
         setLoading(false);
     };
@@ -86,7 +82,7 @@ const Profile = () => {
             await resetUserStore();
         } catch(error) {
             console.log(error); // development
-        }
+        }        
 
         setLoading(false);
     }
@@ -99,7 +95,7 @@ const Profile = () => {
 
     useEffect(() => {
         if(Object.values(zUserData.getState()).length === 0) return;
-
+        
         const firstname = TitleFormat(zUserData.getState()?.firstname);
         const lastname = TitleFormat(zUserData.getState()?.lastname);
         const email = zUserData.getState()?.email;
@@ -120,9 +116,8 @@ const Profile = () => {
             
     return (
         <div className="pt-[var(--nav-height)]">
-            <CNavbar />
-            <main className="w-full pt-20 px-4 md:px-36 lg:px-56 flex">
-                <section className="size-full flex flex-col gap-6 lg:h-[calc(100vh-var(--nav-height))] md:flex-row">
+            <main className="w-full px-4 md:px-20 flex">
+                <section className="size-full flex flex-col gap-6 lg:h-[calc(100vh-(var(--nav-height)*2))] md:flex-row">
                     <div className="size-full md:size-96 flex justify-center">
                         <UploadButton fileData={ [ file, setFile ]} DisplaySvg={ userSvg } className="!size-64 border-none !rounded-full overflow-hidden left-1/2 -translate-x-1/2 md:left-0 md:translate-x-0" initialImageSrc={ profileImage } />
                     </div>
@@ -263,8 +258,6 @@ const Profile = () => {
                     </div>
                 </section>
             </main>
-            <FixMiniNavBar />
-            <Footer />
         </div>
     );
 }
