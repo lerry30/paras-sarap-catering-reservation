@@ -66,10 +66,10 @@ const Menus = () => {
                     <div className="flex gap-4">
                         <Link href={ `/reserve?display=createmenu&service=${ service }` } className="flex gap-2 bg-green-600/40 rounded-full px-2 py-1 hover:bg-green-400 transition-colors">
                             <Plus size={20} />
-                            <span className="text-sm font-medium">Create menu</span>
+                            <span className="text-sm font-medium hidden sm:inline">Create menu</span>
                         </Link>
                         <button onClick={ next } className="flex gap-2 bg-green-600/40 rounded-full pr-2 py-1 pl-4 hover:bg-green-400 transition-colors">
-                            <span className="text-sm font-medium">Next</span>
+                            <span className="text-sm font-medium hidden sm:inline">Next</span>
                             <ChevronRight size={20}/>
                         </button>
                     </div>
