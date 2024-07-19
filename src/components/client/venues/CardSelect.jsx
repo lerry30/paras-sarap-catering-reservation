@@ -1,6 +1,7 @@
 'use client';
 import Image from 'next/image';
-import { CircleCheck, CirclePlus, CircleX } from '@/components/icons/All';
+import { CircleCheck } from '@/components/icons/All';
+import { HoverAvailable, HoverUnavailable } from '@/components/HoverCard';
 import { useEffect, useState } from 'react';
 import { zReservation } from '@/stores/reservation';
 
@@ -40,7 +41,7 @@ const CardSelect = ({ venueData, index, allSelects, setAllSelects }) => {
     }, []);
 
     return (
-        <div className="relative flex flex-col w-full min-w-[300px] max-w-[calc((100vw-(var(--page-x-padding)*2))/3-20px)] h-[440px] rounded-lg shadow-xl hover:scale-[1.01] hover:shadow-2xl transition-transform">
+        <div className="relative flex flex-col w-full min-w-[300px] max-w-[calc((100vw-(var(--page-x-padding)*2))/3-20px)] h-[440px] rounded-lg shadow-xl hover:scale-[1.01] hover:shadow-2xl transition duration-500 ease-in-out">
             <Image 
                 src={ image }
                 alt={ name }
@@ -75,15 +76,9 @@ const CardSelect = ({ venueData, index, allSelects, setAllSelects }) => {
             </div>
             {
                 status === 'unavailable' ?
-                    <div className="group absolute top-0 left-0 right-0 bottom-0 rounded-lg hover:bg-red-900 opacity-90 border-2 border-red-600 shadow-lg hover:shadow-red-600 flex justify-center items-center">
-                        <CircleX size={ 90 } className="stroke-transparent group-hover:stroke-white -mt-[120px]" />
-                        <h1 className="absolute font-headings text-transparent group-hover:text-white font-bold text-2xl">UNAVAILABLE</h1>
-                    </div>
+                    <HoverUnavailable text="UNAVAILABLE" />
                 :
-                    <div onClick={ addVenue } className="group absolute top-0 left-0 right-0 bottom-0 rounded-lg hover:bg-green-900 opacity-90 border-2 border-green-600 shadow-lg hover:shadow-green-600 flex justify-center items-center">
-                        <CirclePlus size={ 90 } className="stroke-transparent group-hover:stroke-white -mt-[120px]" />
-                        <h1 className="absolute font-headings text-transparent group-hover:text-white font-bold text-2xl">SELECT VENUE</h1>
-                    </div>
+                    <HoverAvailable onClick={ addVenue } text="SELECT VENUE" />
             }
 
             {
