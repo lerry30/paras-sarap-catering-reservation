@@ -1,7 +1,7 @@
-import { CircleUserRound } from '@/components/icons/All';
 import { createFullname } from '@/utils/name';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
+import ProfileImage from '@/components/ProfileImage';
 
 const Card = ({ reservationData={}, changeReservationStatus, tab='pending' }) => {
     const id = reservationData?._id;
@@ -55,35 +55,7 @@ const Card = ({ reservationData={}, changeReservationStatus, tab='pending' }) =>
 
     return <main className="w-full p-6 rounded-lg shadow-xl border-2 divide-y-[1px] mb-6">
         <section className="flex items-center gap-2 pb-2">
-            <div>
-                {
-                    userFileName ?
-                        <div className="size-16">
-                            <Image 
-                                src={ userFileName }
-                                alt={ firstName }
-                                width={ 200 }
-                                height={ 200 }
-                                sizes='100%'
-                                style={{
-                                    width: '100%',
-                                    height: '100%',
-                                    objectFit: 'cover',
-                                    transformOrigin: 'center',
-                                    borderRadius: '8px 8px 0 0',
-                                    minHeight: '170px',
-                                    maxHeight: '170px',
-                                    borderRadius: '100%',
-                                }}
-                                priority
-                            />
-                        </div>
-                    :
-                        <div className="">
-                            <CircleUserRound size={64} strokeWidth={1} className="" />
-                        </div>
-                }
-            </div>
+            <ProfileImage image={ userFileName } size={ 64 } className="size-[64px]" />
             <div>
                 <h3 className="font-headings font-semibold text-lg">{ createFullname(firstName, lastName) }</h3>
                 <span className="font-paragraphs italic">{ email }</span>
