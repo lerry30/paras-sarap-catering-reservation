@@ -157,7 +157,7 @@ const UpdateVenue = () => {
             </div>
             <form onSubmit={ handleSubmit } className="flex gap-4 font-paragraphs">
                 <div className="flex flex-col gap-4">
-                    <UploadButton fileData={ [ file, setFile ]} className="size-full" initialImageSrc={ zVenue.getState().filename } />
+                    <UploadButton fileData={ [ file, setFile ]} className="size-96" initialImageSrc={ zVenue.getState().filename } />
                     <article className="max-w-96 text-yellow-900 text-sm p-2 bg-yellow-500/20 rounded-md shadow-md">Keep in mind that uploading your image file may result in the loss of some important features, such as transparency, as the uploaded image file will be converted to a JPG file for performance enhancement</article>
                 </div>
                 <div className="grow flex flex-col gap-4 py-6">
