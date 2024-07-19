@@ -12,6 +12,7 @@ import ErrorField from '@/components/ErrorField';
 import Checkbox from '@/components/Checkbox';
 import Loading from '@/components/Loading';
 import Link from 'next/link';
+import TitleFormat from '@/utils/titleFormat';
 
 const ProvideVenueLocation = () => {
     const [ venueName, setVenueName ] = useState('');
@@ -54,11 +55,11 @@ const ProvideVenueLocation = () => {
                 description,
                 tablesnchairsprovided: tablesNChairsProvided,
                 address: {
-                    region, 
-                    province, 
-                    municipality, 
-                    barangay, 
-                    street
+                    region: TitleFormat(region), 
+                    province: TitleFormat(province), 
+                    municipality: TitleFormat(municipality), 
+                    barangay: TitleFormat(barangay), 
+                    street: TitleFormat(street)
                 }
             };
 
@@ -110,8 +111,8 @@ const ProvideVenueLocation = () => {
                         <ErrorField message={ invalidFieldsValue['venuename'] }/>
                     </div>
                     <div>
-                        <label className="font-paragraph text-sm font-semibold">Description (Optional)</label>
-                        <textarea name="description" onChange={(ev) => setDescription(ev.target.value)} className="input w-full h-40 border border-neutral-500/40" placeholder="Description (Optional)"></textarea>
+                        <label className="font-paragraph text-sm font-semibold">Venue Description (including landmarks)</label>
+                        <textarea name="description" onChange={(ev) => setDescription(ev.target.value)} className="input w-full h-40 border border-neutral-500/40" placeholder="Please provide a detailed description of the venue. Specify any landmarks nearby for easier identification."></textarea>
                         <ErrorField message={ invalidFieldsValue['description'] }/>
                     </div>
                     <div className="size-full p-4 bg-blue-400/50 rounded-lg flex justify-center items-center">
