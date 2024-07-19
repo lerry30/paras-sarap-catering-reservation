@@ -1,6 +1,7 @@
 'use client';
 import Image from 'next/image';
-import { CircleCheck, CirclePlus, CircleX } from '../icons/All';
+import { CircleCheck } from '../icons/All';
+import { HoverAvailable, HoverUnavailable } from '@/components/HoverCard';
 import { useState, useEffect } from 'react';
 
 const CardSelect = ({ dishData, dishMenu={}, setDishMenu=undefined }) => {
@@ -41,7 +42,7 @@ const CardSelect = ({ dishData, dishMenu={}, setDishMenu=undefined }) => {
     }, []);
 
     return (
-        <div className={ `relative flex flex-col w-full h-[440px] rounded-lg shadow-xl border-[1px] hover:scale-[1.01] hover:shadow-2xl transition-transform hover:cursor-pointer` }>
+        <div className={ `relative flex flex-col w-full h-[440px] rounded-lg shadow-xl border-[1px] hover:scale-[1.01] hover:shadow-2xl transition ease-in-out duration-500 hover:cursor-pointer` }>
             <Image 
                 src={ image }
                 alt={ name }
@@ -82,15 +83,9 @@ const CardSelect = ({ dishData, dishMenu={}, setDishMenu=undefined }) => {
             </article>
             {
                 status === 'unavailable' ?
-                    <div className="group absolute top-0 left-0 right-0 bottom-0 rounded-lg hover:bg-red-900 opacity-90 border-2 border-red-600 shadow-lg hover:shadow-red-600 flex justify-center items-center">
-                        <CircleX size={ 90 } className="stroke-transparent group-hover:stroke-white -mt-[120px]" />
-                        <h1 className="absolute font-headings text-transparent group-hover:text-white font-bold text-2xl">UNAVAILABLE</h1>
-                    </div>
+                    <HoverUnavailable text="UNAVAILABLE" />
                 :
-                    <div onClick={ addDish } className="group absolute top-0 left-0 right-0 bottom-0 rounded-lg hover:bg-green-900 opacity-90 border-2 border-green-600 shadow-lg hover:shadow-green-600 flex justify-center items-center">
-                        <CirclePlus size={ 90 } className="stroke-transparent group-hover:stroke-white -mt-[120px]" />
-                        <h1 className="absolute font-headings text-transparent group-hover:text-white font-bold text-2xl">SELECT DISH</h1>
-                    </div>
+                    <HoverAvailable onClick={ addDish } text="SELECT DISH" />
             }
 
             {
