@@ -6,7 +6,7 @@ const Card = ({ name, image, description, link='/' }) => {
     const router = useRouter();
 
     return (
-        <div className={ `flex flex-col w-full sm:max-w-[280px] min-w-[280px] h-[360px] rounded-lg shadow-xl hover:scale-[1.01] hover:shadow-2xl transition-transform` }>
+        <div className="flex flex-col w-full sm:max-w-[280px] min-w-[280px] h-[360px] rounded-lg shadow-xl hover:scale-[1.01] hover:shadow-2xl transition-transform">
             <Image 
                 src={ image }
                 alt={ name }
