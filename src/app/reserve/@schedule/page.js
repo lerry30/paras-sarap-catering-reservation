@@ -4,6 +4,7 @@ import Link from 'next/link';
 import ErrorField from '@/components/ErrorField';
 import SNavbar from '@/components/nav/SNavbar';
 import TimePicker from '@/components/TimePicker';
+import Breadcrumbs from '@/components/client/nav/Breadcrumbs';
 import { ErrorModal } from '@/components/Modal';
 import { ChevronLeft, ChevronRight } from '@/components/icons/All';
 import { areDatesEqual } from '@/utils/date';
@@ -189,9 +190,19 @@ const Schedules = () => {
 
     return (
         <>
-            <SNavbar href={ `/reserve?display=menus&service=${ service }` } headerClassName="h-fit border-none z-subnavbar" />
-            <section className="flex flex-col min-h-[calc(100vh-(var(--nav-height)*2))] overflow-hidden py-4 sm:px-page-x  md:flex-row">
-                { loading && <Loading customStyle="size-full" /> }
+            { loading && <Loading customStyle="size-full" /> }
+            <Breadcrumbs step={ 4 }>
+                <div className="w-full flex justify-end">
+                    {/*  <h2 className="font-headings font-semibold ml-[200px]">Schedule</h2> */}
+                    <div className="flex gap-2">
+                        <button onClick={ saveScheduledDate } className="flex gap-2 bg-green-600/40 rounded-full pr-2 py-1 pl-4 hover:bg-green-400 transition-colors">
+                            <span className="text-sm font-medium hidden sm:inline">Next</span>
+                            <ChevronRight size={20} />
+                        </button>
+                    </div>
+                </div>
+            </Breadcrumbs>
+            <section className="flex flex-col min-h-[calc(100vh-(var(--nav-height)*2))] overflow-hidden py-[var(--nav-height)] sm:px-page-x  md:flex-row">
                 <div className="grow flex flex-col">
                     <main className="flex flex-col gap-2">
                         <header>
@@ -314,14 +325,6 @@ const Schedules = () => {
                             <p className="font-paragraphs text-sm text-blue-900">Keep in mind that preparations and planning takes time so there's unpickable date starts today, usually it's not taking 3 or 5 days from the date you would reserved. Additionally there are certain date where already taken, and some date where unavailble our services, any request and questions or any concern may ask in our contact page <Link href="/contact">Message me</Link>.</p>
                         </div>
 
-                        <div className="flex gap-2">
-                            <button onClick={ saveScheduledDate } className="w-1/2 button shadow-md border border-neutral-500/40">Next</button>
-                            <button onClick={ (ev) => {
-                                router.push(`/reserve?display=menus&service=${ service }`)
-                            }} className="w-1/2 button shadow-md border border-neutral-500/40">
-                                Cancel
-                            </button>
-                        </div>
                         <ErrorField message={ invalidFieldsValue['date'] }/>
                     </div>
                 </div>
