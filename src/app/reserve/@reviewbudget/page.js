@@ -3,7 +3,7 @@
 import Loading from '@/components/Loading';
 import ErrorField from '@/components/ErrorField';
 import Image from 'next/image';
-import SNavbar from '@/components/nav/SNavbar';
+import Breadcrumbs from '@/components/client/nav/Breadcrumbs';
 import { useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { zReservation } from '@/stores/reservation';
@@ -142,7 +142,11 @@ const ReviewBudget = () => {
     return (
         <section className="flex flex-col">
             {loading && <Loading customStyle="size-full" />}
-            <SNavbar href={ `/reserve?display=schedule&service=${ service }` } headerClassName="fixed top-[var(--nav-height)] h-fit z-subnavbar bg-white" />
+            <Breadcrumbs step={ 5 }>
+                <div className="w-full flex justify-end pl-[100px]">
+                    <h2 className="font-headings font-semibold">Review</h2>
+                </div>
+            </Breadcrumbs>
             <div className="flex flex-col md:flex-row md:pr-[calc(24vw-8px)]">
                 <main className="flex flex-col gap-10 divide-y-[1px] px-page-x py-4 flex-1">
                     <section className="flex flex-col gap-4 py-2">
