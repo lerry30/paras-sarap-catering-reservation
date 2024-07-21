@@ -8,6 +8,7 @@ import { getData } from '@/utils/send';
 import Link from 'next/link';
 import Loading from '@/components/Loading';
 import CardSelect from '@/components/client/menus/CardSelect';
+import Breadcrumbs from '@/components/client/nav/Breadcrumbs';
 import { zReservation } from '@/stores/reservation';
 
 const Menus = () => {
@@ -60,9 +61,9 @@ const Menus = () => {
     return (
         <>
             { loading && <Loading customStyle="size-full" /> }
-            <section className="flex flex-col gap-4 pb-6">
-                <div className="px-page-x flex justify-between items-center py-4 sticky top-[var(--nav-height)] left-0 z-subnavbar bg-white border-b-[1px]">
-                    <h2 className="font-headings font-semibold">Menus</h2>
+            <Breadcrumbs step={ 3 }>
+                <div className="w-full flex justify-end">
+                    {/*  <h2 className="font-headings font-semibold ml-[300px]">Packages</h2> */}
                     <div className="flex gap-4">
                         <Link href={ `/reserve?display=createmenu&service=${ service }` } className="flex gap-2 bg-green-600/40 rounded-full px-2 py-1 hover:bg-green-400 transition-colors">
                             <Plus size={20} />
@@ -74,6 +75,8 @@ const Menus = () => {
                         </button>
                     </div>
                 </div>
+            </Breadcrumbs>
+            <section className="flex flex-col gap-4 pt-[var(--nav-height)] pb-6">
                 <div className="flex flex-wrap gap-4 justify-center md:justify-start px-page-x">
                     {
                         menus.map((item, index) => {
