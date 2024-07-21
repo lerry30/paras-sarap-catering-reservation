@@ -8,6 +8,7 @@ import { zReservation } from '@/stores/reservation';
 import Link from 'next/link';
 import CardSelect from '@/components/client/venues/CardSelect';
 import Loading from '@/components/Loading';
+import Breadcrumbs from '@/components/client/nav/Breadcrumbs'
 
 const Venues = () => {
     const [ venues, setVenues ] = useState([]); // database
@@ -57,10 +58,10 @@ const Venues = () => {
     return (
         <>
             { loading && <Loading customStyle="size-full" />}
-            <section className="flex flex-col gap-4 pb-6">
-                <div className="px-page-x flex justify-between items-center py-4 fixed top-[var(--nav-height)] left-0 right-0 z-subnavbar bg-white border-b-[1px]">
-                    <h2 className="font-headings font-semibold">Venues</h2>
-                    <div className="flex gap-4">
+            <Breadcrumbs step={ 2 }>
+                <div className="w-full flex justify-end">
+                    {/*  <h2 className="font-headings font-semibold">Venues</h2> */}
+                    <div className="flex gap-2">
                         <Link href={ `/reserve?display=providevenuelocation&service=${ service }` } className="flex gap-2 bg-green-600/40 rounded-full px-2 py-1 hover:bg-green-400 transition-colors">
                             <Plus size={20} />
                             <span className="text-sm font-medium hidden sm:inline">Choose your venue</span>
@@ -71,7 +72,9 @@ const Venues = () => {
                         </button>
                     </div>
                 </div>
-                <div className="flex flex-wrap gap-4 justify-center md:justify-start px-page-x pt-[calc(var(--nav-height)+16px)]">
+            </Breadcrumbs>
+            <section className="flex flex-col gap-4 pb-6">
+                <div className="flex flex-wrap gap-4 justify-center md:justify-start px-page-x pt-[var(--nav-height)]">
                     {
                         venues.map((item, index) => {
                             return(
