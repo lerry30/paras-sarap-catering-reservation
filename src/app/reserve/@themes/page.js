@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Loading from '@/components/Loading';
 import Link from 'next/link';
+import Breadcrumbs from '@/components/client/nav/Breadcrumbs';
 
 const Themes = () => {
     const [ themesObject, setThemesObject ] = useState({});
@@ -34,12 +35,16 @@ const Themes = () => {
     return (
         <>
             { loading && <Loading customStyle="size-full" /> }
+            <Breadcrumbs step={ 1 }>
+                <div className="w-full flex justify-end">
+                </div>
+            </Breadcrumbs>
             <section className="flex flex-col">
                 {/* <h2 className="font-headings font-semibold">Themes</h2> */}
                 <div className="w-full h-[calc(100vh-var(--nav-height)-20px)] flex flex-col justify-center items-center gap-2">
                     <h1 className="font-headings font-bold text-xl">Themes</h1>
                     <p className="font-paragraphs font-bold text-lg text-neutral-700/40">UNAVAILABLE FOR NOW</p>
-                    <Link href={ `/reserve?display=venues&service=${ service }` } className="font-headings font-bold border-[1px] py-2 px-4 rounded-sm shadow-xl hover:bg-skin-ten hover:text-white transition-colors">Continue</Link>
+                    <Link href={ `/reserve?display=venues&service=${ service }&set=1` } className="font-headings font-bold border-[1px] py-2 px-4 rounded-sm shadow-xl hover:bg-skin-ten hover:text-white transition-colors">Continue</Link>
                 </div>
             </section>
         </>
