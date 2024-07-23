@@ -56,10 +56,10 @@ const CNavbar = () => {
                         </li>
                         <li className="h-nav-item-height flex items-center rounded-sm">
                             <Select name="Services" className="py-2 max-h-[40px]">
-                                <Option href="/reserve?display=themes&service=wedding">Wedding Service</Option>
-                                <Option href="/reserve?display=themes&service=debut">Debut Service</Option>
-                                <Option href="/reserve?display=themes&service=kidsparty">Kids Party Service</Option>
-                                <Option href="/reserve?display=themes&service=privateparty">Private Party Service</Option>
+                                <Option href="/reserve?display=themes&service=wedding&set=1&series=1">Wedding Service</Option>
+                                <Option href="/reserve?display=themes&service=debut&set=1&series=1">Debut Service</Option>
+                                <Option href="/reserve?display=themes&service=kidsparty&set=1&series=1">Kids Party Service</Option>
+                                <Option href="/reserve?display=themes&service=privateparty&set=1&series=1">Private Party Service</Option>
                             </Select>
                         </li>
                         {/* <li className="h-nav-item-height flex items-center rounded-sm">
