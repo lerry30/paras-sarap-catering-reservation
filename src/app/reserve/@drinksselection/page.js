@@ -1,4 +1,5 @@
 'use client';
+import { getSetParam } from '@/utils/client/breadcrumbs/params';
 import { ArrowLeft } from '@/components/icons/All';
 import { useEffect, useState } from 'react';
 import { getData } from '@/utils/send';
@@ -11,6 +12,8 @@ const DrinksSelection = () => {
     const [ drinks, setDrinks ] = useState([]);
     const [ drinkMenu, setDrinkMenu] = useState({});
     const [ loading, setLoading ] = useState(false);
+    const [ setParam, setSetParam ] = useState(1); // breadcrumbs
+    const [ series, setSeries ] = useState(1); // breadcrumbs
 
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -25,7 +28,7 @@ const DrinksSelection = () => {
             return;
         }
         
-        router.push(`/reserve?display=createmenu&service=${ service }`);
+        router.push(`/reserve?display=createmenu&service=${ service }&set=${setParam}&series=${series}`);
     }
     
     const handleSelection = () => {
@@ -51,6 +54,11 @@ const DrinksSelection = () => {
         if(Object.keys(zMenu.getState().drinks).length > 0) {
             setDrinkMenu(zMenu.getState().drinks);
         }
+
+        const filteredSetParam = getSetParam(searchParams);
+        setSetParam(filteredSetParam);
+
+        setSeries(searchParams.get('series'));
     }, []);
 
     return (
