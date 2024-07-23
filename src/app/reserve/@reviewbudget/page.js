@@ -142,11 +142,7 @@ const ReviewBudget = () => {
     return (
         <section className="flex flex-col">
             {loading && <Loading customStyle="size-full" />}
-            <Breadcrumbs step={ 5 }>
-                <div className="w-full flex justify-end pl-[100px]">
-                    <h2 className="font-headings font-semibold">Review</h2>
-                </div>
-            </Breadcrumbs>
+            <Breadcrumbs step={ 5 }></Breadcrumbs>
             <div className="flex flex-col md:flex-row md:pr-[calc(24vw-8px)]">
                 <main className="flex flex-col gap-10 divide-y-[1px] px-page-x py-4 flex-1">
                     <section className="flex flex-col gap-4 py-2">
