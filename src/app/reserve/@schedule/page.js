@@ -12,6 +12,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { zReservation } from '@/stores/reservation';
 import { toNumber } from '@/utils/number';
+import { getSetParam } from '@/utils/client/breadcrumbs/params';
 
 const Schedules = () => {
     const [ loading, setLoading ] = useState(false);
@@ -36,6 +37,8 @@ const Schedules = () => {
     const prevSelectedElement = useRef(undefined);
 
     const [ service, setService ] = useState(undefined);
+    const [ setParam, setSetParam ] = useState(1);
+    const [ series, setSeries ] = useState(1);
     const searchParams = useSearchParams();
     const router = useRouter();
 
@@ -118,7 +121,7 @@ const Schedules = () => {
                 }
 
                 zReservation?.getState()?.saveScheduledDateData(data);
-                router.push(`/reserve?display=reviewbudget&service=${ service }`);
+                router.push(`/reserve?display=reviewbudget&service=${service}&set=${setParam}&series=${series}`);
             }
         } catch(error) {
             console.log(error);
@@ -186,6 +189,11 @@ const Schedules = () => {
         const serviceParam = searchParams.get('service');
         if(!services.hasOwnProperty(serviceParam)) router.push('/');
         setService(serviceParam);
+
+        const filteredSet = getSetParam(searchParams);
+        setSetParam(filteredSet);
+
+        setSeries(searchParams.get('series'));
     }, []);
 
     return (
