@@ -94,11 +94,14 @@ import { useEffect, useState } from 'react';
 import { getData } from '@/utils/send';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { zMenu } from '@/stores/menu';
+import { getSetParam } from '@/utils/client/breadcrumbs/params';
 
 const DishesSelection = () => {
     const [dishes, setDishes] = useState([]);
     const [dishMenu, setDishMenu] = useState({});
     const [loading, setLoading] = useState(false);
+    const [ setParam, setSetParam ] = useState(1); // breadcrumbs
+    const [ series, setSeries ] = useState(1); // breadcrumbs
 
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -113,7 +116,7 @@ const DishesSelection = () => {
             return;
         }
 
-        router.push(`/reserve?display=createmenu&service=${service}`);
+        router.push(`/reserve?display=createmenu&service=${service}&set=${setParam}&series=${series}`);
     }
 
     const handleSelection = () => {
@@ -139,6 +142,11 @@ const DishesSelection = () => {
         if (Object.keys(zMenu.getState().dishes).length > 0) {
             setDishMenu(zMenu.getState().dishes);
         }
+
+        const filteredSetParam = getSetParam(searchParams);
+        setSetParam(filteredSetParam);
+
+        setSeries(searchParams.get('series'));
     }, []);
 
     return (
