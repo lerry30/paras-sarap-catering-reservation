@@ -14,6 +14,7 @@ const Venues = () => {
     const [ venues, setVenues ] = useState([]); // database
     const [ allSelects, setAllSelects ] = useState([]);
     const [ service, setService ] = useState(undefined);
+    const [ series, setSeries ] = useState(1); // breadcrumbs
     const [ loading, setLoading ] = useState(false);
     const [ actionErrorMessage, setActionErrorMessage ] = useState('');
     
@@ -31,7 +32,7 @@ const Venues = () => {
             return;
         }
 
-        router.push(`/reserve?display=menus&service=${ service }`);
+        router.push(`/reserve?display=menus&service=${service}&set=1&series=${series}`);
     }
 
     const getVenues = async () => {
@@ -53,6 +54,8 @@ const Venues = () => {
         const serviceParam = searchParams.get('service');
         if(!services.hasOwnProperty(serviceParam)) router.push('/');
         setService(serviceParam);
+
+        setSeries(searchParams.get('series'));
     }, []);
 
     return (
@@ -62,7 +65,7 @@ const Venues = () => {
                 <div className="w-full flex justify-end">
                     {/*  <h2 className="font-headings font-semibold">Venues</h2> */}
                     <div className="flex gap-2">
-                        <Link href={ `/reserve?display=providevenuelocation&service=${ service }` } className="flex gap-2 bg-green-600/40 rounded-full px-2 py-1 hover:bg-green-400 transition-colors">
+                        <Link href={ `/reserve?display=providevenuelocation&service=${service}&set=2&series=${series}` } className="flex gap-2 bg-green-600/40 rounded-full px-2 py-1 hover:bg-green-400 transition-colors">
                             <Plus size={20} />
                             <span className="text-sm font-medium hidden sm:inline">Choose your venue</span>
                         </Link>
