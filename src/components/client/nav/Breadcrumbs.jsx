@@ -1,94 +1,74 @@
-'use client';
-import Link from 'next/link';
-import { useState, useEffect } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
-import { toNumber } from '@/utils/number';
-import { ChevronRight } from '@/components/icons/All';
+"use client";
+import Link from "next/link";
+import { sets } from "@/utils/client/breadcrumbs/links.js";
+import { useState, useEffect } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+import { toNumber } from "@/utils/number";
+import { ChevronRight } from "@/components/icons/All";
 
-const Breadcrumbs = ({ step=1, children }) => {
-    const [ service, setService ] = useState('');
-    const [ setNumber, setSetNumber ] = useState(1);
-    const [ linkSet, setLinkSet ] = useState([]);
+const Breadcrumbs = ({ step = 1, children }) => {
+  const [service, setService] = useState("");
+  const [linkSet, setLinkSet] = useState([]);
+  const [series, setSeries] = useState(1);
 
-    const router = useRouter();
-    const searchParams = useSearchParams();
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
-    const nStep = toNumber(step);
-    const services = { wedding: true, debut: true, kidsparty: true, privateparty: true };
+  const nStep = toNumber(step);
+  const services = {
+    wedding: true,
+    debut: true,
+    kidsparty: true,
+    privateparty: true,
+  };
+  const stepsName = ["theme", "venue", "package", "schedule", "review"];
 
-    const set1 = [
-        '?display=themes',
-        '?display=venues',
-        '?display=menus',
-        '?display=schedule',
-        '?display=reviewbudget',
-    ];
+  useEffect(() => {
+    const serviceParam = searchParams.get("service");
+    if (!services.hasOwnProperty(serviceParam)) router.push("/");
+    setService(serviceParam);
 
-    const set2 = [
-        '?display=themes',
-        '?display=providevenuelocation',
-        '?display=menus',
-        '?display=schedule',
-        '?display=reviewbudget',
-    ];
+    const setParam = toNumber(searchParams.get("set"));
+    const filteredSet = setParam < 1 || setParam > sets.length ? 1 : setParam;
 
-    const set3 = [
-        '?display=themes',
-        '?display=venue',
-        '?display=createmenu',
-        '?display=schedule',
-        '?display=reviewbudget',
-    ];
+    const series = toNumber(searchParams.get("series"));
+    const fSeries = nStep > series ? nStep : series;
 
-    const set4 = [
-        '?display=themes',
-        '?display=providevenuelocation',
-        '?display=createmenu',
-        '?display=schedule',
-        '?display=reviewbudget',
-    ];
+    // change url realtime
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('series', `${fSeries}`);
+    window.history.pushState(null, '', `?${params.toString()}`);
 
-    const stepsName = [ 'theme', 'venue', 'package', 'schedule', 'review' ];
-    const sets = [ set1, set2, set3, set4 ];
+    const set = sets[filteredSet - 1].slice(0, fSeries);
+    setLinkSet(set);
+    setSeries(fSeries);
+  }, []);
 
-    useEffect(() => {
-        const serviceParam = searchParams.get('service');
-        if(!services.hasOwnProperty(serviceParam)) router.push('/');
-        setService(serviceParam);
-
-        const setParam = toNumber(searchParams.get('set'));
-        const filteredSet = setParam == 0 || setParam > sets.length ? 1 : setParam;
-        setSetNumber(filteredSet);
-
-        setLinkSet(sets[filteredSet-1]);
-    }, []);
-
-    return (
-        <header className="w-full h-[calc(var(--nav-height)-16px)] flex items-center font-headings border-b-[1px] border-neutral-240 fixed top-[var(--nav-height)] left-0 z-navbar bg-white">
-            <nav className="w-full py-2">
-                <ul className="px-2 sm:px-page-x flex ">
-                    <li className="flex gap-4">
-                        {
-                            linkSet.map((link, index) => {
-                                if(nStep <= index) return <div key={ index } className="hidden"></div>; 
-                                return (
-                                    <Link key={ index } href={ `${ link }&service=${ service }&set=${ setNumber }` } className="flex items-center gap-4">
-                                        <span className={ `${ (nStep-1) === index && 'font-semibold' }` }>
-                                            { stepsName[index] }
-                                        </span>
-                                        <ChevronRight strokeWidth={ 1 }/>
-                                    </Link>
-                                )
-                            })
-                        }
-                    </li>
-                    <li className="grow">
-                        { children }
-                    </li>
-                </ul> 
-            </nav>
-        </header>
-    );
-}
+  return (
+    <header className="w-full h-[calc(var(--nav-height)-16px)] flex items-center font-headings border-b-[1px] border-neutral-240 fixed top-[var(--nav-height)] left-0 z-subnavbar bg-white">
+      <nav className="w-full py-2">
+        <ul className="px-2 sm:px-page-x flex ">
+          <li className="flex gap-4">
+            {linkSet.map((link, index) => {
+              return (
+                <Link
+                  key={index}
+                  href={`${link}&service=${service}&series=${series}`}
+                  className="flex items-center gap-4"
+                >
+                  <span className={`${nStep - 1 === index && "font-semibold"}`}>
+                    {stepsName[index]}
+                  </span>
+                  <ChevronRight strokeWidth={1} />
+                </Link>
+              );
+            })}
+          </li>
+          <li className="grow">{children}</li>
+        </ul>
+      </nav>
+    </header>
+  );
+};
 
 export default Breadcrumbs;
