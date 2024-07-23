@@ -2,13 +2,16 @@
 import Loading from '@/components/Loading';
 import ErrorField from '@/components/ErrorField';
 import Image from 'next/image';
-import { Plus, X } from '@/components/icons/All';
+import Breadcrumbs from '@/components/client/nav/Breadcrumbs';
+import Link from 'next/link';
+import { Plus, X, ChevronRight, ChevronLeft } from '@/components/icons/All';
 import { useEffect, useRef, useState } from 'react';
 import { emptyMenuFields } from '@/utils/client/emptyValidation';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { zMenu } from '@/stores/menu';
 import { zReservation } from '@/stores/reservation';
 import { Prompt } from '@/components/Modal';
+import { getSetParam } from '@/utils/client/breadcrumbs/params';
 
 const CreateMenu = () => {
     const [ menuName, setMenuName ] = useState('');
@@ -17,6 +20,8 @@ const CreateMenu = () => {
     const [ drinkMenu, setDrinkMenu ] = useState({});
     const [ preview, setPreview ] = useState({});
     const [ service, setService ] = useState(undefined);
+    const [ setParam, setSetParam ] = useState(1); // url paramter for breadcrumbs
+    const [ series, setSeries ] = useState(1); // breadcrumbs
 
     const dishListCont = useRef(null);
     const drinkListCont = useRef(null);
@@ -61,7 +66,7 @@ const CreateMenu = () => {
 
             zReservation.getState().saveMenuData(menuData);
             clearAllData();
-            router.push(`/reserve?display=schedule&service=${ service }`);
+            router.push(`/reserve?display=schedule&service=${service}&set=${setParam}&series=${series}`);
         } catch(error) {
             setInvalidFieldsValue(prev => ({ ...prev, unauth: 'There\'s something wrong!' }));
         }
@@ -106,7 +111,7 @@ const CreateMenu = () => {
     const saveNameNDescThenAdd = (ev, path) => {
         ev.preventDefault();
         zMenu.getState().saveNameNDescription(menuName, description);
-        router.push(path + '&action=add&service=' + service);
+        router.push(path + '&action=add&service=' + service + '&set=' + setParam);
     }
 
     useEffect(() => {
@@ -118,15 +123,31 @@ const CreateMenu = () => {
         const serviceParam = searchParams.get('service');
         if(!services.hasOwnProperty(serviceParam)) router.push('/');
         setService(serviceParam);
+
+        const filteredSet = getSetParam(searchParams);
+        setSetParam(filteredSet);
+
+        setSeries(searchParams.get('series'));
     }, []);
 
     return (
         <section className="flex flex-col px-page-x pt-1 pb-10">
             { loading && <Loading customStyle="size-full" /> }
-            <div className="flex justify-between items-center p-1 rounded-lg">
-                <h2 className="font-headings font-semibold">Create New Menu</h2>
-            </div>
-            <div className="flex gap-4 font-paragraphs min-h-[340px] border-y-[1px]">
+            <Breadcrumbs step={ 3 }>
+                <div className="w-full flex justify-end">
+                    <div className="flex gap-2">
+                        <Link href={ `/reserve?display=menus&service=${service}&set=${(setParam-2)}&series=${series}` } className="flex gap-2 bg-green-600/40 rounded-full px-2 py-1 hover:bg-green-400 transition-colors">
+                            <ChevronLeft size={20} />
+                            <span className="text-sm font-medium hidden sm:inline">back</span>
+                        </Link>
+                        <button onClick={ checkMenuData } className="flex gap-2 bg-green-600/40 rounded-full pr-2 py-1 pl-4 hover:bg-green-400 transition-colors">
+                            <span className="text-sm font-medium hidden sm:inline">Next</span>
+                            <ChevronRight size={20} />
+                        </button>
+                    </div>
+                </div>
+            </Breadcrumbs>
+            <div className="flex gap-4 font-paragraphs min-h-[340px] border-y-[1px] pt-[calc(var(--nav-height)-20px)]">
                 <div className="flex grow max-h-[340px] pt-2 divide-x-2 border-r-[1px]">
                     <div className="w-full flex flex-col gap-2 p-2">
                         <header className="flex justify-between">
@@ -187,15 +208,6 @@ const CreateMenu = () => {
                         <label className="font-paragraph text-sm font-semibold">Desciption (Optional)</label>
                         <textarea name="description" value={ description } onChange={(e) => setDescription(e.target.value)} className="input w-full h-40 border border-neutral-500/40" placeholder="Description (Optional)"></textarea>
                         <ErrorField message={ invalidFieldsValue['description'] }/>
-                    </div>
-                    <div className="w-full flex gap-4">
-                        <button onClick={ checkMenuData } className="w-1/2 button shadow-md border border-neutral-500/40">Next</button>
-                        <button onClick={ (ev) => {
-                            ev.preventDefault();
-                            router.push(`/reserve?display=menus&service=${ service }`)
-                        }} className="w-1/2 button shadow-md border border-neutral-500/40">
-                            Cancel
-                        </button>
                     </div>
                     <ErrorField message={ invalidFieldsValue['unauth'] }/>
                 </div> 
