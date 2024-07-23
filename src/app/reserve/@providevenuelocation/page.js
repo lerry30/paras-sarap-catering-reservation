@@ -2,9 +2,9 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 
+import { ChevronRight, ChevronLeft } from '@/components/icons/All';
 import { addressAll } from '@/utils/philAddress';
 import { regions } from '@/utils/philAddress';
-import { toNumber } from '@/utils/number';
 import { zReservation } from '@/stores/reservation';
 import { emptyVenueFields } from '@/utils/client/emptyValidation';
 import { Prompt } from '@/components/Modal';
@@ -13,12 +13,14 @@ import Checkbox from '@/components/Checkbox';
 import Loading from '@/components/Loading';
 import Link from 'next/link';
 import TitleFormat from '@/utils/titleFormat';
+import Breadcrumbs from '@/components/client/nav/Breadcrumbs';
 
 const ProvideVenueLocation = () => {
     const [ venueName, setVenueName ] = useState('');
     const [ description, setDescription ] = useState('');
     const [ tablesNChairsProvided, setTablesNChairsProvided ] = useState(false);
     const [ service, setService ] = useState(undefined);
+    const [ series, setSeries ] = useState(1); // breadcrumbs
     const [ loading, setLoading ] = useState(false);
     const [ invalidFieldsValue, setInvalidFieldsValue ] = useState({});
     const [ confirmationPrompt, setConfirmationPrompt ] = useState(false);
@@ -38,8 +40,7 @@ const ProvideVenueLocation = () => {
 
         const { street, region, province, municipality, barangay } = selectedAddress;
         const invalidFields = emptyVenueFields(region, province, municipality, barangay, street);
-        for(const [field, message] of Object.entries(invalidFields))
-            setInvalidFieldsValue(prev => ({ ...prev, [field]: message }));
+        setInvalidFieldsValue(prev => ({ ...prev, ...invalidFields }));
 
         if(Object.values(invalidFields).length === 0) {
             setConfirmationPrompt(true);
@@ -64,7 +65,7 @@ const ProvideVenueLocation = () => {
             };
 
             zReservation.getState().saveVenueData(venueData);
-            router.push(`/reserve?display=menus&service=${ service }`);
+            router.push(`/reserve?display=menus&service=${service}&set=2&series=${series}`);
         } catch(error) {
             setInvalidFieldsValue(prev => ({ ...prev, unauth: 'There\'s something wrong!' }));
         }
@@ -95,11 +96,28 @@ const ProvideVenueLocation = () => {
         const serviceParam = searchParams.get('service');
         if(!services.hasOwnProperty(serviceParam)) router.push('/');
         setService(serviceParam);
+
+        setSeries(searchParams.get('series'));
     }, []);
 
     return (
         <section className="w-full flex flex-col pt-4 px-page-x">
             { loading && <Loading customStyle="size-full" /> }
+            <Breadcrumbs step={ 2 }>
+                <div className="w-full flex justify-end">
+                    {/*  <h2 className="font-headings font-semibold">Venues</h2> */}
+                    <div className="flex gap-2">
+                        <Link href={ `/reserve?display=venues&service=${service}&set=1&series=${series}` } className="flex gap-2 bg-green-600/40 rounded-full px-2 py-1 hover:bg-green-400 transition-colors">
+                            <ChevronLeft size={20} />
+                            <span className="text-sm font-medium hidden sm:inline">back</span>
+                        </Link>
+                        <button onClick={ checkProvidedVenueInfo } className="flex gap-2 bg-green-600/40 rounded-full pr-2 py-1 pl-4 hover:bg-green-400 transition-colors">
+                            <span className="text-sm font-medium hidden sm:inline">Next</span>
+                            <ChevronRight size={20} />
+                        </button>
+                    </div>
+                </div>
+            </Breadcrumbs>
             <div className="flex justify-between items-center p-1 rounded-lg">
                 <h2 className="font-headings font-semibold">Add Your Venue</h2>
             </div>
@@ -124,10 +142,6 @@ const ProvideVenueLocation = () => {
                     </div>
                 </div>
                 <div className="w-1/2 flex flex-col gap-4">
-                    <div className="flex flex-col gap-4">
-                        <p className="text-sm font-paragraphs">By checking the box below, you confirm that you will provide the chairs and tables needed for the event. In addition to providing the venue, it's important to specify the number of guests attending your occasion. Please ensure to include the number of guests. For further discussion, click <Link href="" className="text-blue-700 font-semibold">Message me</Link> to collaborate on making your event even more memorable.</p>
-                        <Checkbox value="" text="Do you want to use your own tables and chairs" onChange={ ev => setTablesNChairsProvided(ev.target.checked) }/>
-                    </div>
                     <div className="w-full">
                         <label htmlFor="" className="font-paragraph text-sm font-semibold">Street/Building Name</label>
                         <input 
@@ -203,14 +217,11 @@ const ProvideVenueLocation = () => {
                             </select>
                             <ErrorField message={ invalidFieldsValue['barangay'] }/>
                         </div>
-                    </div>  
-                    <div className="w-full flex gap-4">
-                        <button onClick={ checkProvidedVenueInfo } className="w-1/2 button shadow-md border border-neutral-500/40">Save</button>
-                        <button onClick={ () => router.push(`/reserve?display=venues&service=${ service }`) } className="w-1/2 button shadow-md border border-neutral-500/40">
-                            Cancel
-                        </button>
+                    </div>                      
+                    <div className="flex flex-col gap-4">
+                        <p className="text-sm font-paragraphs">By checking the box below, you confirm that you will provide the chairs and tables needed for the event. In addition to providing the venue, it's important to specify the number of guests attending your occasion. Please ensure to include the number of guests. For further discussion, click <Link href="" className="text-blue-700 font-semibold">Message me</Link> to collaborate on making your event even more memorable.</p>
+                        <Checkbox value="" text="Do you want to use your own tables and chairs" onChange={ ev => setTablesNChairsProvided(ev.target.checked) }/>
                     </div>
-                    
                 </div>
             </div>
             <div className="w-1/2 ml-auto pl-2">
