@@ -8,6 +8,7 @@ import Breadcrumbs from '@/components/client/nav/Breadcrumbs';
 const Themes = () => {
     const [ themesObject, setThemesObject ] = useState({});
     const [ service, setService ] = useState(undefined);
+    const [ series, setSeries ] = useState(1); // breadcrumbs
     const [ loading, setLoading ] = useState(false);
 
     const services = { wedding: true, debut: true, kidsparty: true, privateparty: true };
@@ -30,6 +31,8 @@ const Themes = () => {
         const serviceParam = searchParams.get('service');
         if(!services.hasOwnProperty(serviceParam)) router.push('/');
         setService(serviceParam);
+
+        setSeries(searchParams.get('series'));
     }, []);
 
     return (
@@ -44,7 +47,7 @@ const Themes = () => {
                 <div className="w-full h-[calc(100vh-var(--nav-height)-20px)] flex flex-col justify-center items-center gap-2">
                     <h1 className="font-headings font-bold text-xl">Themes</h1>
                     <p className="font-paragraphs font-bold text-lg text-neutral-700/40">UNAVAILABLE FOR NOW</p>
-                    <Link href={ `/reserve?display=venues&service=${ service }&set=1` } className="font-headings font-bold border-[1px] py-2 px-4 rounded-sm shadow-xl hover:bg-skin-ten hover:text-white transition-colors">Continue</Link>
+                    <Link href={ `/reserve?display=venues&service=${service}&set=1&series=${series}` } className="font-headings font-bold border-[1px] py-2 px-4 rounded-sm shadow-xl hover:bg-skin-ten hover:text-white transition-colors">Continue</Link>
                 </div>
             </section>
         </>
