@@ -10,11 +10,14 @@ import Loading from '@/components/Loading';
 import CardSelect from '@/components/client/menus/CardSelect';
 import Breadcrumbs from '@/components/client/nav/Breadcrumbs';
 import { zReservation } from '@/stores/reservation';
+import { getSetParam } from '@/utils/client/breadcrumbs/params';
 
 const Menus = () => {
     const [ menus, setMenus ] = useState([]);
     const [ allSelects, setAllSelects ] = useState([]);
     const [ service, setService ] = useState(undefined);
+    const [ setParam, setSetParam ] = useState(1); // for breadcrumbs
+    const [ series, setSeries ] = useState(1); // breadcrumbs
 
     const [ actionErrorMessage, setActionErrorMessage ] = useState('');
     const [ loading, setLoading ] = useState(false);
@@ -31,9 +34,9 @@ const Menus = () => {
                 setActionErrorMessage('');
             }, 2000);
             return;
-        }
+        } 
 
-        router.push(`/reserve?display=schedule&service=${ service }`);
+        router.push(`/reserve?display=schedule&service=${service}&set=${setParam}&series=${series}`);
     }
     
     const getMenus = async () => {
@@ -56,6 +59,11 @@ const Menus = () => {
         const serviceParam = searchParams.get('service');
         if(!services.hasOwnProperty(serviceParam)) router.push('/');
         setService(serviceParam);
+
+        const filteredSet = getSetParam(searchParams);
+        setSetParam(filteredSet);
+
+        setSeries(searchParams.get('series'));
     }, []);
 
     return (
@@ -65,7 +73,7 @@ const Menus = () => {
                 <div className="w-full flex justify-end">
                     {/*  <h2 className="font-headings font-semibold ml-[300px]">Packages</h2> */}
                     <div className="flex gap-4">
-                        <Link href={ `/reserve?display=createmenu&service=${ service }` } className="flex gap-2 bg-green-600/40 rounded-full px-2 py-1 hover:bg-green-400 transition-colors">
+                        <Link href={ `/reserve?display=createmenu&service=${ service }&set=${ (setParam+2) }&series=${ series }` } className="flex gap-2 bg-green-600/40 rounded-full px-2 py-1 hover:bg-green-400 transition-colors">
                             <Plus size={20} />
                             <span className="text-sm font-medium hidden sm:inline">Create menu</span>
                         </Link>
