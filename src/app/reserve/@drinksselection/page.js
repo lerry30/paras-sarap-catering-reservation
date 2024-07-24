@@ -65,7 +65,7 @@ const DrinksSelection = () => {
         <>
             { loading && <Loading customStyle="size-full" /> }
             <section className="relative flex flex-col gap-4">
-                <div className="sticky w-full top-[var(--nav-height)] left-0 z-navbar border-b-[1px] bg-white flex justify-between items-center py-1 px-4">
+                <div className="sticky w-full top-[var(--nav-height)] left-0 z-navbar border-b-[1px] bg-white flex justify-between items-center py-1 px-page-x">
                     <div className="flex gap-4">
                         <button onClick={ goBack }>
                             <ArrowLeft />
@@ -76,14 +76,17 @@ const DrinksSelection = () => {
                 </div>
                 <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 px-page-x">
                     {
-                        drinks.map((item, index) => (
-                            <CardSelect
-                                key={ index } 
-                                drinkData={ item } 
-                                drinkMenu={ drinkMenu }
-                                setDrinkMenu={ setDrinkMenu }
-                            />
-                        ))
+                        drinks.map((item, index) => {
+                            if(item?.status === 'unavailable') return null;
+                            return (
+                                <CardSelect
+                                    key={ index } 
+                                    drinkData={ item } 
+                                    drinkMenu={ drinkMenu }
+                                    setDrinkMenu={ setDrinkMenu }
+                                />
+                            )
+                        })
                     }
                 </div>
             </section>
