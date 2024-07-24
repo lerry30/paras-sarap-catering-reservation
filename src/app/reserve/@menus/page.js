@@ -2,7 +2,7 @@
 import { ChevronRight, Plus } from '@/components/icons/All';
 import { ErrorModal } from '@/components/Modal';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { getData } from '@/utils/send';
 
 import Link from 'next/link';
@@ -22,6 +22,8 @@ const Menus = () => {
     const [ actionErrorMessage, setActionErrorMessage ] = useState('');
     const [ loading, setLoading ] = useState(false);
 
+    const reservationCache = useRef(null);
+
     const router = useRouter();
     const searchParams = useSearchParams();
 
@@ -36,6 +38,8 @@ const Menus = () => {
             return;
         } 
 
+        const menuData = { index: allSelects.indexOf(true), length: allSelects.length, custom: false };
+        localStorage.setItem('reservation-cache', JSON.stringify({ ...reservationCache.current, menu: menuData }));
         router.push(`/reserve?display=schedule&service=${service}&set=${setParam}&series=${series}`);
     }
     
@@ -47,6 +51,20 @@ const Menus = () => {
             setMenus(data);
             // console.log(data);
             setAllSelects(Array(data.length).fill(false));
+  
+            const menuCache = reservationCache.current?.menu;
+
+            const setIndex = (updateNo) => {
+                if(menuCache?.index) {
+                    const index = menuCache?.index + updateNo;
+                    setAllSelects(selects => { selects[index] = true; return selects });  
+                }
+            }
+            
+            // the cards are display in descending order so if admin adds new one, it would append in front
+            // of the array so I add a new condition below to add to index so it can be selected still
+            if(menuCache?.length === data?.length) setIndex(0);
+            else if(menuCache?.length < data?.length) setIndex(data.length - menuCache.length);
         } catch(error) {}
 
         setLoading(false);
@@ -54,7 +72,9 @@ const Menus = () => {
 
     useEffect(() => {
         getMenus();
-        zReservation.getState()?.clearSpecificProperty('menu');
+        // zReservation.getState()?.clearSpecificProperty('menu');
+        const reservationCacheData = JSON.parse(localStorage.getItem('reservation-cache') || '{}');
+        reservationCache.current = reservationCacheData;
 
         const serviceParam = searchParams.get('service');
         if(!services.hasOwnProperty(serviceParam)) router.push('/');
@@ -88,6 +108,7 @@ const Menus = () => {
                 <div className="flex flex-wrap gap-4 justify-center md:justify-start px-page-x">
                     {
                         menus.map((item, index) => {
+                            if(item?.status === 'unavailable') return null;
                             return(
                                 <CardSelect 
                                     key={ index } 
