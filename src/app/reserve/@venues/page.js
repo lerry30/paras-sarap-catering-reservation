@@ -1,6 +1,6 @@
 'use client';
 import { ChevronRight, Plus } from '@/components/icons/All';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { getData } from '@/utils/send';
 import { ErrorModal } from '@/components/Modal';
@@ -17,6 +17,8 @@ const Venues = () => {
     const [ series, setSeries ] = useState(1); // breadcrumbs
     const [ loading, setLoading ] = useState(false);
     const [ actionErrorMessage, setActionErrorMessage ] = useState('');
+
+    const reservationCache = useRef(null);
     
     const searchParams = useSearchParams();
     const router = useRouter();
@@ -31,7 +33,9 @@ const Venues = () => {
             }, 2000);
             return;
         }
-
+        
+        const venueData = { index: allSelects.indexOf(true), length: allSelects.length, custom: false };
+        localStorage.setItem('reservation-cache', JSON.stringify({ ...reservationCache.current, venue: venueData }));
         router.push(`/reserve?display=menus&service=${service}&set=1&series=${series}`);
     }
 
@@ -42,6 +46,20 @@ const Venues = () => {
             const { data } = (await getData('/api/venues')) || { data: [] };
             setVenues(data);
             setAllSelects(Array(data.length).fill(false));
+
+            const venueCache = reservationCache.current?.venue;
+
+            const setIndex = (updateNo) => {
+                if(venueCache?.index) {
+                    const index = venueCache?.index + updateNo;
+                    setAllSelects(selects => { selects[index] = true; return selects });  
+                }
+            }
+            
+            // the cards are display in descending order so if admin adds new one, it would append in front
+            // of the array so I add a new condition below to add to index so it can be selected still
+            if(venueCache?.length === data?.length) setIndex(0);
+            else if(venueCache?.length < data?.length) setIndex(data.length - venueCache.length);
         } catch(error) {}
 
         setLoading(false);
@@ -49,7 +67,9 @@ const Venues = () => {
 
     useEffect(() => {
         getVenues();
-        zReservation.getState()?.clearSpecificProperty('venue');
+        //zReservation.getState()?.clearSpecificProperty('venue');
+        const reservationCacheData = JSON.parse(localStorage.getItem('reservation-cache') || '{}');
+        reservationCache.current = reservationCacheData;
 
         const serviceParam = searchParams.get('service');
         if(!services.hasOwnProperty(serviceParam)) router.push('/');
@@ -80,6 +100,7 @@ const Venues = () => {
                 <div className="flex flex-wrap gap-4 justify-center md:justify-start px-page-x pt-[var(--nav-height)]">
                     {
                         venues.map((item, index) => {
+                            if(item?.status === 'unavailable') return null;
                             return(
                                 <CardSelect 
                                     key={ index } 
