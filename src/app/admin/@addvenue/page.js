@@ -123,8 +123,8 @@ const AddVenue = () => {
                     </div>
                     <div className="w-full flex gap-4">
                         <div className="w-1/2">
-                            <label className="font-paragraph text-sm font-semibold">Price</label>
-                            <input name="price" onChange={ priceInput } className="input w-full border border-neutral-500/40" placeholder="Price" />
+                            <label className="font-paragraph text-sm font-semibold">Rental Price</label>
+                            <input name="price" onChange={ priceInput } className="input w-full border border-neutral-500/40" placeholder="Rental Price" />
                             <ErrorField message={ invalidFieldsValue['price'] }/>
                         </div>
                         <div className="w-1/2">
