@@ -68,7 +68,7 @@ const CardSelect = ({ venueData, index, allSelects, setAllSelects }) => {
             </article>
             <article className="w-full flex flex-col justify-between px-4 mt-auto pb-2">
                 <span className="text-neutral-600 text-sm">Maximum Seating Capacity: { maximumSeatingCapacity }</span>
-                <span className="text-neutral-600 text-sm">From: { pesoFormatter.format(price) }</span>
+                <span className="text-neutral-600 text-sm">Rental Fee: { pesoFormatter.format(price) }</span>
                 <span className="text-neutral-600 text-sm">Additional Charges for Tables and Chairs: { pesoFormatter.format(chargesForTablesAndChairs) }</span>
             </article>
             <div className="flex justify-between items-center px-4 pb-4 mt-auto">
