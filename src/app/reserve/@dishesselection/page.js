@@ -164,14 +164,17 @@ const DishesSelection = () => {
                 </div>
                 <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 px-page-x">
                     {
-                        dishes.map((item, index) => (
-                            <CardSelect
-                                key={index}
-                                dishData={item}
-                                dishMenu={dishMenu}
-                                setDishMenu={setDishMenu}
-                            />
-                        ))
+                        dishes.map((item, index) => {
+                            if(item?.status === 'unavailable') return null;
+                            return (
+                                <CardSelect
+                                    key={index}
+                                    dishData={item}
+                                    dishMenu={dishMenu}
+                                    setDishMenu={setDishMenu}
+                                />
+                            )
+                        })
                     }
                 </div>
             </section>
