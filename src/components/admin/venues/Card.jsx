@@ -46,9 +46,9 @@ const Card = ({ venueData, onDelete, onUpdate, viewMore }) => {
             <article className="w-full px-4 py-2 mt-auto">
                 <span className="font-semibold italic text-neutral-600 line-clamp-2">{ fullAddress }</span>
             </article>
-            <article className="w-full flex justify-between px-4 mt-auto pb-2">
+            <article className="w-full flex justify-between px-4 mt-auto pb-2 flex-col lg:flex-row">
                 <span className="text-neutral-600 text-sm">Maximum Seating Capacity: { maximumSeatingCapacity }</span>
-                <span className="text-neutral-600 text-sm">From: { pesoFormatter.format(price) }</span>
+                <span className="text-neutral-600 text-sm">Rental Fee: { pesoFormatter.format(price) }</span>
             </article>
             <div className="flex justify-between items-center px-4 pb-6 mt-auto">
                 <span className={ `text-sm rounded-full px-1 ${ status === 'available' ? 'bg-green-200/40 text-green-500' : 'bg-red-200/40 text-red-500' }` }>{ status }</span>
