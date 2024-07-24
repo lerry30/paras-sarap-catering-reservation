@@ -1,10 +1,9 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 
 import { ChevronRight, ChevronLeft } from '@/components/icons/All';
-import { addressAll } from '@/utils/philAddress';
-import { regions } from '@/utils/philAddress';
+import { addressAll, regions } from '@/utils/philAddress';
 import { zReservation } from '@/stores/reservation';
 import { emptyVenueFields } from '@/utils/client/emptyValidation';
 import { Prompt } from '@/components/Modal';
@@ -31,7 +30,8 @@ const ProvideVenueLocation = () => {
     const [ listOfBarangay, setListOfBarangay ] = useState([]);
 
     const services = { wedding: true, debut: true, kidsparty: true, privateparty: true };
-
+    const checkboxForTableNChairs = useRef(null);
+    
     const searchParams = useSearchParams();
     const router = useRouter();
 
@@ -64,6 +64,8 @@ const ProvideVenueLocation = () => {
                 }
             };
 
+            localStorage.setItem('reservation-cache', JSON.stringify({ venue: { custom: true } }));
+
             zReservation.getState().saveVenueData(venueData);
             router.push(`/reserve?display=menus&service=${service}&set=2&series=${series}`);
         } catch(error) {
@@ -84,7 +86,7 @@ const ProvideVenueLocation = () => {
                 setListOfBarangay([]);
             },
             province: () => {
-                setListOfMunicipality(Object.keys(addressAll[selectedAddress.region]?.province[selected]?.municipality || {}))
+                setListOfMunicipality(Object.keys(addressAll[selectedAddress.region]?.province[selected]?.municipality || {}));
                 // reset
                 setListOfBarangay([]);
             },
@@ -92,7 +94,42 @@ const ProvideVenueLocation = () => {
         })[key]();
     }
 
+    const cacheData = () => {
+        // get 
+        const venueIsProvided = JSON.parse(localStorage.getItem('reservation-cache') || '{}')?.venue?.custom;
+        if(!!venueIsProvided) {
+            const savedReservationVenueData = zReservation.getState()?.venue;
+            const { street, region, province, municipality, barangay } = savedReservationVenueData?.address;
+            const uRegion = region?.toUpperCase()?.trim() || '';
+            const uProvince = province?.toUpperCase()?.trim() || '';
+            const uMunicipality = municipality?.toUpperCase()?.trim() || '';
+            const uBarangay = barangay?.toUpperCase()?.trim() || '';
+
+            // set cache data
+            setVenueName(savedReservationVenueData?.name || '');
+            setDescription(savedReservationVenueData?.description || '');
+            setTablesNChairsProvided(savedReservationVenueData?.tablenchairsprovided);
+            setSelectedAddress({ 
+                street: street || '', 
+                region: uRegion, 
+                province: uProvince, 
+                municipality: uMunicipality, 
+                barangay: uBarangay 
+            });
+
+            // to automatically set cache data into dropdown fields
+            setListOfProvince(Object.keys(addressAll[uRegion]?.province || {}));
+            setListOfMunicipality(Object.keys(addressAll[uRegion]?.province[uProvince]?.municipality || {}));
+            setListOfBarangay(addressAll[uRegion]?.province[uProvince]?.municipality[uMunicipality].barangay || {})
+
+            checkboxForTableNChairs.current.checked = savedReservationVenueData?.tablesnchairsprovided;
+        }
+    }
+
     useEffect(() => {
+        zReservation.getState().init();
+        cacheData();
+
         const serviceParam = searchParams.get('service');
         if(!services.hasOwnProperty(serviceParam)) router.push('/');
         setService(serviceParam);
@@ -125,12 +162,12 @@ const ProvideVenueLocation = () => {
                 <div className="w-1/2 flex flex-col gap-4" >
                     <div className="w-full">
                         <label className="font-paragraph text-sm font-semibold">Venue Name (Optional)</label>
-                        <input name="venuename" id="venuename" onChange={(ev) => setVenueName(ev.target.value)} className="input w-full border border-neutral-500/40" placeholder="Venue Name (Optional)" />
+                        <input name="venuename" id="venuename" value={ venueName } onChange={(ev) => setVenueName(ev.target.value)} className="input w-full border border-neutral-500/40" placeholder="Venue Name (Optional)" />
                         <ErrorField message={ invalidFieldsValue['venuename'] }/>
                     </div>
                     <div>
                         <label className="font-paragraph text-sm font-semibold">Venue Description (including landmarks)</label>
-                        <textarea name="description" onChange={(ev) => setDescription(ev.target.value)} className="input w-full h-40 border border-neutral-500/40" placeholder="Please provide a detailed description of the venue. Specify any landmarks nearby for easier identification."></textarea>
+                        <textarea name="description" value={ description } onChange={(ev) => setDescription(ev.target.value)} className="input w-full h-40 border border-neutral-500/40" placeholder="Please provide a detailed description of the venue. Specify any landmarks nearby for easier identification."></textarea>
                         <ErrorField message={ invalidFieldsValue['description'] }/>
                     </div>
                     <div className="size-full p-4 bg-blue-400/50 rounded-lg flex justify-center items-center">
@@ -147,7 +184,9 @@ const ProvideVenueLocation = () => {
                         <input 
                             name="street" 
                             onChange={ (ev) => setSelectedAddress(state => ({ ...state, street: ev.target.value })) } 
-                            className="input w-full border border-neutral-500/40" placeholder="Street/Building Name" />
+                            className="input w-full border border-neutral-500/40" placeholder="Street/Building Name"
+                            value={ selectedAddress?.street }
+                        />
                         <ErrorField message={ invalidFieldsValue['street/buildingname'] }/>
                     </div>
                     <div className="w-full flex gap-4">
@@ -155,7 +194,7 @@ const ProvideVenueLocation = () => {
                             <label className="font-paragraph text-sm font-semibold">Region</label>
                             <select 
                                 name="region"
-                                defaultValue="placeholder" 
+                                value={ selectedAddress?.region || 'placeholder' }
                                 onChange={ (ev) => select(ev, 'region') } 
                                 className="input w-full border border-neutral-500/40">
                                 <option value="placeholder" disabled>Select Region</option>
@@ -171,7 +210,7 @@ const ProvideVenueLocation = () => {
                             <label className="font-paragraph text-sm font-semibold">Province</label>
                             <select 
                                 name="province"
-                                defaultValue="placeholder" 
+                                value={ selectedAddress?.province || 'placeholder' } 
                                 onChange={ (ev) => select(ev, 'province') } 
                                 className="input w-full border border-neutral-500/40" disabled={ listOfProvince.length === 0 }>
                                 <option value="placeholder" disabled>Select Province</option>
@@ -189,7 +228,7 @@ const ProvideVenueLocation = () => {
                             <label className="font-paragraph text-sm font-semibold">Municipality</label>
                             <select 
                                 name="municipality"
-                                defaultValue="placeholder" 
+                                value={ selectedAddress?.municipality || 'placeholder' }
                                 onChange={ (ev) => select(ev, 'municipality') } 
                                 className="input w-full border border-neutral-500/40" disabled={ listOfMunicipality.length === 0 }>
                                 <option value="placeholder" disabled>Select Municipality</option>
@@ -205,7 +244,7 @@ const ProvideVenueLocation = () => {
                             <label className="font-paragraph text-sm font-semibold">Barangay</label>
                             <select 
                                 name="barangay"
-                                defaultValue="placeholder"  
+                                value={ selectedAddress?.barangay || 'placeholder' }
                                 onChange={ (ev) => setSelectedAddress(state => ({ ...state, barangay: ev.target.value })) } 
                                 className="input w-full border border-neutral-500/40" disabled={ listOfBarangay.length === 0 }>
                                 <option value="placeholder" disabled>Select Barangay</option>
@@ -220,7 +259,7 @@ const ProvideVenueLocation = () => {
                     </div>                      
                     <div className="flex flex-col gap-4">
                         <p className="text-sm font-paragraphs">By checking the box below, you confirm that you will provide the chairs and tables needed for the event. In addition to providing the venue, it's important to specify the number of guests attending your occasion. Please ensure to include the number of guests. For further discussion, click <Link href="" className="text-blue-700 font-semibold">Message me</Link> to collaborate on making your event even more memorable.</p>
-                        <Checkbox value="" text="Do you want to use your own tables and chairs" onChange={ ev => setTablesNChairsProvided(ev.target.checked) }/>
+                        <Checkbox ref={ checkboxForTableNChairs } text="Do you want to use your own tables and chairs" onChange={ ev => setTablesNChairsProvided(ev.target.checked) }/>
                     </div>
                 </div>
             </div>
