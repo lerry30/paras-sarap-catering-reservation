@@ -9,7 +9,7 @@ import { ErrorModal } from '@/components/Modal';
 import { ChevronLeft, ChevronRight } from '@/components/icons/All';
 import { areDatesEqual } from '@/utils/date';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { zReservation } from '@/stores/reservation';
 import { toNumber } from '@/utils/number';
 import { getSetParam } from '@/utils/client/breadcrumbs/params';
@@ -33,8 +33,6 @@ const Schedules = () => {
     const [ toHour, setToHour ] = useState('');
     const [ toMinute, setToMinute ] = useState('');
     const [ toMeridiem, setToMeridiem ] = useState('');
-
-    const prevSelectedElement = useRef(undefined);
 
     const [ service, setService ] = useState(undefined);
     const [ setParam, setSetParam ] = useState(1);
@@ -82,11 +80,6 @@ const Schedules = () => {
 
         setCurrentYear(nYear);
         setCalNumbers(nYear, nMonth);
-
-        if(prevSelectedElement.current) {
-            prevSelectedElement.current.style.opacity = '.01';
-            setSelectedDay('');
-        }
     }
 
     // save button to finish things up
@@ -135,8 +128,7 @@ const Schedules = () => {
     }
 
     // clicked the day in calendar
-    const setSched = (ev, number) => {
-        const day = ev.target.closest('.box')
+    const setSched = (number) => {
         const dateToString = `${ months[currentMonth] } ${ number }, ${ currentYear }`;
         // getTime() -> to milliseconds
         const earliestDayCanReserve = today.getTime() + noOfDaysCanSched;
@@ -148,18 +140,12 @@ const Schedules = () => {
             const prevDate = new Date(selectedDay);
             if(areDatesEqual(prevDate, selectedDate)) {
                 console.log('are equal');
-                prevSelectedElement.current.style.opacity = '.01';
                 setSelectedDay('');
                 return;
             }
         }
 
-        if(prevSelectedElement.current)
-            prevSelectedElement.current.style.opacity = '.01';
-
         if(selectedDateInMilli > earliestDayCanReserve) {
-            day.style.opacity = '1';
-            prevSelectedElement.current = day;
             setSelectedDay(dateToString);
         } else {
             setActionCantSchedDate('The date cannot be selected at this time due to the preparation and planning required for your event. Negotiations and arrangements between both parties need to be finalized, along with other necessary preparations. Thank you for your understanding.');
@@ -180,11 +166,32 @@ const Schedules = () => {
             return message;
     }
 
+    const setPreservedCacheData = () => {
+        zReservation.getState()?.init();
+        const dateReserved = zReservation.getState()?.schedule?.date;
+        const fromTime = String(zReservation.getState()?.schedule?.time?.from).trim().split(' ');
+        const toTime = String(zReservation.getState()?.schedule?.time?.to).trim().split(' ');
+        const fFromHour = fromTime[0]?.replace(':', '');
+        const fToHour = toTime[0]?.replace(':', '');
+
+        setFromHour(fFromHour);
+        setFromMinute(fromTime[1]);
+        setFromMeridiem(fromTime[2]);
+
+        setToHour(fToHour);
+        setToMinute(toTime[1]);
+        setToMeridiem(toTime[2]);
+
+        setSelectedDay(dateReserved);
+    }
+
     useEffect(() => {
         setCalNumbers(dateObj.getFullYear(), dateObj.getMonth());
         setCurrentMonth(dateObj.getMonth());
         setCurrentYear(dateObj.getFullYear());
-        zReservation.getState()?.clearSpecificProperty('schedule');
+        // zReservation.getState()?.clearSpecificProperty('schedule');
+        
+        setPreservedCacheData();
 
         const serviceParam = searchParams.get('service');
         if(!services.hasOwnProperty(serviceParam)) router.push('/');
@@ -276,18 +283,24 @@ const Schedules = () => {
                                                 )
                                             }
 
-                                            return (
-                                                <div key={ index } className="relative w-full aspect-square p-1 border-[1px] border-neutral-400 cursor-pointer">
-                                                    {/* default */}
-                                                    <span className="text-neutral-950">{ number }</span>
-                                                    
-                                                    {/* selected display */}
-                                                    <div onClick={ ev => setSched(ev, number) } className="box absolute top-0 left-0 right-0 bottom-0 opacity-[0.01] bg-blue-700 p-1">
-                                                        <div className="flex flex-col">
-                                                            <span className="text-white font-bold">{ number }</span>
-                                                            <span className="text-neutral-200 text-[12px] text-wrap font-semibold w-full">{ service }</span>
+                                            {/* display selected */}
+                                            if(areDatesEqual(new Date(selectedDay), milli)) {
+                                                return (
+                                                    <div key={ index } className="relative w-full aspect-square p-1 border-[1px] border-neutral-400 cursor-pointer">
+                                                        <div className="box absolute top-0 left-0 right-0 bottom-0 bg-blue-700 p-1">
+                                                            <div className="flex flex-col">
+                                                                <span className="text-white font-bold">{ number }</span>
+                                                                <span className="text-neutral-200 text-[12px] text-wrap font-semibold w-full">{ service }</span>
+                                                            </div>
                                                         </div>
                                                     </div>
+                                                )
+                                            }
+
+                                            return (
+                                                <div key={ index } onClick={ () => setSched(number) } className="relative w-full aspect-square p-1 border-[1px] border-neutral-400 cursor-pointer">
+                                                    {/* default selectable date */}
+                                                    <span className="text-neutral-950">{ number }</span> 
                                                 </div>
                                             )
                                         }
