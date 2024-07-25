@@ -65,7 +65,7 @@ const CreateMenu = () => {
             };
 
             zReservation.getState().saveMenuData(menuData);
-            clearAllData();
+            // clearAllData();
             router.push(`/reserve?display=schedule&service=${service}&set=${setParam}&series=${series}`);
         } catch(error) {
             setInvalidFieldsValue(prev => ({ ...prev, unauth: 'There\'s something wrong!' }));
