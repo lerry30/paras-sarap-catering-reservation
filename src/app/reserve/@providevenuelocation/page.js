@@ -94,7 +94,7 @@ const ProvideVenueLocation = () => {
         })[key]();
     }
 
-    const cacheData = () => {
+    const setPreservedCacheData = () => {
         // get 
         const venueIsProvided = JSON.parse(localStorage.getItem('reservation-cache') || '{}')?.venue?.custom;
         if(!!venueIsProvided) {
@@ -128,7 +128,7 @@ const ProvideVenueLocation = () => {
 
     useEffect(() => {
         zReservation.getState().init();
-        cacheData();
+        setPreservedCacheData();
 
         const serviceParam = searchParams.get('service');
         if(!services.hasOwnProperty(serviceParam)) router.push('/');
