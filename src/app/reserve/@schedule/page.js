@@ -5,12 +5,14 @@ import ErrorField from '@/components/ErrorField';
 import SNavbar from '@/components/nav/SNavbar';
 import TimePicker from '@/components/TimePicker';
 import Breadcrumbs from '@/components/client/nav/Breadcrumbs';
+import Checkbox from '@/components/Checkbox';
 import { ErrorModal } from '@/components/Modal';
 import { ChevronLeft, ChevronRight } from '@/components/icons/All';
 import { areDatesEqual } from '@/utils/date';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef, useLayoutEffect } from 'react';
 import { zReservation } from '@/stores/reservation';
+import { getData } from '@/utils/send'; 
 import { toNumber } from '@/utils/number';
 import { getSetParam } from '@/utils/client/breadcrumbs/params';
 
@@ -34,11 +36,16 @@ const Schedules = () => {
     const [ toMinute, setToMinute ] = useState('');
     const [ toMeridiem, setToMeridiem ] = useState('');
 
+    const [ durationOfServiceInHours, setDurationOfServiceInHours ] = useState(0);
+    const [ durationOfServiceInHoursFixed, setDurationOfServiceInHoursFixed ] = useState(0);
+    const [ wantsAnAdditionalServiceTime, setWantsAnAdditionalServiceTime ] = useState(false);
     const [ service, setService ] = useState(undefined);
     const [ setParam, setSetParam ] = useState(1);
     const [ series, setSeries ] = useState(1);
     const searchParams = useSearchParams();
     const router = useRouter();
+
+    const isMounted = useRef(true);
 
     const services = { wedding: true, debut: true, kidsparty: true, privateparty: true };
     
@@ -82,6 +89,19 @@ const Schedules = () => {
         setCalNumbers(nYear, nMonth);
     }
 
+    const fTime = () => {
+        const fFromHour = toNumber(fromHour)?.toString()?.padStart(2, '0');
+        const fFromMinute = toNumber(fromMinute)?.toString()?.padStart(2, '0');
+
+        const fToHour = toNumber(toHour)?.toString()?.padStart(2, '0');
+        const fToMinute = toNumber(toMinute)?.toString()?.padStart(2, '0');
+
+        const fromTime = `${ fFromHour }: ${ fFromMinute } ${ fromMeridiem }`;
+        const toTime = `${ fToHour }: ${ fToMinute } ${ toMeridiem }`;
+
+        return { fromTime, toTime };
+    }
+
     // save button to finish things up
     const saveScheduledDate = () => {
         setLoading(true);
@@ -94,23 +114,21 @@ const Schedules = () => {
 
             setInvalidFieldsValue(state => ({ ...state, date: noDateSelectionMade }));
             setInvalidFieldsValue(state => ({ ...state, 'time-from': errorStartTime }));
-            setInvalidFieldsValue(state => ({ ...state, 'time-to': errorEndTime }));
-           
-            const fFromHour = toNumber(fromHour)?.toString()?.padStart(2, '0');
-            const fFromMinute = toNumber(fromMinute)?.toString()?.padStart(2, '0');
+            // setInvalidFieldsValue(state => ({ ...state, 'time-to': errorEndTime }));
+            setActionSavingError(noDateSelectionMade);
 
-            const fToHour = toNumber(toHour)?.toString()?.padStart(2, '0');
-            const fToMinute = toNumber(toMinute)?.toString()?.padStart(2, '0');
-
+            const timeExtend = durationOfServiceInHours - durationOfServiceInHoursFixed;
+            const fTimeExtend = timeExtend < 1 ? 0 : timeExtend;
+          
             if(!noDateSelectionMade && !errorStartTime && !errorEndTime) {
-                const fromTime = `${ fFromHour }: ${ fFromMinute } ${ fromMeridiem }`;
-                const toTime = `${ fToHour }: ${ fToMinute } ${ toMeridiem }`;
+                const { fromTime, toTime } = fTime();
                 const data = {
                     date: selectedDay,
                     time: {
                         from: fromTime,
                         to: toTime,
-                    }
+                    },
+                    timeExtend: fTimeExtend
                 }
 
                 zReservation?.getState()?.saveScheduledDateData(data);
@@ -168,21 +186,38 @@ const Schedules = () => {
 
     const setPreservedCacheData = () => {
         zReservation.getState()?.init();
-        const dateReserved = zReservation.getState()?.schedule?.date;
-        const fromTime = String(zReservation.getState()?.schedule?.time?.from).trim().split(' ');
-        const toTime = String(zReservation.getState()?.schedule?.time?.to).trim().split(' ');
+        const dateReserved = zReservation.getState()?.schedule?.date || '';
+        const appointedTime = zReservation.getState()?.schedule?.time || '';
+        const fromTime = String(appointedTime?.from || '').trim().split(' ');
+        const toTime = String(appointedTime?.to).trim().split(' ');
         const fFromHour = fromTime[0]?.replace(':', '');
         const fToHour = toTime[0]?.replace(':', '');
 
-        setFromHour(fFromHour);
-        setFromMinute(fromTime[1]);
-        setFromMeridiem(fromTime[2]);
+        setFromHour(fFromHour || '00');
+        setFromMinute(fromTime[1] || '00');
+        setFromMeridiem(fromTime[2] || 'am');
 
-        setToHour(fToHour);
-        setToMinute(toTime[1]);
-        setToMeridiem(toTime[2]);
+        setToHour(fToHour, '00');
+        setToMinute(toTime[1] || '00');
+        setToMeridiem(toTime[2] || 'am');
 
         setSelectedDay(dateReserved);
+
+        // I added this to prevent the invoke of usestate
+        // with the dependencies of start hour and modify
+        // end hour, since the cache set the start time 
+        // the endtime would be affected
+        isMounted.current = false;
+        console.log('run 4');
+    }
+
+    const getTimeLimitedService = async () => {
+        try {
+            const response = await getData('/api/policies/reservation/servicetime');
+            const noOfHours = toNumber(response?.data?.durationOfServiceInHours);
+            setDurationOfServiceInHours(noOfHours);
+            setDurationOfServiceInHoursFixed(noOfHours);
+        } catch(error) {}
     }
 
     useEffect(() => {
@@ -190,8 +225,9 @@ const Schedules = () => {
         setCurrentMonth(dateObj.getMonth());
         setCurrentYear(dateObj.getFullYear());
         // zReservation.getState()?.clearSpecificProperty('schedule');
-        
-        setPreservedCacheData();
+
+        getTimeLimitedService();
+        //console.log('useeffect');
 
         const serviceParam = searchParams.get('service');
         if(!services.hasOwnProperty(serviceParam)) router.push('/');
@@ -202,6 +238,58 @@ const Schedules = () => {
 
         setSeries(searchParams.get('series'));
     }, []);
+    
+    // ----- update the end time of the service ------
+
+    const updateEndHour = (nToHour) => {
+        if(nToHour > 12) {
+            setToMeridiem(fromMeridiem === 'am' ? 'pm' : 'am' );
+            nToHour = nToHour % 12;
+        } else {
+            setToMeridiem(fromMeridiem);
+        }
+
+        setToHour(String(nToHour));
+    }
+
+    // update 1
+    useLayoutEffect(() => {
+        // console.log(fromHour, isMounted.current, 'run 1');
+        if(fromHour && isMounted.current) {
+            const nToHour = toNumber(fromHour) + durationOfServiceInHours;
+            updateEndHour(nToHour);
+        }
+    }, [ fromHour ]);
+
+    // update 2
+    useLayoutEffect(() => {
+        // console.log('run 2');
+        if(fromMinute && isMounted.current) {
+            let nToMinute = toNumber(toHour);
+            if(nToMinute > 59) {
+                nToMinute = nToMinute % 60;
+                const nToHour = toNumber(toHour) + 1;
+                updateEndHour(nToHour);
+            } 
+
+            setToHour(String(nToMinute));
+        }
+    }, [ fromMinute ]);
+
+    // update 3
+    useLayoutEffect(() => {
+        // console.log('run 3');
+        if(fromMeridiem && isMounted.current) {    
+            if(fromHour) {
+                const nToHour = toNumber(fromHour) + durationOfServiceInHours;
+                updateEndHour(nToHour);
+            }
+        }
+
+        isMounted.current = true;
+    }, [ fromMeridiem ]);
+
+    useLayoutEffect(setPreservedCacheData, []);
 
     return (
         <>
@@ -254,7 +342,7 @@ const Schedules = () => {
 
                                             if(isToday) {
                                                 return (
-                                                        <div key={ index } className="w-full aspect-square overflow-hidden p-1 border-[1px] border-neutral-400 cursor-pointer bg-skin-ten flex flex-col">
+                                                    <div key={ index } className="w-full aspect-square overflow-hidden p-1 border-[1px] border-neutral-400 cursor-pointer bg-skin-ten flex flex-col">
                                                             <span className="text-white font-bold">{ number }</span>
                                                             <span className="text-neutral-200 text-sm font-semibold">Today</span>
                                                     </div>
@@ -318,7 +406,7 @@ const Schedules = () => {
                         <h3>Enter the time</h3>
                         <div className="w-full flex gap-4 py-2">
                             <div className="w-1/2 flex flex-col">
-                                <h4>From:</h4>
+                                <h4>Start at:</h4>
                                 <TimePicker 
                                     useHour={ [ fromHour, setFromHour ] }  
                                     useMinute={ [ fromMinute, setFromMinute ] }  
@@ -326,27 +414,64 @@ const Schedules = () => {
                                 />
                                 <ErrorField message={ invalidFieldsValue['time-from'] }/>
                             </div>
-                            <div className="w-1/2 flex flex-col">
-                                <h4>To:</h4>
-                                <TimePicker 
+                            <div className="relative w-1/2 flex flex-col">
+                                <h4>Duration of service in hours:</h4>
+                                { /* <TimePicker 
                                     useHour={ [ toHour, setToHour ] }  
                                     useMinute={ [ toMinute, setToMinute ] }  
                                     useMeridiem={ [ toMeridiem, setToMeridiem ] }  
+                                /> */ }
+                                <input value={ durationOfServiceInHours } 
+                                    onChange={ ev => {
+                                        const nDurationOfServiceInHours = toNumber(ev?.target?.value);
+                                        const nToHour = toNumber(fromHour) + nDurationOfServiceInHours;
+                                        updateEndHour(nToHour);
+                                        setDurationOfServiceInHours(nDurationOfServiceInHours);
+                                    }}
+                                    onBlur={ ev => {
+                                        let nDurationOfServiceInHours = toNumber(ev?.target?.value);
+                                        nDurationOfServiceInHours = nDurationOfServiceInHours < durationOfServiceInHoursFixed ? durationOfServiceInHoursFixed : nDurationOfServiceInHours;
+                                        setDurationOfServiceInHours(nDurationOfServiceInHours);
+
+                                        const nToHour = toNumber(fromHour) + nDurationOfServiceInHours;
+                                        updateEndHour(nToHour);
+                                    }} className="border-[1px] border-neutral-600 text-[16px] w-full py-1 px-2 rounded-sm" 
                                 />
-                                <ErrorField message={ invalidFieldsValue['time-to'] }/>
+                                { /* block */}
+                                <div className={ `absolute top-0 left-0 right-0 bottom-0 bg-white opacity-[0.3] ${ wantsAnAdditionalServiceTime && 'hidden' }` }></div>
+                                { /* <ErrorField message={ invalidFieldsValue['time-to'] }/> */ }
                             </div>
                         </div>
+                        <Checkbox ref={ null } text="Check the checkbox to confirm additional service time. The current cost is 1000 per hour." onChange={ () => setWantsAnAdditionalServiceTime(true) }/>
                     </div>
-                        
+
+                    <div className="p-2 bg-blue-500/40 rounded-md my-2">
+                        <article className="font-paragraphs text-sm text-blue-900">Our service lasts for a maximum of { durationOfServiceInHours } hours. Any additional time will incur an extra cost</article>
+                    </div>
+                    
+                    <ErrorField message={ invalidFieldsValue['date'] }/>
                     <div className="mt-auto flex flex-col gap-2 py-2 border-t-[1px] border-neutral-400">
-                        <h2 className="font-headings font-bold text-2xl">{ selectedDay && selectedDay }</h2>
+                        <article className="">
+                            <h2 className="font-headings font-bold text-2xl">{ selectedDay && selectedDay }</h2>
+                            <span>
+                                { 
+                                    (() => {
+                                        const { fromTime, toTime } = fTime();
+                                        const cFromTime = String(fromTime || '')?.trim();
+                                        const cToTime = String(toTime || '')?.trim();
+                                        const nFromTime = cFromTime === '00: 00 am' ? '' : cFromTime; 
+                                        const nToTime = cToTime === '00: 00 am' ? '' : cToTime;
+                                        if(!nFromTime || !nToTime) return '';
+                                        return `${ nFromTime } - ${ nToTime }`;
+                                    })()
+                                }
+                            </span>
+                        </article>
                         <article className="font-paragraphs">{ selectedDay && `Day of the ${ service }` }</article>
 
                         <div className="p-8 bg-blue-500/40 rounded-md">
                             <p className="font-paragraphs text-sm text-blue-900">Keep in mind that preparations and planning takes time so there's unpickable date starts today, usually it's not taking 3 or 5 days from the date you would reserved. Additionally there are certain date where already taken, and some date where unavailble our services, any request and questions or any concern may ask in our contact page <Link href="/contact">Message me</Link>.</p>
                         </div>
-
-                        <ErrorField message={ invalidFieldsValue['date'] }/>
                     </div>
                 </div>
             </section>
@@ -355,7 +480,7 @@ const Schedules = () => {
             }
 
             {
-                !!actionSavingError && <ErrorModal header="Oops! There's something wrong!" message={ actionSavingError } callback={ () => setActionSavingError('') } />
+                !!actionSavingError && <ErrorModal header="Oops! No Date Selection Made!" message={ actionSavingError } callback={ () => setActionSavingError('') } />
             }
         </>
     );
