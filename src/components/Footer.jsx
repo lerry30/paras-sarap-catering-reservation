@@ -33,22 +33,22 @@ const Footer = () => {
                     <nav>
                         <ul className="space-y-2">
                             <li>
-                                <Link href="/reserve?display=themes&service=wedding">
+                                <Link href="/reserve?display=themes&service=wedding&set=1&series=1">
                                     <span className="text-neutral-300 hover:text-white">Wedding</span>
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/reserve?display=themes&service=debut">
+                                <Link href="/reserve?display=themes&service=debut&set=1&series=1">
                                     <span className="text-neutral-300 hover:text-white">Debut</span>
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/reserve?display=themes&service=kidsparty">
+                                <Link href="/reserve?display=themes&service=kidsparty&set=1&series=1">
                                     <span className="text-neutral-300 hover:text-white">Kids Party</span>
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/reserve?display=themes&service=privateparty">
+                                <Link href="/reserve?display=themes&service=privateparty&set=1&series=1">
                                     <span className="text-neutral-300 hover:text-white">Private Party</span>
                                 </Link>
                             </li>
@@ -71,7 +71,7 @@ const Footer = () => {
                 <div className="w-full sm:w-[30%]">
                     <h2 className="font-bold text-lg mb-4">Follow Us</h2>
                     <div className="flex space-x-4">
-                        <Link href="https://facebook.com">
+                        <Link href="https://www.facebook.com/4Mparas">
                             <span className="text-neutral-300 hover:text-white" target="_blank" rel="noopener noreferrer">
                                 <FaFacebook size={24} />
                             </span>
