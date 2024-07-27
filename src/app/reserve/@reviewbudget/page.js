@@ -9,7 +9,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { zReservation } from '@/stores/reservation';
 import { toNumber } from '@/utils/number';
 import { PromptAgreement, SuccessModal } from '@/components/Modal';
-import { sendJSON } from '@/utils/send';
+import { sendJSON, getData } from '@/utils/send';
 
 const ReviewBudget = () => {
     // State declarations
@@ -27,6 +27,8 @@ const ReviewBudget = () => {
     const [reservationSuccess, setReservationSuccess] = useState(false);
     const [invalidFieldsValue, setInvalidFieldsValue] = useState({});
     const [displaySummary, setDisplaySummary] = useState(false);
+
+    const [ additionalServiceTimeCost, setAdditionalServiceTimeCost ] = useState(1000);
 
     // Constants
     const services = { wedding: true, debut: true, kidsparty: true, privateparty: true };
@@ -66,6 +68,7 @@ const ReviewBudget = () => {
                 date: {
                     day: schedule?.date,
                     time: schedule?.time,
+                    timeExtension: toNumber(schedule?.timeExtend)
                 },
                 noofguest: noOfGuest,
             };
@@ -96,13 +99,14 @@ const ReviewBudget = () => {
         }
 
         console.table(listOfDishes);
+        const additionalCostForServiceTime = toNumber(schedule?.timeExtend) * additionalServiceTimeCost;
 
         const dishesCostPerGuestServed = listOfDishes.reduce((holder, dish) => holder + (dish?.status !== 'available' ? 0 : (dish?.costperhead || 0)), 0);
         const drinksCostPerGuestServed = listOfDrinks.reduce((holder, drink) => holder + (drink?.status !== 'available' ? 0 : (drink?.costperhead || 0)), 0);
         const venuePrice = venue?.price || 0;
         const totalCostForTableNChairs = venue?.tablesnchairsprovided ? 0 : costOfTablesNChairsPerGuest;
         const totalPaymentPerGuest = (dishesCostPerGuestServed + drinksCostPerGuestServed + totalCostForTableNChairs) * noOfGuest;
-        const total = totalPaymentPerGuest + (noOfGuest ? venuePrice : 0);
+        const total = totalPaymentPerGuest + (noOfGuest ? (venuePrice + additionalCostForServiceTime) : 0) ;
         setTotalPayment(total);
     };
 
@@ -113,6 +117,14 @@ const ReviewBudget = () => {
         const fAddress = `${street}, ${barangay}, ${municipality}, ${province}`;
         setFullAddress(fAddress);
     };
+
+    const getCostOfAdditionalServiceTime = async () => {
+        try {
+            const response = await getData('/api/policies/reservation/servicetime');
+            const cost = toNumber(response?.data?.additionalServiceTimeCostPerHour);
+            setAdditionalServiceTimeCost(cost);
+        } catch(error) {}
+    }
 
     // useEffect to load initial data
     useEffect(() => {
@@ -144,12 +156,12 @@ const ReviewBudget = () => {
             {loading && <Loading customStyle="size-full" />}
             <Breadcrumbs step={ 5 }></Breadcrumbs>
             <div className="flex flex-col md:flex-row md:pr-[calc(24vw-8px)]">
-                <main className="flex flex-col gap-10 divide-y-[1px] px-page-x py-4 flex-1">
+                <main className="flex flex-col gap-10 divide-y-[1px] px-page-x pt-[var(--nav-height)] pb-4 flex-1">
                     <section className="flex flex-col gap-4 py-2">
                         <h1 className="font-headings font-semibold text-lg">Venue</h1>
                         <div className="flex flex-col md:flex-row gap-6">
                             {venue?.filename && (
-                                <div className="w-[150px] aspect-square">
+                                <div className="w-[200px] aspect-square">
                                     <Image
                                         src={venue.filename}
                                         alt={venue?.name || ''}
@@ -159,6 +171,7 @@ const ReviewBudget = () => {
                                         style={{
                                             width: '100%',
                                             height: '100%',
+                                            minWidth: '200px',
                                             objectFit: 'cover',
                                             transformOrigin: 'center',
                                             borderRadius: '4px',
@@ -273,10 +286,19 @@ const ReviewBudget = () => {
                                 <p className="font-paragraphs">{schedule?.time?.to}</p>
                             </div>
                         )}
+                        {(toNumber(schedule?.timeExtend) > 0 && additionalServiceTimeCost > 0) && (
+                            <div className="font-paragraphs text-sm">
+                                <label htmlFor="additionalServiceTime">Additional Service Time:</label>
+                                <span id="additionalServiceTime">&nbsp;&nbsp;{ schedule?.timeExtend } hours</span>
+                                <br/>
+                                <label htmlFor="additionalServiceTimeCost">Cost of Additional Service Hours:</label>
+                                <span id="additionalServiceTimeCost">&nbsp;&nbsp;{ toNumber(schedule?.timeExtend) * additionalServiceTimeCost } per hour</span>
+                            </div>
+                        )}
                     </section>
                 </main>
                 {/* ------------------------------------Summarize-------------------------------- */}
-                <aside className="md:fixed md:right-0 md:top-[calc(var(--nav-height)*2)] md:bottom-0 w-full md:w-1/4 flex flex-col gap-4 p-4 bg-gray-100 border-[1px] border-l-neutral-300">
+                <aside className="md:fixed md:right-0 md:top-[calc(var(--nav-height)*2-16px)] md:bottom-0 w-full md:w-1/4 flex flex-col gap-4 p-4 bg-gray-100 border-[1px] border-l-neutral-300">
                     <div className="flex flex-col gap-4">
                         {/* {
                             displaySummary && (
