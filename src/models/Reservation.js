@@ -39,7 +39,12 @@ const reservationSchema = new Schema({
             to: {
                 type: String,
                 required: true,
-            }
+            },
+        },
+
+        timeExtension: {
+            type: String,
+            required: true
         }
     },
 
