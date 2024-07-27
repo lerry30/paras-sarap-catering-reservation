@@ -36,9 +36,11 @@ const Schedules = () => {
     const [ toMinute, setToMinute ] = useState('');
     const [ toMeridiem, setToMeridiem ] = useState('');
 
-    const [ durationOfServiceInHours, setDurationOfServiceInHours ] = useState(0);
-    const [ durationOfServiceInHoursFixed, setDurationOfServiceInHoursFixed ] = useState(0);
-    const [ wantsAnAdditionalServiceTime, setWantsAnAdditionalServiceTime ] = useState(false);
+    const [ durationOfServiceInHours, setDurationOfServiceInHours ] = useState(0); // associated with input
+    const [ durationOfServiceInHoursFixed, setDurationOfServiceInHoursFixed ] = useState(0); // fixed data from db
+    const [ wantsAnAdditionalServiceTime, setWantsAnAdditionalServiceTime ] = useState(false); // associated with checkbox
+    const [ additionalServiceTimeCostPerHour, setAdditionalServiceTimeCostPerHour ] = useState(1000);
+    const [ additionalHoursOfService, setAdditionalHoursOfService ] = useState(0);
     const [ service, setService ] = useState(undefined);
     const [ setParam, setSetParam ] = useState(1);
     const [ series, setSeries ] = useState(1);
@@ -46,6 +48,7 @@ const Schedules = () => {
     const router = useRouter();
 
     const isMounted = useRef(true);
+    const checkbox = useRef(null);
 
     const services = { wedding: true, debut: true, kidsparty: true, privateparty: true };
     
@@ -188,6 +191,7 @@ const Schedules = () => {
         zReservation.getState()?.init();
         const dateReserved = zReservation.getState()?.schedule?.date || '';
         const appointedTime = zReservation.getState()?.schedule?.time || '';
+        const additionalServiceTime = zReservation.getState()?.schedule?.timeExtend;
         const fromTime = String(appointedTime?.from || '').trim().split(' ');
         const toTime = String(appointedTime?.to).trim().split(' ');
         const fFromHour = fromTime[0]?.replace(':', '');
@@ -201,22 +205,36 @@ const Schedules = () => {
         setToMinute(toTime[1] || '00');
         setToMeridiem(toTime[2] || 'am');
 
-        setSelectedDay(dateReserved);
+        setSelectedDay(dateReserved); 
+        setAdditionalHoursOfService(toNumber(additionalServiceTime));
+
+        if(toNumber(additionalServiceTime) > 0) {
+            setWantsAnAdditionalServiceTime(true);
+            checkbox.current.checked = true;
+        }
+            
 
         // I added this to prevent the invoke of usestate
         // with the dependencies of start hour and modify
         // end hour, since the cache set the start time 
         // the endtime would be affected
         isMounted.current = false;
-        console.log('run 4');
+        // console.log('run 4');
     }
 
     const getTimeLimitedService = async () => {
         try {
             const response = await getData('/api/policies/reservation/servicetime');
             const noOfHours = toNumber(response?.data?.durationOfServiceInHours);
-            setDurationOfServiceInHours(noOfHours);
+            const cost = toNumber(response?.data?.additionalServiceTimeCostPerHour);
+            // I might weired but i have nothing to do with it since useEffect or even useLayoutEffect
+            // cant access the value of additionalHoursOfService eventhough I already set it so the 
+            // only way for me to be able to get the value is by directly get it from store
+            const additionalServiceTime = zReservation.getState()?.schedule?.timeExtend;
+
+            setDurationOfServiceInHours(noOfHours + additionalServiceTime);
             setDurationOfServiceInHoursFixed(noOfHours);
+            setAdditionalServiceTimeCostPerHour(cost);
         } catch(error) {}
     }
 
@@ -228,6 +246,7 @@ const Schedules = () => {
 
         getTimeLimitedService();
         //console.log('useeffect');
+        console.log(additionalHoursOfService);
 
         const serviceParam = searchParams.get('service');
         if(!services.hasOwnProperty(serviceParam)) router.push('/');
@@ -442,7 +461,7 @@ const Schedules = () => {
                                 { /* <ErrorField message={ invalidFieldsValue['time-to'] }/> */ }
                             </div>
                         </div>
-                        <Checkbox ref={ null } text="Check the checkbox to confirm additional service time. The current cost is 1000 per hour." onChange={ () => setWantsAnAdditionalServiceTime(true) }/>
+                        <Checkbox ref={ checkbox } text={ `Check the checkbox to confirm additional service time. The current cost is ${ additionalServiceTimeCostPerHour } per hour.` } onChange={ () => setWantsAnAdditionalServiceTime(true) }/>
                     </div>
 
                     <div className="p-2 bg-blue-500/40 rounded-md my-2">
@@ -450,7 +469,8 @@ const Schedules = () => {
                     </div>
                     
                     <ErrorField message={ invalidFieldsValue['date'] }/>
-                    <div className="mt-auto flex flex-col gap-2 py-2 border-t-[1px] border-neutral-400">
+                    <div className="mt-auto flex flex-col gap-2 py-2 border-t-[1px] border-neutral-400"> 
+                        <article className="font-paragraphs">{ selectedDay && `Day of the ${ service }` }</article>
                         <article className="">
                             <h2 className="font-headings font-bold text-2xl">{ selectedDay && selectedDay }</h2>
                             <span>
@@ -467,7 +487,24 @@ const Schedules = () => {
                                 }
                             </span>
                         </article>
-                        <article className="font-paragraphs">{ selectedDay && `Day of the ${ service }` }</article>
+                        <article>
+                            {
+                                (() => {
+                                    const extendTime = toNumber(additionalHoursOfService);
+                                    const extendTimeCost = extendTime * additionalServiceTimeCostPerHour;
+                                    if(extendTime > 0) 
+                                        return (
+                                            <div className="font-paragraphs text-sm">
+                                                <label htmlFor="additionalServiceTime">Additional Service Time:</label>
+                                                <span id="additionalServiceTime">&nbsp;&nbsp;{ extendTime } hours</span>
+                                                <br/>
+                                                <label htmlFor="additionalServiceTimeCost">Cost of Additional Service Hours:</label>
+                                                <span id="additionalServiceTimeCost">&nbsp;&nbsp;{ extendTimeCost } per hour</span>
+                                            </div>
+                                        )
+                                })()
+                            }
+                        </article>
 
                         <div className="p-8 bg-blue-500/40 rounded-md">
                             <p className="font-paragraphs text-sm text-blue-900">Keep in mind that preparations and planning takes time so there's unpickable date starts today, usually it's not taking 3 or 5 days from the date you would reserved. Additionally there are certain date where already taken, and some date where unavailble our services, any request and questions or any concern may ask in our contact page <Link href="/contact">Message me</Link>.</p>
