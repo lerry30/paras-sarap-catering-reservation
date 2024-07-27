@@ -8,7 +8,11 @@ const policySchema = new Schema({
     timelimitedserviceinhours: {
         type: Number,
         required: true
-    }
+    },
+    additionalServiceTimeCostPerHour: {
+        type: Number,
+        required: true
+    },
 }, {
     timestamps: true
 });
