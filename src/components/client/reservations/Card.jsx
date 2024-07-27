@@ -2,8 +2,9 @@ import { useEffect, useState, Fragment } from 'react';
 import { Prompt } from '@/components/Modal';
 import Image from 'next/image';
 import { deleteWithJSON } from '@/utils/send';
+import { toNumber } from '@/utils/number';
 
-const Card = ({ reservationData={}, rejectionReason='', removeItself }) => {
+const Card = ({ reservationData={}, rejectionReason='', removeItself, additionalTimeRate }) => {
     const event = reservationData?.event;
     const eventFormat = { wedding: 'Wedding', debut: 'Debut', kidsparty: 'Kids Party', privateparty: 'Private Party' };
 
@@ -29,6 +30,7 @@ const Card = ({ reservationData={}, rejectionReason='', removeItself }) => {
     const day = reservationData?.date?.day || '';
     const timeFrom = reservationData?.date?.time?.from || '';
     const timeTo = reservationData?.date?.time?.to || '';
+    const timeExtension = toNumber(reservationData?.date?.timeExtension);
 
     const noOfGuest = reservationData?.noofguest || 0;
     const status = reservationData?.status || 'pending';
@@ -61,8 +63,9 @@ const Card = ({ reservationData={}, rejectionReason='', removeItself }) => {
     useEffect(() => {
         const totalPriceOfDishesPerServed = listOfDishes.reduce((initVal, dish) => initVal + dish.costperhead, 0);
         const totalPriceOfDrinksPerServed = listOfDrinks.reduce((initVal, drink) => initVal + drink.costperhead, 0);
+        const additionCostForAdditionalHour = timeExtension * toNumber(additionalTimeRate);
 
-        const totalAmount = (totalPriceOfDishesPerServed + totalPriceOfDrinksPerServed + 20) * noOfGuest + venuePrice;
+        const totalAmount = (totalPriceOfDishesPerServed + totalPriceOfDrinksPerServed + 20) * noOfGuest + venuePrice + additionCostForAdditionalHour;
         setTotal(totalAmount);
     }, []);
 
@@ -80,7 +83,7 @@ const Card = ({ reservationData={}, rejectionReason='', removeItself }) => {
                     <h1 className="font-headings font-semibold text-xl mb-2">Venue</h1>
                     <div className="flex gap-6">
                         {venueFileName && (
-                            <div className="w-40 h-40">
+                            <div className="size-[200px]">
                                 <Image
                                     src={venueFileName}
                                     alt={venueName || ''}
@@ -90,6 +93,8 @@ const Card = ({ reservationData={}, rejectionReason='', removeItself }) => {
                                     style={{
                                         width: '100%',
                                         height: '100%',
+                                        minWidth: '200px',
+                                        minHeight: '200px',
                                         objectFit: 'cover',
                                         borderRadius: '8px',
                                     }}
@@ -202,6 +207,13 @@ const Card = ({ reservationData={}, rejectionReason='', removeItself }) => {
                     )}
                 </section>
                 <section className="p-6 bg-white">
+                    <div className="font-paragraphs text-sm">
+                        <label htmlFor="additionalServiceTime">Additional Service Time:</label>
+                        <span id="additionalServiceTime">&nbsp;&nbsp;{ timeExtension } hours</span>
+                        <br/>
+                        <label htmlFor="additionalServiceTimeCost">Cost of Additional Service Hours:</label>
+                        <span id="additionalServiceTimeCost">&nbsp;&nbsp;{ (timeExtension * toNumber(additionalTimeRate)) } per hour</span>
+                    </div>
                     <div className="flex items-center justify-between">
                         <div className="flex flex-col">
                             <article className="font-paragraphs text-sm flex gap-2">
