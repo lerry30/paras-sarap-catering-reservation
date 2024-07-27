@@ -9,6 +9,7 @@ const MyReservations = () => {
     const [reservations, setReservations] = useState([]);
     const [loading, setLoading] = useState(false);
     const [rejectionReasons, setRejectionReasons] = useState({});
+    const [ additionalServiceTimeCostPerHour, setAdditionalServiceTimeCostPerHour ] = useState(1000);
 
     const removeItem = (dateAsKey) => {
         if(!dateAsKey) return;
@@ -46,6 +47,14 @@ const MyReservations = () => {
             console.error("Error fetching rejection reasons", error);
         }
     };
+
+    const getAdditionalServiceTimeCost = async () => {
+        try {
+            const response = await getData('/api/policies/reservation/servicetime');
+            const cost = toNumber(response?.data?.additionalServiceTimeCostPerHour);
+            setAdditionalServiceTimeCostPerHour(cost);
+        } catch(error) {}
+    }
 
     useEffect(() => {
         setLoading(true);
@@ -87,6 +96,7 @@ const MyReservations = () => {
                                     reservationData={res} 
                                     rejectionReason={reason} 
                                     removeItself={removeItem}
+                                    additionalTimeRate={ additionalServiceTimeCostPerHour }
                                 />
                             );
                         })}
