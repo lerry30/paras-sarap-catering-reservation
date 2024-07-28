@@ -230,7 +230,7 @@ const Schedules = () => {
             // I might weired but i have nothing to do with it since useEffect or even useLayoutEffect
             // cant access the value of additionalHoursOfService eventhough I already set it so the 
             // only way for me to be able to get the value is by directly get it from store
-            const additionalServiceTime = zReservation.getState()?.schedule?.timeExtend;
+            const additionalServiceTime = toNumber(zReservation.getState()?.schedule?.timeExtend);
 
             setDurationOfServiceInHours(noOfHours + additionalServiceTime);
             setDurationOfServiceInHoursFixed(noOfHours);
@@ -465,7 +465,7 @@ const Schedules = () => {
                     </div>
 
                     <div className="p-2 bg-blue-500/40 rounded-md my-2">
-                        <article className="font-paragraphs text-sm text-blue-900">Our service lasts for a maximum of { durationOfServiceInHours } hours. Any additional time will incur an extra cost</article>
+                        <article className="font-paragraphs text-sm text-blue-900">Our service lasts for a maximum of { durationOfServiceInHoursFixed } hours. Any additional time will incur an extra cost</article>
                     </div>
                     
                     <ErrorField message={ invalidFieldsValue['date'] }/>
