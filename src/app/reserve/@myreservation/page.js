@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { getData } from '@/utils/send';
+import { toNumber } from '@/utils/number';
 import Card from '@/components/client/reservations/Card';
 import Loading from '@/components/Loading';
 import Link from 'next/link';
@@ -24,6 +25,8 @@ const MyReservations = () => {
                 const dateAsKey = reservationDate.getTime();
                 return { ...fData, dateAsKey };
             });
+
+//            console.log(newReservations);
 
             setReservations(newReservations);
         } catch (error) {
@@ -51,7 +54,7 @@ const MyReservations = () => {
     const getAdditionalServiceTimeCost = async () => {
         try {
             const response = await getData('/api/policies/reservation/servicetime');
-            const cost = toNumber(response?.data?.additionalServiceTimeCostPerHour);
+            const cost = toNumber(response?.data?.additionalServiceTimeCostPerHour) || 1000;
             setAdditionalServiceTimeCostPerHour(cost);
         } catch(error) {}
     }
