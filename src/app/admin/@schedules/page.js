@@ -1,8 +1,8 @@
 'use client';
 import Loading from '@/components/Loading';
-import Image from 'next/image';
 import TitleFormat from '@/utils/titleFormat';
-import { ChevronLeft, ChevronRight, CircleUserRound } from '@/components/icons/All';
+import ProfileImage from '@/components/ProfileImage';
+import { ChevronLeft, ChevronRight } from '@/components/icons/All';
 import { areDatesEqual } from '@/utils/date';
 import { deleteWithJSON, getData, sendForm, sendFormUpdate } from '@/utils/send';
 import { useEffect, useState } from 'react';
@@ -271,30 +271,7 @@ const Schedules = () => {
 						Object.keys(displayData).length > 0 ?
 							<article className="w-full h-[calc(100%-var(--nav-height)+18px)] flex flex-col gap-2">
 								<div className="flex gap-2">
-									{
-										displayData?.user?.filename ?
-											<div className="size-14">
-												<Image 
-													src={ displayData?.user?.filename }
-													alt={ displayData?.user?.firstname || '' }
-													width={ 200 }
-													height={ 200 }
-													sizes='100%'
-													style={{
-														width: '100%',
-														height: '100%',
-														objectFit: 'cover',
-														transformOrigin: 'center',
-														borderRadius: '4px',
-													}}
-													priority
-												/>
-											</div>
-										:
-											<div className="">
-												<CircleUserRound size={56} strokeWidth={1} className="" />
-											</div>
-									}
+                                    <ProfileImage image={ displayData?.user?.filename } size={ 60 } className="size-[60px]" />
 									<div>
 										<h3 className="font-headings font-semibold text-lg">{ createFullname(displayData?.user?.firstname, displayData?.user?.lastname) }</h3>
 										<span className="font-paragraphs italic text-sm">{ displayData?.user?.email }</span>
