@@ -10,6 +10,7 @@ import { zReservation } from '@/stores/reservation';
 import { toNumber } from '@/utils/number';
 import { PromptAgreement, SuccessModal } from '@/components/Modal';
 import { sendJSON, getData } from '@/utils/send';
+import { reservation, reservationcache, menu as menucache } from '@/utils/localStorageNames';
 
 const ReviewBudget = () => {
     // State declarations
@@ -39,6 +40,12 @@ const ReviewBudget = () => {
     // Hooks
     const searchParams = useSearchParams();
     const router = useRouter();
+
+    const removeCache = () => {
+        localStorage.removeItem(menucache);
+        localStorage.removeItem(reservation);
+        localStorage.removeItem(reservationcache);
+    }
 
     // Function to validate the number of guests
     const checkNoOfGuest = () => {
@@ -76,6 +83,7 @@ const ReviewBudget = () => {
             await sendJSON(`/api/reservations`, data);
             setReservationSuccess(true);
             setTimeout(() => {
+                removeCache();
                 router.push('/reserve?display=myreservations');
             }, 4000);
         } catch (error) {
@@ -105,7 +113,8 @@ const ReviewBudget = () => {
         const drinksCostPerGuestServed = listOfDrinks.reduce((holder, drink) => holder + (drink?.status !== 'available' ? 0 : (drink?.costperhead || 0)), 0);
         const venuePrice = venue?.price || 0;
         const totalCostForTableNChairs = venue?.tablesnchairsprovided ? 0 : costOfTablesNChairsPerGuest;
-        const totalPaymentPerGuest = (dishesCostPerGuestServed + drinksCostPerGuestServed + totalCostForTableNChairs) * noOfGuest;
+        //const totalPaymentPerGuest = (dishesCostPerGuestServed + drinksCostPerGuestServed + totalCostForTableNChairs) * noOfGuest;
+        const totalPaymentPerGuest = (dishesCostPerGuestServed + drinksCostPerGuestServed) * noOfGuest;
         const total = totalPaymentPerGuest + (noOfGuest ? (venuePrice + additionalCostForServiceTime) : 0) ;
         setTotalPayment(total);
     };
@@ -356,7 +365,10 @@ const ReviewBudget = () => {
                                     <button onClick={checkNoOfGuest} className="w-full button shadow-md border border-neutral-500/40 text-white">
                                         Confirm
                                     </button>
-                                    <button onClick={() => router.push(`/`)} className="w-full button shadow-md border border-neutral-500/40 text-white">
+                                    <button onClick={() => {
+                                        removeCache();
+                                        router.push(`/`);
+                                    }} className="w-full button shadow-md border border-neutral-500/40 text-white">
                                         Cancel
                                     </button>
                                 </div>
