@@ -67,8 +67,6 @@ export const POST = async (request) => {
         const fProvince = TitleFormat(province);
         const fRegion = TitleFormat(region);
         
-        console.log(date);
-
         // get user id
         const encodedKey = request.cookies.get('user-json-token-key')?.value || '';
         const encodedData = request.cookies.get('user-json-token-data')?.value || '';
