@@ -1,9 +1,10 @@
 import { createFullname } from '@/utils/name';
+import { toNumber } from '@/utils/number';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import ProfileImage from '@/components/ProfileImage';
 
-const Card = ({ reservationData={}, changeReservationStatus, tab='pending' }) => {
+const Card = ({ reservationData={}, changeReservationStatus, tab='pending', additionalTimeRate }) => {
     const id = reservationData?._id;
     // user
     const firstName = reservationData?.user?.firstname || '';
@@ -16,7 +17,7 @@ const Card = ({ reservationData={}, changeReservationStatus, tab='pending' }) =>
     const venueDescription = reservationData?.venue?.description || '';
     const maximumSeatingCapacity = reservationData?.venue?.maximumSeatingCapacity || '';
     const venueFileName = reservationData?.venue?.filename || '';
-    const venuePrice = reservationData?.venue?.price || 0;
+    const venuePrice = toNumber(reservationData?.venue?.price);
     const street = reservationData?.venue?.address?.street || '';
     const barangay = reservationData?.venue?.address?.barangay || '';
     const municipality = reservationData?.venue?.address?.municipality || '';
@@ -33,8 +34,10 @@ const Card = ({ reservationData={}, changeReservationStatus, tab='pending' }) =>
     const day = reservationData?.date?.day || '';
     const timeFrom = reservationData?.date?.time?.from || '';
     const timeTo = reservationData?.date?.time?.to || '';
+    const timeExtension = toNumber(reservationData?.date?.timeExtension);
+    const costOfAdditionalService = timeExtension * toNumber(additionalTimeRate);
 
-    const noOfGuest = reservationData?.noofguest || 0;
+    const noOfGuest = toNumber(reservationData?.noofguest);
     const status = reservationData?.status || 'pending';
     const reservedAt = reservationData?.createdAt || '';
 
@@ -49,7 +52,8 @@ const Card = ({ reservationData={}, changeReservationStatus, tab='pending' }) =>
         const totalPriceOfDishesPerServed = listOfDishes.reduce((initVal, dish) => (initVal + dish.costperhead), 0);
         const totalPriceOfDrinksPerServed = listOfDrinks.reduce((initVal, drink) => (initVal + drink.costperhead), 0);
 
-        const totalAmout = (totalPriceOfDishesPerServed + totalPriceOfDrinksPerServed + 20) * noOfGuest + venuePrice;
+        console.log(totalPriceOfDishesPerServed, totalPriceOfDrinksPerServed);
+        const totalAmout = (totalPriceOfDishesPerServed + totalPriceOfDrinksPerServed) * noOfGuest + venuePrice + costOfAdditionalService;
         setTotal(totalAmout);
     }, []);
 
@@ -83,6 +87,8 @@ const Card = ({ reservationData={}, changeReservationStatus, tab='pending' }) =>
                                 style={{
                                     width: '100%',
                                     height: '100%',
+                                    minWidth: '150px',
+                                    minHeight: '150px',
                                     objectFit: 'cover',
                                     transformOrigin: 'center',
                                     borderRadius: '4px',
@@ -103,7 +109,7 @@ const Card = ({ reservationData={}, changeReservationStatus, tab='pending' }) =>
                     }
 
                     {
-                        venuePrice && <article>
+                        venuePrice > 0  && <article>
                                 <span className="font-headings text-sm">Price:&nbsp;</span>
                                 <span className="font-paragraphs font-semibold">{ pesoFormatter.format(venuePrice) }</span>
                             </article>
@@ -204,7 +210,14 @@ const Card = ({ reservationData={}, changeReservationStatus, tab='pending' }) =>
                         <span className="font-headings text-sm">To:&nbsp;&nbsp;</span>
                         <p className="font-paragraphs">{ timeTo }</p>
                     </div>
-            }
+            }            
+            <div className="font-paragraphs text-sm">
+                <label htmlFor="additionalServiceTime">Additional Service Time:</label>
+                <span id="additionalServiceTime">&nbsp;&nbsp;{ timeExtension } hours</span>
+                <br/>
+                <label htmlFor="additionalServiceTimeCost">Cost of Additional Service Hours:</label>
+                <span id="additionalServiceTimeCost">&nbsp;&nbsp;{ costOfAdditionalService } per hour</span>
+            </div>
         </section>
         <section className="flex items-center justify-between py-2">
             <div className="flex flex-col">
