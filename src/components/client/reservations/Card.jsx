@@ -1,12 +1,14 @@
-import { useEffect, useState, Fragment } from 'react';
-import { Prompt } from '@/components/Modal';
 import Image from 'next/image';
-import { deleteWithJSON } from '@/utils/send';
+import { useEffect, useState, Fragment } from 'react';
+import { Prompt, PromptRating, PromptTextBox, ErrorModal } from '@/components/Modal';
+import { deleteWithJSON, sendForm } from '@/utils/send';
 import { toNumber } from '@/utils/number';
 
 const Card = ({ reservationData={}, rejectionReason='', removeItself, additionalTimeRate }) => {
     const event = reservationData?.event;
     const eventFormat = { wedding: 'Wedding', debut: 'Debut', kidsparty: 'Kids Party', privateparty: 'Private Party' };
+
+    const id = reservationData?.id;
 
     // Venue details
     const venueName = reservationData?.venue?.name || '';
@@ -35,6 +37,7 @@ const Card = ({ reservationData={}, rejectionReason='', removeItself, additional
     const noOfGuest = reservationData?.noofguest || 0;
     const status = reservationData?.status || 'pending';
     const reservedAt = reservationData?.createdAt || '';
+    const toRate = reservationData?.toRate || false;
 
     const pesoFormatter = new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' });
     const dateFormatter = new Intl.DateTimeFormat('en-PH', {
@@ -48,6 +51,9 @@ const Card = ({ reservationData={}, rejectionReason='', removeItself, additional
 
     const [ total, setTotal ] = useState(0);
     const [ cancellationPrompt, setCancellationPrompt ] = useState(false);
+    const [ promptRating, setPromptRating ] = useState(false); // to display rating prompt
+    const [ errorPromptMessage, setErrorPromptMessage ] = useState('');
+    const [ serviceRate, setServiceRate ] = useState(0); // rating point
 
     const cancelReservation = async () => {
         try {
@@ -65,7 +71,7 @@ const Card = ({ reservationData={}, rejectionReason='', removeItself, additional
         const totalPriceOfDrinksPerServed = listOfDrinks.reduce((initVal, drink) => initVal + drink.costperhead, 0);
         const additionCostForAdditionalHour = timeExtension * toNumber(additionalTimeRate);
 
-        const totalAmount = (totalPriceOfDishesPerServed + totalPriceOfDrinksPerServed + 20) * noOfGuest + venuePrice + additionCostForAdditionalHour;
+        const totalAmount = (totalPriceOfDishesPerServed + totalPriceOfDrinksPerServed) * noOfGuest + venuePrice + additionCostForAdditionalHour;
         setTotal(totalAmount);
     }, []);
 
@@ -246,6 +252,17 @@ const Card = ({ reservationData={}, rejectionReason='', removeItself, additional
                         </section>
                 )}
                 {
+                    (status === 'approved' && toRate) && (
+                        <section className="p-4 flex justify-end items-center">
+                            <span className="text-neutral-500 text-sm">Give us a rating.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                            <button 
+                                onClick={ () => setPromptRating(true) }
+                                className="button !bg-skin-ten text-white"
+                            >Rate</button>
+                        </section>
+                    )
+                }
+                {
                     rejectionReason && (
                         <section className="p-6 bg-gray-50">
                             <h1 className="font-headings font-semibold text-lg text-red-500">Rejection Reason</h1>
@@ -259,6 +276,43 @@ const Card = ({ reservationData={}, rejectionReason='', removeItself, additional
                     message="Are you sure you want to cancel this reservation?"
                     callback={ cancelReservation } 
                     onClose={ () => setCancellationPrompt(false) }
+                />
+            }
+            {
+                promptRating && <PromptRating 
+                    callback={(point) => {
+                        setServiceRate(point); 
+                        setPromptRating(false);
+                    }} 
+                    onClose={() => setPromptRating(false)}
+                />
+            }
+            {
+                (serviceRate > 0 && id) && <PromptTextBox 
+                    header="Leave a Comment and Suggestion"
+                    message="Please leave a positive and honest message to help us improve our service for current and future customers."
+                    callback={ async (form) => {
+                        try {
+                            const formData = new FormData(form);
+                            formData.append('id', id);
+                            formData.append('point-rating', serviceRate);
+                            const response = await sendForm('/api/ratings', formData);
+                        } catch(error) {
+                            console.log(error.message);
+                            setErrorPromptMessage(error?.message);
+                            setInterval(() => setErrorPromptMessage(''), 2000);
+                        }
+
+                        setServiceRate(0);
+                    }} 
+                    onClose={() => setPromptRating(false)}
+                />
+            }
+            {
+                !!errorPromptMessage && <ErrorModal 
+                    header="An Unexpected Problem Occurred"
+                    message={ errorPromptMessage }
+                    callback={() => setErrorPromptMessage('') } 
                 />
             }
         </>
