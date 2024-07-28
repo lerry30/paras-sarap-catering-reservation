@@ -14,13 +14,16 @@ const ANavbar = () => {
     const image = zUserData(state => state?.filename);
 
     const [ messageCount, setMessageCount ] = useState(0);
+    const [ reservationPendingCount, setReservationPendingCount ] = useState(0);
 
     const notification = async () => {
         try {
             const getNotifResponse = await getData('/api/notification'); 
             const noOfMessages = getNotifResponse?.data?.messageCount || 0;
+            const noOfReservationPending = getNotifResponse?.data?.reservationCount || 0
 
             setMessageCount(noOfMessages);
+            setReservationPendingCount(noOfReservationPending);
         } catch(error) {}
     }
 
@@ -33,7 +36,8 @@ const ANavbar = () => {
 
     useEffect(() => {
         saveUserData();
-        notification();
+        const intervalId = setInterval(notification, 4000);
+        return () => clearInterval(intervalId);
     }, [])
 
     return (
@@ -46,10 +50,11 @@ const ANavbar = () => {
                 </li>
 
                 <ul className="flex items-center gap-4">
-                    <li className="h-nav-item-height flex items-center justify-center">
+                    <li className="relative h-nav-item-height flex items-center justify-center">
                         <Link href="/admin?display=reservationlist" className="group size-[calc(var(--nav-item-height)-10px)] flex items-center justify-center rounded-full hover:bg-skin-ten">
                             <ListChecks size={24} strokeWidth={2} className="group-hover:stroke-white"/>
                         </Link>
+                        { reservationPendingCount > 0 && <span className="absolute size-[20px] right-0 top-[4px] text-[12px] text-white font-semibold font-paragraphs bg-red-600 flex items-center justify-center rounded-full animate-bounce">{ reservationPendingCount }</span> }
                     </li>
                     <li className="relative h-nav-item-height flex items-center justify-center">
                         <Link href="/admin?display=messages" onClick={ () => handleViewedNofication('messages') } className="group size-[calc(var(--nav-item-height)-10px)] flex items-center justify-center rounded-full hover:bg-skin-ten">
