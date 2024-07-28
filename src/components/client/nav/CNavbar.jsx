@@ -12,6 +12,9 @@ import { useEffect, useState } from 'react';
 import { zUserData } from '@/stores/user';
 import { getData, sendJSON } from '@/utils/send';
 import { ListChecks } from '@/components/icons/All';
+import { viewedreservationapproved as localStorageNameApproved, 
+        viewedreservationrejected as localStorageNameRejected } from '@/utils/localStorageNames';
+import { toNumber } from '@/utils/number';
 
 const CNavbar = () => {
     const saveUserData = zUserData(state => state?.saveUserData);
@@ -19,12 +22,28 @@ const CNavbar = () => {
     const image = zUserData(state => state?.filename);
 
     const [ messageCount, setMessageCount ] = useState(0);
+    const [ reservationStatusCount, setReservationStatusCount ] = useState(0);
+    const [ approvedCount, setApprovedCount ] = useState(0);
+    const [ rejectedCount, setRejectedCount ] = useState(0);
 
     const notification = async () => {
         try {
             const getNotifResponse = await getData('/api/notification'); 
-            const noOfMessages = getNotifResponse?.data?.messageCount || 0;
+            const noOfMessages = toNumber(getNotifResponse?.data?.messageCount);
+            const reservationStatus = getNotifResponse?.data?.reservationCount;
 
+            const approved = toNumber(reservationStatus?.approved);
+            const rejected = toNumber(reservationStatus?.rejected);
+
+            const noOfViewedReservationApproved = toNumber(localStorage.getItem(localStorageNameApproved));
+            const noOfViewedReservationRejected = toNumber(localStorage.getItem(localStorageNameRejected));
+
+            const nApprovedCount = Math.max(approved - noOfViewedReservationApproved, 0);
+            const nRejectedCount = Math.max(rejected - noOfViewedReservationRejected, 0);
+
+            setApprovedCount(approved);
+            setRejectedCount(rejected);
+            setReservationStatusCount(nApprovedCount + nRejectedCount);
             setMessageCount(noOfMessages);
         } catch(error) {}
     }
@@ -36,10 +55,19 @@ const CNavbar = () => {
         } catch(error) {}
     }
 
+    // onclick the icon for reservation list
+    const reservationStatusViewed = () => {
+        if(reservationStatusCount <= 0) return;
+        setReservationStatusCount(0);
+        localStorage.setItem(localStorageNameApproved, approvedCount);
+        localStorage.setItem(localStorageNameRejected, rejectedCount);
+    }
+
     useEffect(() => {
         saveUserData();
-        notification();
-    }, [])
+        const intervalId = setInterval(notification, 4000);
+        return () => clearInterval(intervalId);
+    }, []);
 
     return (
         <header className="w-screen h-nav-height flex items-center font-headings border-b-[1px] border-neutral-240 fixed top-0 left-0 z-navbar bg-white">
@@ -87,10 +115,11 @@ const CNavbar = () => {
                                 </>
                             :
                                 <>
-                                    <li className="h-nav-item-height hidden rounded-full p-1 items-center justify-center sm:flex">
+                                    <li onClick={ reservationStatusViewed } className="relative h-nav-item-height hidden rounded-full p-1 items-center justify-center sm:flex">
                                         <Link href="/reserve?display=myreservations" className="group size-[calc(var(--nav-item-height)-10px)] flex items-center justify-center rounded-full hover:bg-skin-ten">
                                             <ListChecks size={24} strokeWidth={2} className="group-hover:stroke-white"/>
                                         </Link>
+                                        { reservationStatusCount > 0 && <span className="absolute size-[20px] right-0 top-[4px] text-[12px] text-white font-semibold font-paragraphs bg-red-600 flex items-center justify-center rounded-full animate-bounce">{ reservationStatusCount }</span> }
                                     </li>
                                     <li onClick={ () => handleViewedNofication('messages') } className="relative h-nav-item-height hidden rounded-full p-1 sm:flex">
                                         <Messages />
