@@ -1,15 +1,24 @@
 import { NextResponse } from 'next/server';
+import { apiIsAnAdmin } from '@/utils/auth/api/isanadmin';
 import Message from '@/models/Message';
+import Reservation from '@/models/Reservation';
 
 import { decodeUserIdFromHeader } from '@/utils/auth/decode';
 
 export const GET = async (request) => {
     try { 
         const userId = decodeUserIdFromHeader();
+        const isAnAdmin = await apiIsAnAdmin(request);
+
         const messages = await Message.find({ to: userId, viewed: false });
+        const reservationFiltered = isAnAdmin ? { status: 'pending' } : { $or:[ {status: 'approved'}, {status: 'rejected'} ] };
+        const reservations = await Reservation.find(reservationFiltered);
+
+        const reservationCount = isAnAdmin ? reservations.length : separateStatuses(reservations);
 
         const data = {
             messageCount: messages.length,
+            reservationCount,
         };
 
         return NextResponse.json({ message: '', data: data }, { status: 200 });
@@ -17,4 +26,18 @@ export const GET = async (request) => {
         console.log(error);
         return NextResponse.json({ message: 'There\'s something wrong.' }, { status: 400 });
     }
+}
+
+function separateStatuses(data) {
+    let approved = 0;
+    let rejected = 0;
+
+    for(const reservation of data) {
+        if(reservation?.status === 'approved')
+            approved++;
+        else
+            rejected++;
+    }
+
+    return { approved, rejected };
 }
