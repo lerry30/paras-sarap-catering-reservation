@@ -97,7 +97,7 @@ export default function Home() {
                     </div>
                 </section>
                 <section className="w-full flex flex-col items-center gap-4 md:h-[calc(100vh-var(--nav-height))]">
-                    <h3 className="font-headings w-full text-center text-lg font-semibold">About Us</h3>
+                    <h3 className="font-headings w-full text-center text-lg font-semibold mt-[40px]">About Us</h3>
                     <p className="font-paragraphs text-center md:w-1/2">Paras Sarap Catering Services started in 2012 as a small business by Mrs. Glecy Reyes Serrano, offering Filipino and street foods. With a focus on quality and customer service, they quickly gained popularity, expanding to accept bulk orders and deliveries for special occasions. Recognized for their delicious food, they entered the catering industry, becoming a renowned name in General Tinio and nearby areas, including Baguio, Pangasinan, and Tarlac.</p>
                     <Link href="/about" className="rounded-sm border-[1px] border-neutral-600 p-2 sm:mt-[70px]">Learn More</Link>
                 </section>
