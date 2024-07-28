@@ -1,4 +1,5 @@
 'use client';
+import { toNumber } from '@/utils/number';
 import { useEffect, useState } from 'react';
 import { deleteWithJSON, getData, sendForm, sendFormUpdate } from '@/utils/send';
 import { Prompt, PromptTextBox } from '@/components/Modal';
@@ -16,10 +17,12 @@ const ReservationList = () => {
 
     const [ formData, setFormData ] = useState({ id: '', status: '' });
 
+    const [ additionalServiceTimeCostPerHour, setAdditionalServiceTimeCostPerHour ] = useState(1000);
+
     const changeReservationStatus = (id, status) => {
         setFormData({ id, status });
         setApprovePrompt(status === 'approved');
-        setRejectPrompt(status === 'rejected');
+        setRejectPrompt(status === 'rejected');    
     }
 
     const confirmChanges = async () => {
@@ -33,14 +36,15 @@ const ReservationList = () => {
             await getResList();
             setDisplayStatus(status);
 
-            if(status === 'rejected')
-                setReasonForRejection(true);
+            //if(status === 'rejected')
+            //    setReasonForRejection(true);
             if(status === 'approved')
 				await deleteWithJSON('/api/reservations/reservation/rejection', { id });
         } catch(error) {
             console.log(error);
         }
 
+        setReasonForRejection(false);
         setApprovePrompt(false);
         setRejectPrompt(false);
         setLoading(false);
@@ -56,8 +60,17 @@ const ReservationList = () => {
         setLoading(false);
     }
 
+    const getAdditionalServiceTimeCost = async () => {
+        try {
+            const response = await getData('/api/policies/reservation/servicetime');
+            const cost = toNumber(response?.data?.additionalServiceTimeCostPerHour) || 1000;
+            setAdditionalServiceTimeCostPerHour(cost);
+        } catch(error) {}
+    }
+
     useEffect(() => {
         getResList();
+        getAdditionalServiceTimeCost();
     }, []);
 
     return <>
@@ -99,6 +112,7 @@ const ReservationList = () => {
                                     reservationData={ res } 
                                     tab={ displayStatus } 
                                     changeReservationStatus={ changeReservationStatus } 
+                                    additionalTimeRate={ additionalServiceTimeCostPerHour }
                                 />
                             })
                         }
@@ -113,21 +127,31 @@ const ReservationList = () => {
             }} header="Confirm Approval" message="Are you sure you want to approve this reservation?"/>
         }
         {
-            rejectPrompt && <Prompt callback={ confirmChanges } 
-                onClose={ () => { 
+            rejectPrompt && <Prompt 
+                callback={() => {
+                    setReasonForRejection(true);
+                }} 
+                onClose={() => { 
                     setRejectPrompt(false) ;
                     setLoading(false);
             }} header="Confirm Rejection" message="Are you sure you want to reject this reservation?"/>
         }
         {
             reasonForRejection && <PromptTextBox 
-            callback={ async (form) => {
-                const { id } = formData;
-                const nFormData = new FormData(form);
-                nFormData.append('id', id);
-                await sendForm('/api/reservations/reservation/rejection', nFormData);
-                setReasonForRejection(false);
-            } } header="Reason for Rejection" message="Please provide a brief and concise reason for rejecting the client's reservation. This will help communicate the decision effectively."/>
+                callback={ async (form) => {
+                    const { id } = formData;
+                    const nFormData = new FormData(form);
+
+                    nFormData.append('id', id);
+                    await confirmChanges();
+                    await sendForm('/api/reservations/reservation/rejection', nFormData);
+                    setReasonForRejection(false);
+                }}
+                onClose={() => {
+                    setReasonForRejection(false);
+                    setRejectPrompt(false);
+                }}
+                header="Reason for Rejection" message="Please provide a brief and concise reason for rejecting the client's reservation. This will help communicate the decision effectively."/>
         }
     </>
 }
