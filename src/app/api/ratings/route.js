@@ -2,10 +2,34 @@ import { NextResponse } from 'next/server';
 import { toNumber } from '@/utils/number';
 import { decodeUserIdFromHeader } from '@/utils/auth/decode';
 import Rating from '@/models/Ratings';
+import User from '@/models/Users';
 import jwt from 'jsonwebtoken';
 
-export const GET = () => {
+export const GET = async () => {
+    try {
+        const ratings = await Rating.find({});
+        const users = await User.find({});
+        const usersWhoRatesService = [];
+        
+        for(const rate of ratings) {
+            for(const user of users) {
+                if(String(user?._id) === String(rate?.userId)) {
+                    const userData = {
+                        name: `${user.firstname} ${user.lastname}`,
+                        filename: user.filename,
+                        point: rate.point,
+                        message: rate.message
+                    }
+                    usersWhoRatesService.push(userData);
+                }
+            }
+        }
 
+        return NextResponse.json({ message: '', data: usersWhoRatesService }, { status: 200 });
+    } catch(error) {
+        console.log(error);
+        return NextResponse.json({ message: 'There\'s something wrong.' }, { status: 400 });
+    }
 }
 
 export const POST = async (response) => {

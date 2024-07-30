@@ -17,8 +17,29 @@ import Link from 'next/link';
 import Card from '@/components/client/services/Card';
 import Footer from '@/components/Footer';
 import FixMiniNavBar from '@/components/client/nav/FixMiniNavBar';
+import RatingCard from '@/components/ratings/Card';
+
+import { useLayoutEffect, useState } from 'react';
+import { getData } from '@/utils/send';
 
 export default function Home() {
+    const [ ratings, setRatings ] = useState([]);
+
+    const getRating = async () => {
+        try {
+            const response = await getData('/api/ratings');
+            const rates = response?.data;
+
+            setRatings(rates);
+        } catch(error) {
+            console.log(error);
+        }
+    }
+
+    useLayoutEffect(() => {
+        getRating();
+    }, []);
+
     return (
         <div className="pt-[var(--nav-height)]">
             <CNavbar />
@@ -110,6 +131,12 @@ export default function Home() {
                         <Card name="Kids Party Service" image={ KidsPartyImg } description={ "Create magical memories for your little ones with our vibrant kids party services. From exciting themes to engaging entertainment and delightful treats, let us bring joy and laughter to your child's special day." } link="/reserve?display=themes&service=kidsparty&set=1&series=1"/>
                         <Card name="Private Party Service" image={ PrivatePartyImg } description={ "Host an unforgettable private party with our exclusive services. From intimate gatherings to lavish celebrations, our experienced team will tailor every detail to exceed your expectations and create lasting memories." } link="/reserve?display=themes&service=privateparty&set=1&series=1"/>
                     </div>
+                </section>
+                <section className="w-full flex flex-col items-center gap-4 md:h-[calc(100vh-var(--nav-height))]">
+                    <h3 className="font-headings w-full text-center text-lg font-semibold mt-[40px]">About Us</h3>
+                    {
+                        ratings.map(rate => <RatingCard data={ rate } />)
+                    }
                 </section>
             </main>
             <FixMiniNavBar />
