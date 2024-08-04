@@ -77,7 +77,6 @@ export const GET = async () => {
         const monthsOfReservation = getMonthsOfReservation(reservations);
         const monthlyUserAccount = getMonthlyUserAccounts(users);
         const venuePopularity = extractVenuePopularity(reservations, venues);
-        console.log(venuePopularity);
 
         const data = {
             // just get the number of user
