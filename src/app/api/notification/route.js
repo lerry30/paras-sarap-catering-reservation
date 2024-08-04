@@ -19,7 +19,7 @@ export const GET = async (request) => {
         const isAnAdmin = await apiIsAnAdmin(request);
 
         const messages = await Message.find({ to: userId, viewed: false });
-        const reservationFiltered = isAnAdmin ? { status: 'pending' } : { $or:[ {status: 'approved'}, {status: 'rejected'} ] };
+        const reservationFiltered = isAnAdmin ? { status: 'pending' } : { userId, $or:[ {status: 'approved'}, {status: 'rejected'} ] };
         const reservations = await Reservation.find(reservationFiltered);
         const ratings = await Rating.find({ userId });
         
