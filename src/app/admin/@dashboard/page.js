@@ -7,10 +7,7 @@ import { getData } from '@/utils/send';
 import { toNumber } from '@/utils/number';
 
 import { useState, useEffect } from 'react';
-import { Bar, Doughnut, Line } from 'react-chartjs-2';
-import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement, BarElement } from 'chart.js';
-
-ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement, BarElement);
+import dynamic from 'next/dynamic';
 
 const Dashboard = () => {
     const [reservations, setReservations] = useState({ pending: 10, approved: 50, rejected: 5, expired: 3 });
@@ -20,10 +17,33 @@ const Dashboard = () => {
     const [drinks, setDrinks] = useState(0);
     const [serviceSatisfactionRate, setServiceSatisfactionRate] = useState({});
     const [monthlyComparison, setMonthlyComparison] = useState([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
-    const [monthlyAccount, setMonthlyAccount] = useState(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    const [monthlyAccount, setMonthlyAccount] = useState([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
     const [popularVenues, setPopularVenues] = useState({});
+    const [loading, setLoading] = useState(false);
 
-    const [ loading, setLoading ] = useState(false);
+    const Bar = dynamic(
+        () => import('react-chartjs-2').then((mod) => mod.Bar),
+        { ssr: false }
+    );
+
+    const Doughnut = dynamic(
+        () => import('react-chartjs-2').then((mod) => mod.Doughnut),
+        { ssr: false }
+    );
+
+    const Line = dynamic(
+        () => import('react-chartjs-2').then((mod) => mod.Line),
+        { ssr: false }
+    );
+
+    useEffect(() => {
+        if (process.env.NEXT_PUBLIC_SYSTEM_STATE === 'PRODUCTION') {
+            import('chart.js').then((ChartJS) => {
+                const { ArcElement, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement, BarElement } = ChartJS;
+                ChartJS.Chart.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement, BarElement);
+            });
+        }
+    }, []);
 
     const reservationData = {
         labels: ['Pending', 'Approved', 'Rejected', 'Expired'],
@@ -89,10 +109,10 @@ const Dashboard = () => {
         let satisfied = 0;
         let neutral = 0;
         let dissatisfied = 0;
-        for(const item of ratings) {
-            if(item >= 4) satisfied++;
-            else if(item >= 2) neutral++;
-            else if(item >= 0) dissatisfied++;
+        for (const item of ratings) {
+            if (item >= 4) satisfied++;
+            else if (item >= 2) neutral++;
+            else if (item >= 0) dissatisfied++;
         }
 
         satisfied = satisfied / ratings.length * 100;
@@ -100,7 +120,7 @@ const Dashboard = () => {
         dissatisfied = dissatisfied / ratings.length * 100;
 
         setServiceSatisfactionRate({ satisfied, neutral, dissatisfied });
-    } 
+    }
 
     const countDocuments = async () => {
         try {
@@ -112,7 +132,7 @@ const Dashboard = () => {
             const dishCount = toNumber(countData?.dishes);
             const drinkCount = toNumber(countData?.drinks);
             const venueCount = toNumber(countData?.venues);
-            const reservationStatusesCount = countData?.reservations
+            const reservationStatusesCount = countData?.reservations;
             const setOfRatings = countData?.ratings;
             const monthlyReservation = countData?.months;
             const monthlyUserAccount = countData?.monthlyUserAccount;
@@ -128,7 +148,7 @@ const Dashboard = () => {
             setMonthlyComparison(monthlyReservation);
             setMonthlyAccount(monthlyUserAccount);
             setPopularVenues(venuePopularity);
-        } catch(error) {
+        } catch (error) {
             console.log(error);
         }
 
@@ -139,44 +159,44 @@ const Dashboard = () => {
 
     return (
         <section className="p-4 bg-neutral-100 min-h-screen">
-            { loading && <Loading customStyle="size-full" /> }
+            {loading && <Loading customStyle="size-full" />}
             <h1 className="text-3xl font-bold mb-4">Dashboard</h1>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-center">
                     <h2 className="font-semibold text-lg mb-2">Reservations</h2>
-                    <Bar data={reservationData} />
+                    {process.env.NEXT_PUBLIC_SYSTEM_STATE === 'PRODUCTION' ? <Bar data={reservationData} /> : <div className="text-neutral-500 text-center">Chart not loaded in development mode</div>}
                 </div>
                 <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-center">
                     <h2 className="font-semibold text-lg mb-2">Users</h2>
-                    <AnimateNumber number={ users } size={ 40 } />
+                    <AnimateNumber number={users} size={40} />
                 </div>
                 <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-center">
                     <h2 className="font-semibold text-lg mb-2">Venues</h2>
-                    <AnimateNumber number={ venues } size={ 40 } />
+                    <AnimateNumber number={venues} size={40} />
                 </div>
                 <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-center">
                     <h2 className="font-semibold text-lg mb-2">Dishes</h2>
-                    <AnimateNumber number={ dishes } size={ 40 } />
+                    <AnimateNumber number={dishes} size={40} />
                 </div>
                 <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-center">
                     <h2 className="font-semibold text-lg mb-2">Drinks</h2>
-                    <AnimateNumber number={ drinks } size={ 40 } />
+                    <AnimateNumber number={drinks} size={40} />
                 </div>
                 <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-center">
                     <h2 className="font-semibold text-lg mb-2">Service Satisfaction Rate</h2>
-                    <Doughnut data={satisfactionData} />
+                    {process.env.NEXT_PUBLIC_SYSTEM_STATE === 'PRODUCTION' ? <Doughnut data={satisfactionData} /> : <div className="text-neutral-500 text-center">Chart not loaded in development mode</div>}
                 </div>
                 <div className="col-span-1 md:col-span-2 lg:col-span-3 bg-white p-4 rounded-lg shadow-md">
                     <h2 className="font-semibold text-lg mb-2">Monthly Reservations Comparison</h2>
-                    <Bar data={monthlyData} />
+                    {process.env.NEXT_PUBLIC_SYSTEM_STATE === 'PRODUCTION' ? <Bar data={monthlyData} /> : <div className="text-neutral-500">Chart not loaded in development mode</div>}
                 </div>
                 <div className="col-span-1 md:col-span-2 lg:col-span-3 bg-white p-4 rounded-lg shadow-md">
                     <h2 className="font-semibold text-lg mb-2">User Growth Over Months</h2>
-                    <Line data={userGrowthData} />
+                    {process.env.NEXT_PUBLIC_SYSTEM_STATE === 'PRODUCTION' ? <Line data={userGrowthData} /> : <div className="text-neutral-500">Chart not loaded in development mode</div>}
                 </div>
                 <div className="col-span-1 md:col-span-2 lg:col-span-3 bg-white p-4 rounded-lg shadow-md">
                     <h2 className="font-semibold text-lg mb-2">Venue Popularity</h2>
-                    <Bar data={venuePopularityData} />
+                    {process.env.NEXT_PUBLIC_SYSTEM_STATE === 'PRODUCTION' ? <Bar data={venuePopularityData} /> : <div className="text-neutral-500">Chart not loaded in development mode</div>}
                 </div>
             </div>
         </section>
@@ -184,3 +204,4 @@ const Dashboard = () => {
 }
 
 export default Dashboard;
+
