@@ -1,11 +1,10 @@
 import Link from 'next/link';
 import LogoWhite from '@/components/LogoWhite';
-//import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin } from 'react-icons/fa';
 
 const Footer = () => {
     return (
         <footer className="w-full bg-gray-900 text-white py-10 px-page-x relative z-footer mt-10">
-            {/*<div className="container mx-auto flex flex-wrap justify-between items-start gap-y-10">
+            <div className="container mx-auto flex flex-wrap justify-between items-start gap-y-10">
                 <div className="w-full sm:w-[30%]">
                     <Link href="/">
                         <span><LogoWhite className="w-full" /></span>
@@ -20,11 +19,11 @@ const Footer = () => {
                                     <span className="text-neutral-300 hover:text-white">About</span>
                                 </Link>
                             </li>
-                            <li>
+                            { /* <li>
                                 <Link href="/contact">
                                     <span className="text-neutral-300 hover:text-white">Contact</span>
                                 </Link>
-                            </li>
+                            </li> */}
                         </ul>
                     </nav>
                 </div>
@@ -72,23 +71,23 @@ const Footer = () => {
                     <h2 className="font-bold text-lg mb-4">Follow Us</h2>
                     <div className="flex space-x-4">
                         <Link href="https://www.facebook.com/4Mparas">
-                            <span className="text-neutral-300 hover:text-white" target="_blank" rel="noopener noreferrer">
-                                <FaFacebook size={24} />
+                            <span className="text-teal-500 hover:text-white" target="_blank" rel="noopener noreferrer">
+                                Facebook
                             </span>
                         </Link>
                         <Link href="https://twitter.com">
-                            <span className="text-neutral-300 hover:text-white" target="_blank" rel="noopener noreferrer">
-                                <FaTwitter size={24} />
+                            <span className="text-teal-500 hover:text-white" target="_blank" rel="noopener noreferrer">
+                                Twitter
                             </span>
                         </Link>
                         <Link href="https://instagram.com">
-                            <span className="text-neutral-300 hover:text-white" target="_blank" rel="noopener noreferrer">
-                                <FaInstagram size={24} />
+                            <span className="text-teal-500 hover:text-white" target="_blank" rel="noopener noreferrer">
+                                Instagram
                             </span>
                         </Link>
                         <Link href="https://linkedin.com">
-                            <span className="text-neutral-300 hover:text-white" target="_blank" rel="noopener noreferrer">
-                                <FaLinkedin size={24} />
+                            <span className="text-teal-500 hover:text-white" target="_blank" rel="noopener noreferrer">
+                                LinkedIn
                             </span>
                         </Link>
                     </div>
@@ -106,11 +105,11 @@ const Footer = () => {
                         </button>
                     </form>
                 */}
-            {/*                </div>
+                </div>
             </div>
             <div className="mt-10 text-center text-neutral-500">
                 <p>&copy; {new Date().getFullYear()} Paras Sarap Catering. All rights reserved.</p>
-            </div> */}
+            </div> 
         </footer>
     );
 };
