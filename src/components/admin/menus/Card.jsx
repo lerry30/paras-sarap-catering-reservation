@@ -19,7 +19,7 @@ const Card = ({ menuData, onDelete, onUpdate, viewMore }) => {
     }, []);
 
     return (
-        <div className="flex flex-col w-full rounded-lg shadow-xl border-[1px] hover:scale-[1.01] hover:shadow-2xl transition-transform">
+        <div className="flex flex-col w-full rounded-lg shadow-xl border-[1px] hover:scale-[1.01] hover:shadow-2xl transition-transform bg-white">
             <article className="px-4 py-2 overflow-hidden">
                 <div className="flex items-center gap-2">
                     <h3 className="font-headings font-semibold">{ name }</h3>
