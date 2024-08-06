@@ -13,7 +13,7 @@ export default function AdminLayout({
         menus, addmenu, dishesselection, drinksselection, updatemenu, viewmenu,
         schedules,
         users, messages, reservationlist,
-        profile,
+        profile, settings
     }) {
     // Keep in mind to always restart the server every time a new slot is added.
 
@@ -43,6 +43,7 @@ export default function AdminLayout({
         messages: messages,
         reservationlist: reservationlist,
         profile: profile,
+        settings: settings,
     }
 
     return (
