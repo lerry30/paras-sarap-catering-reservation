@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { zUserData } from '@/stores/user';
 import { useEffect, useState } from 'react';
 import { getData, sendJSON } from '@/utils/send';
-import { ListChecks, MessageCircle } from '@/components/icons/All';
+import { ListChecks, MessageCircle, Setting2 } from '@/components/icons/All';
 
 const ANavbar = () => {
     const saveUserData = zUserData(state => state.saveUserData);
@@ -18,6 +18,7 @@ const ANavbar = () => {
 
     const notification = async () => {
         try {
+            if(process.env.NEXT_PUBLIC_SYSTEM_STATE === 'DEV') return;
             const getNotifResponse = await getData('/api/notification'); 
             const noOfMessages = getNotifResponse?.data?.messageCount || 0;
             const noOfReservationPending = getNotifResponse?.data?.reservationCount || 0
@@ -61,6 +62,11 @@ const ANavbar = () => {
                             <MessageCircle size={24} strokeWidth={2} className="group-hover:stroke-white"/>
                         </Link>
                         { messageCount > 0 && <span className="absolute size-[20px] right-0 top-[4px] text-[12px] text-white font-semibold font-paragraphs bg-red-600 flex items-center justify-center rounded-full animate-bounce">{ messageCount }</span> }
+                    </li>
+                    <li className="relative h-nav-item-height flex items-center justify-center">
+                        <Link href="/admin?display=settings" className="group size-[calc(var(--nav-item-height)-10px)] flex items-center justify-center rounded-full hover:bg-skin-ten">
+                            <Setting2 size={24} strokeWidth={2} className="group-hover:stroke-white"/>
+                        </Link>
                     </li>
                     <li className="h-nav-item-height flex rounded-full">
                         <Avatar name={ fullName } image={ image }/>
