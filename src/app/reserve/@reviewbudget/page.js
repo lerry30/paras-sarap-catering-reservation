@@ -106,7 +106,6 @@ const ReviewBudget = () => {
             return;
         }
 
-        console.table(listOfDishes);
         const additionalCostForServiceTime = toNumber(schedule?.timeExtend) * additionalServiceTimeCost;
 
         const dishesCostPerGuestServed = listOfDishes.reduce((holder, dish) => holder + (dish?.status !== 'available' ? 0 : (dish?.costperhead || 0)), 0);
