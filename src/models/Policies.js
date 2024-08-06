@@ -13,7 +13,7 @@ const policySchema = new Schema({
         type: Number,
         required: true
     },
-    additionalServiceTimeCostPerHour: {
+    additionalservicetimecostperhour: {
         type: Number,
         required: true
     },
