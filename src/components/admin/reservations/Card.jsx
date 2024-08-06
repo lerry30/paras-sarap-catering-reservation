@@ -57,7 +57,7 @@ const Card = ({ reservationData={}, changeReservationStatus, tab='pending', addi
         setTotal(totalAmout);
     }, []);
 
-    return <main className="w-full p-6 rounded-lg shadow-xl border-2 divide-y-[1px] mb-6">
+    return <main className="w-full p-6 rounded-lg shadow-xl border-2 divide-y-[1px] mb-6 bg-white">
         <section className="flex items-center gap-2 pb-2">
             <ProfileImage image={ userFileName } size={ 64 } className="size-[64px]" />
             <div>
