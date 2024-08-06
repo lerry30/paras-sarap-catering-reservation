@@ -3,7 +3,6 @@
 import CNavbar from '@/components/client/nav/CNavbar';
 import Image from 'next/image';
 import BgImg from '../../public/bg.jpg';
-//import HeroImg5 from '../../public/Hero.png';
 import Event01 from '../../public/event01.jpg';
 import Event02 from '../../public/event02.jpg';
 import Event03 from '../../public/event03.jpg';
@@ -118,7 +117,7 @@ export default function Home() {
                         </div>
                     </div>
                 </section>
-                <section className="w-full flex flex-col gap-4 md:h-[calc(100vh-120px)]">
+                <section className="w-full flex flex-col gap-4 md:h-[calc(100vh-140px)]">
                     <h3 className="font-headings w-full text-lg font-semibold mt-[60px] pb-4 border-b-2 border-dotted border-neutral-400">About Us</h3>
                     <p className="font-paragraphs font-thin text-2xl antialiased">Paras Sarap Catering Services started in 2012 as a small business by Mrs. Glecy Reyes Serrano, offering Filipino and street foods. With a focus on quality and customer service, they quickly gained popularity, expanding to accept bulk orders and deliveries for special occasions. Recognized for their delicious food, they entered the catering industry, becoming a renowned name in General Tinio and nearby areas, including Baguio, Pangasinan, and Tarlac.</p>
                     <Link href="/about" className="w-fit rounded-sm border-[1px] border-neutral-600 p-2 sm:mt-[20px]">Learn More</Link>
@@ -126,7 +125,7 @@ export default function Home() {
                 <section className="w-full flex flex-col gap-4 md:min-screen">
                     <h3 className="font-headings w-full text-lg font-semibold leading-none">Services</h3>
                     <p className="font-paragraphs w-full text-neutral-700 font-thin text-3xl">Choose Service</p>
-                    <div className="w-full flex gap-4 mt-4 flex-wrap">
+                    <div className="w-full flex justify-between gap-4 mt-4 flex-wrap">
                         <Card name="Wedding Service" image={ WeddingImg } description={ "Elevate your special day to unforgettable heights with our bespoke wedding services. From enchanting venues to exquisite decor and flawless execution, let us transform your dream wedding into a reality." } link="/reserve?display=themes&service=wedding&set=1&series=1"/>
                         <Card name="Debut Service" image={ DebutImg } description={ "Celebrate your debut in style with our curated debutante services. From elegant venues to personalized themes and seamless coordination, let us make your debut an occasion to remember." } link="/reserve?display=themes&service=debut&set=1&series=1"/>
                         <Card name="Kids Party Service" image={ KidsPartyImg } description={ "Create magical memories for your little ones with our vibrant kids party services. From exciting themes to engaging entertainment and delightful treats, let us bring joy and laughter to your child's special day." } link="/reserve?display=themes&service=kidsparty&set=1&series=1"/>
