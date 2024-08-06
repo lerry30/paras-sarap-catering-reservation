@@ -52,7 +52,7 @@ const DishesSelection = () => {
     return (
         <>
             { loading && <Loading customStyle="size-full" /> }
-            <section className="relative flex flex-col gap-4">
+            <section className="relative flex flex-col gap-4 bg-neutral-100">
                 <div className="sticky w-full top-[var(--nav-height)] left-0 z-navbar border-b-[1px] bg-white flex justify-between items-center py-1 px-4">
                     <div className="flex gap-4">
                         <button onClick={ goBack }>
