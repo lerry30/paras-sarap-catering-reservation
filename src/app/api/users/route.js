@@ -5,6 +5,7 @@ import { config, rateLimit } from 'x-rate-limiter';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import User from '@/models/Users';
+import TitleFormat from '@/utils/titleFormat';
 
 import { isDisposableEmail, isAnEmail } from '@/utils/auth/emailValidation';
 import { isAValidPassword, missingRequirements } from '@/utils/auth/passwordValidation';
@@ -43,7 +44,10 @@ config(2, { activeMaxRequest: 4, rest: ( 1000 * 60 * 10 ) }); // 6 requests allo
 export const POST = async (request) => {
     try {
         const signUpJsonData = await request.json();
-        const { firstname, lastname, email, password } = signUpJsonData;
+        const firstname = TitleFormat(String(signUpJsonData?.firstname || ''));
+        const lastname = TitleFormat(String(signUpJsonData?.lastname || ''));
+        const email = TitleFormat(String(signUpJsonData?.email || ''));
+        const password = TitleFormat(String(signUpJsonData?.password || ''));
 
         const invalidFields = emptySignUpFields(firstname, lastname, email, password);
         if(Object.values(invalidFields).length > 0)
