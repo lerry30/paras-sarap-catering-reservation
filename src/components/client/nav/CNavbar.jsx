@@ -28,6 +28,7 @@ const CNavbar = () => {
 
     const notification = async () => {
         try {
+            if(!fullName || process.env.NEXT_PUBLIC_SYSTEM_STATE === 'DEV') return;
             const getNotifResponse = await getData('/api/notification'); 
             const noOfMessages = toNumber(getNotifResponse?.data?.messageCount);
             const reservationStatus = getNotifResponse?.data?.reservationCount;
