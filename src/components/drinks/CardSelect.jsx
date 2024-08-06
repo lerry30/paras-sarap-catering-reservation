@@ -41,7 +41,7 @@ const CardSelect = ({ drinkData, drinkMenu={}, setDrinkMenu=undefined }) => {
     }, []);
 
     return (
-        <div className={ `relative flex flex-col w-full h-[440px] rounded-lg shadow-xl border-[1px] hover:scale-[1.01] hover:shadow-2xl transition-transform hover:cursor-pointer` }>
+        <div className="relative flex flex-col w-full h-[440px] rounded-lg shadow-xl border-[1px] hover:scale-[1.01] hover:shadow-2xl transition-transform hover:cursor-pointer bg-white">
             <Image 
                 src={ image }
                 alt={ name }
