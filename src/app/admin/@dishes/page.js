@@ -89,7 +89,7 @@ const Dishes = () => {
     return (
         <>
             { loading && <Loading customStyle="size-full" /> }
-            <section className="flex flex-col gap-2 p-4">
+            <section className="flex flex-col gap-2 p-4 bg-neutral-100">
                 <div className="flex justify-between items-center p-1 rounded-lg">
                     <h2 className="font-headings font-semibold">Dishes</h2>
                     <Link href="/admin?display=adddish" className="flex gap-2 bg-green-600/40 rounded-full px-2 py-1 hover:bg-green-400 transition-colors">
