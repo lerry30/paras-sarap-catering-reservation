@@ -224,7 +224,7 @@ const Schedules = () => {
 
     const getTimeLimitedService = async () => {
         try {
-            const response = await getData('/api/policies/reservation/servicetime');
+            const response = await getData('/api/policies/reservation');
             const noOfHours = toNumber(response?.data?.durationOfServiceInHours);
             const cost = toNumber(response?.data?.additionalServiceTimeCostPerHour);
             // I might weired but i have nothing to do with it since useEffect or even useLayoutEffect
@@ -246,7 +246,7 @@ const Schedules = () => {
 
         getTimeLimitedService();
         //console.log('useeffect');
-        console.log(additionalHoursOfService);
+        //console.log(additionalHoursOfService);
 
         const serviceParam = searchParams.get('service');
         if(!services.hasOwnProperty(serviceParam)) router.push('/');
