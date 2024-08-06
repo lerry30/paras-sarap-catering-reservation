@@ -50,7 +50,7 @@ export const GET = async (request) => {
             // if(reservation?.status === 'expired' && !isAnAdmin) continue
             if(reservation?.status === 'expired') continue
             const isExpired = await expiredReservation(
-                reservation.date, 
+                reservation.date.day, 
                 reservation.status, 
                 (policies?.noofpreparationdays || 3), 
                 reservation._id
