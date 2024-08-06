@@ -25,7 +25,7 @@ const Card = ({ userData={} }) => {
     });
 
     return (
-        <div className="p-4 rounded-xl shadow-md flex gap-4 min-w-[calc((100vw-var(--admin-sidebar-width))/2-20px)]">
+        <div className="p-4 rounded-xl shadow-md flex gap-4 min-w-[calc(50vw-var(--admin-sidebar-width)/2-20px)] max-w-[36vw] bg-white">
             <ProfileImage image={ profilePic } size={ 130 } className="size-[130px]" /> 
             <div className="flex flex-col justify-center">
                 <h2 className="font-headings font-semibold text-xl">{ fullName }</h2>
