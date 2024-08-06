@@ -403,3 +403,22 @@ export const Star = ({ size=24, stroke='hsl(0deg 0% 10% / 100%)', strokeWidth=2,
         </svg>
     );
 }
+
+export const Setting2 = ({ size=24, stroke='hsl(0deg 0% 10% / 100%)', strokeWidth=2, className='' }) => {
+    return (
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width={ size }
+            height={ size }
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke={ stroke }
+            strokeWidth={ strokeWidth }
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className={ className }
+        >
+            <path d="M20 7h-9"/><path d="M14 17H5"/><circle cx="17" cy="17" r="3"/><circle cx="7" cy="7" r="3"/>
+        </svg>
+    );
+}
