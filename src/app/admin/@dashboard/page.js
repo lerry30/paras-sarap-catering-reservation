@@ -2,7 +2,6 @@
 
 import Loading from '@/components/Loading';
 import AnimateNumber from '@/components/AnimateNumber';
-
 import { getData } from '@/utils/send';
 import { toNumber } from '@/utils/number';
 
@@ -21,23 +20,12 @@ const Dashboard = () => {
     const [popularVenues, setPopularVenues] = useState({});
     const [loading, setLoading] = useState(false);
 
-    const Bar = dynamic(
-        () => import('react-chartjs-2').then((mod) => mod.Bar),
-        { ssr: false }
-    );
-
-    const Doughnut = dynamic(
-        () => import('react-chartjs-2').then((mod) => mod.Doughnut),
-        { ssr: false }
-    );
-
-    const Line = dynamic(
-        () => import('react-chartjs-2').then((mod) => mod.Line),
-        { ssr: false }
-    );
+    const Bar = dynamic(() => import('react-chartjs-2').then((mod) => mod.Bar), { ssr: false });
+    const Doughnut = dynamic(() => import('react-chartjs-2').then((mod) => mod.Doughnut), { ssr: false });
+    const Line = dynamic(() => import('react-chartjs-2').then((mod) => mod.Line), { ssr: false });
 
     useEffect(() => {
-        if (process.env.NEXT_PUBLIC_SYSTEM_STATE === 'PRODUCTION') {
+        if (process.env.NODE_ENV === 'production') {
             import('chart.js').then((ChartJS) => {
                 const { ArcElement, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement, BarElement } = ChartJS;
                 ChartJS.Chart.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement, BarElement);
@@ -155,7 +143,9 @@ const Dashboard = () => {
         setLoading(false);
     }
 
-    useEffect(() => countDocuments, []);
+    useEffect(() => {
+        countDocuments();
+    }, []);
 
     return (
         <section className="p-4 bg-neutral-100 min-h-screen">
@@ -164,7 +154,7 @@ const Dashboard = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-center">
                     <h2 className="font-semibold text-lg mb-2">Reservations</h2>
-                    {process.env.NEXT_PUBLIC_SYSTEM_STATE === 'PRODUCTION' ? <Bar data={reservationData} /> : <div className="text-neutral-500 text-center">Chart not loaded in development mode</div>}
+                    <Bar data={reservationData} />
                 </div>
                 <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-center">
                     <h2 className="font-semibold text-lg mb-2">Users</h2>
@@ -184,24 +174,23 @@ const Dashboard = () => {
                 </div>
                 <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-center">
                     <h2 className="font-semibold text-lg mb-2">Service Satisfaction Rate</h2>
-                    {process.env.NEXT_PUBLIC_SYSTEM_STATE === 'PRODUCTION' ? <Doughnut data={satisfactionData} /> : <div className="text-neutral-500 text-center">Chart not loaded in development mode</div>}
+                    <Doughnut data={satisfactionData} />
                 </div>
                 <div className="col-span-1 md:col-span-2 lg:col-span-3 bg-white p-4 rounded-lg shadow-md">
                     <h2 className="font-semibold text-lg mb-2">Monthly Reservations Comparison</h2>
-                    {process.env.NEXT_PUBLIC_SYSTEM_STATE === 'PRODUCTION' ? <Bar data={monthlyData} /> : <div className="text-neutral-500">Chart not loaded in development mode</div>}
+                    <Bar data={monthlyData} />
                 </div>
                 <div className="col-span-1 md:col-span-2 lg:col-span-3 bg-white p-4 rounded-lg shadow-md">
                     <h2 className="font-semibold text-lg mb-2">User Growth Over Months</h2>
-                    {process.env.NEXT_PUBLIC_SYSTEM_STATE === 'PRODUCTION' ? <Line data={userGrowthData} /> : <div className="text-neutral-500">Chart not loaded in development mode</div>}
+                    <Line data={userGrowthData} />
                 </div>
                 <div className="col-span-1 md:col-span-2 lg:col-span-3 bg-white p-4 rounded-lg shadow-md">
                     <h2 className="font-semibold text-lg mb-2">Venue Popularity</h2>
-                    {process.env.NEXT_PUBLIC_SYSTEM_STATE === 'PRODUCTION' ? <Bar data={venuePopularityData} /> : <div className="text-neutral-500">Chart not loaded in development mode</div>}
+                    <Doughnut data={venuePopularityData} />
                 </div>
             </div>
         </section>
     );
-}
+};
 
 export default Dashboard;
-
