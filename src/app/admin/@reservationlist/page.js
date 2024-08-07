@@ -62,7 +62,7 @@ const ReservationList = () => {
 
     const getAdditionalServiceTimeCost = async () => {
         try {
-            const response = await getData('/api/policies/reservation/servicetime');
+            const response = await getData('/api/policies/reservation');
             const cost = toNumber(response?.data?.additionalServiceTimeCostPerHour) || 1000;
             setAdditionalServiceTimeCostPerHour(cost);
         } catch(error) {}
