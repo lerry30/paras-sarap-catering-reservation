@@ -39,7 +39,9 @@ const Settings = () => {
         } catch(error) {}
     }
 
-    useLayoutEffect(() => getConfigurationValues, []);
+    useLayoutEffect(() => {
+        getConfigurationValues()
+    }, []);
 
     const changeDurationOfService = (duration) => {
         const nDuration = toNumber(duration);
