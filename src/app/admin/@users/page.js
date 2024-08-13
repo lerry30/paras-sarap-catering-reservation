@@ -33,7 +33,7 @@ const Users = () => {
     
     if(users.length === 0) {
         return (
-            <div className="relative">
+            <div className="relative bg-neutral-100">
                 <div className="absolute top-0 left-0 w-full h-[calc(100vh-var(--nav-height))] flex justify-center items-center">
                     <h3 className="text-neutral-500 font-paragraphs text-lg font-bold">No Users Found</h3>
                 </div>
@@ -42,7 +42,7 @@ const Users = () => {
     }
     
     return (
-        <section className="flex flex-col gap-2 p-4 ">
+        <section className="h-full flex flex-col gap-2 p-4 bg-neutral-100">
             <h2 className="font-headings font-semibold">Users</h2>
             <div className="flex flex-wrap gap-2">
                 {

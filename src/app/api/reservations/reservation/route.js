@@ -1,8 +1,10 @@
 import { NextResponse } from 'next/server';
 import { decodeUserIdFromHeader } from '@/utils/auth/decode';
 import { apiIsAnAdmin } from '@/utils/auth/api/isanadmin';
+import { toNumber } from '@/utils/number';
 import Reservation from '@/models/Reservation';
 import Rating from '@/models/Ratings';
+import Policy from '@/models/Policies';
 import jwt from 'jsonwebtoken';
 
 // validate reservation date
@@ -20,15 +22,46 @@ const isRated = (reservationId, ratings) => {
     return false;
 }
 
+// check if pending status is expired
+const expiredReservation = async (date, status, daysOfPreparation, id) => {
+    if(status === 'pending') {
+        const computeDaysOfPreparation = toNumber(daysOfPreparation) * 1000 * 60 * 60 * 24;
+        const expirationDate = new Date(Date.now()).getTime() + computeDaysOfPreparation;
+        const reservationDate = new Date(date);
+        if(expirationDate > reservationDate.getTime() || isNaN(reservationDate)) {
+            await Reservation.findByIdAndUpdate(String(id), { status: 'expired' });
+            return true;
+        }
+    }
+
+    return false;
+}
+
 export const GET = async (request) => {
     try {
         const userId = decodeUserIdFromHeader();
         const reservations = (await Reservation.find({ userId }).sort({ createdAt: -1 })) || [];
         const isAnAdmin = await apiIsAnAdmin(request);
         const ratings = await Rating.find({ userId });
+        const policies = await Policy.findOne({});
         const nReservations = [];
         for(let i = 0; i < reservations.length; i++) {
             const reservation = reservations[i];
+            // if(reservation?.status === 'expired' && !isAnAdmin) continue
+            if(reservation?.status === 'expired') continue
+            const isExpired = await expiredReservation(
+                reservation.date, 
+                reservation.status, 
+                (policies?.noofpreparationdays || 3), 
+                reservation._id
+            );
+
+            // if(!!isExpired && !!isAnAdmin) {
+            //  reservation?.status = 'expired';
+            //  continue;
+            // }
+            if(!!isExpired) continue;
+
             const reservationKey = jwt.sign({ reservationId: String(reservation._id) }, process.env.RESERVATION_KEY);
 
             const reservationData = {

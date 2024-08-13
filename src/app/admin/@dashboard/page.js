@@ -13,24 +13,26 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearSca
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement, BarElement);
 
 const Dashboard = () => {
-    const [reservations, setReservations] = useState({ pending: 10, approved: 50, rejected: 5 });
+    const [reservations, setReservations] = useState({ pending: 10, approved: 50, rejected: 5, expired: 3 });
     const [users, setUsers] = useState(0);
     const [venues, setVenues] = useState(0);
     const [dishes, setDishes] = useState(0);
     const [drinks, setDrinks] = useState(0);
-    const [serviceSatisfactionRate, setServiceSatisfactionRate] = useState(85);
-    const [monthlyComparison, setMonthlyComparison] = useState([30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140]);
+    const [serviceSatisfactionRate, setServiceSatisfactionRate] = useState({});
+    const [monthlyComparison, setMonthlyComparison] = useState([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+    const [monthlyAccount, setMonthlyAccount] = useState(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    const [popularVenues, setPopularVenues] = useState({});
 
     const [ loading, setLoading ] = useState(false);
 
     const reservationData = {
-        labels: ['Pending', 'Approved', 'Rejected'],
+        labels: ['Pending', 'Approved', 'Rejected', 'Expired'],
         datasets: [
             {
                 label: 'Reservations',
-                data: [reservations.pending, reservations.approved, reservations.rejected],
-                backgroundColor: ['#FFCE56', '#36A2EB', '#FF6384'],
-                hoverBackgroundColor: ['#FFCE56', '#36A2EB', '#FF6384']
+                data: [reservations.pending, reservations.approved, reservations.rejected, reservations.expired],
+                backgroundColor: ['#FFCE56', '#36A2EB', '#FF6384', '#FF3333'],
+                hoverBackgroundColor: ['#FFCE56', '#36A2EB', '#FF6384', '#FF3333']
             }
         ]
     };
@@ -52,7 +54,7 @@ const Dashboard = () => {
         datasets: [
             {
                 label: 'User Growth',
-                data: [10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65],
+                data: monthlyAccount,
                 borderColor: '#FF6384',
                 backgroundColor: 'rgba(255, 99, 132, 0.2)',
                 fill: true,
@@ -62,11 +64,11 @@ const Dashboard = () => {
     };
 
     const venuePopularityData = {
-        labels: ['Venue 1', 'Venue 2', 'Venue 3', 'Venue 4', 'Venue 5'],
+        labels: Object.keys(popularVenues),
         datasets: [
             {
                 label: 'Venue Popularity',
-                data: [20, 15, 30, 10, 25],
+                data: Object.values(popularVenues),
                 backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF']
             }
         ]
@@ -77,11 +79,28 @@ const Dashboard = () => {
         datasets: [
             {
                 label: 'Service Satisfaction',
-                data: [serviceSatisfactionRate, 100 - serviceSatisfactionRate - 5, 5],
+                data: [serviceSatisfactionRate?.satisfied, serviceSatisfactionRate?.neutral, serviceSatisfactionRate?.dissatisfied],
                 backgroundColor: ['#4BC0C0', '#FFCE56', '#FF6384']
             }
         ]
     };
+
+    const satisfactionComputation = (ratings) => {
+        let satisfied = 0;
+        let neutral = 0;
+        let dissatisfied = 0;
+        for(const item of ratings) {
+            if(item >= 4) satisfied++;
+            else if(item >= 2) neutral++;
+            else if(item >= 0) dissatisfied++;
+        }
+
+        satisfied = satisfied / ratings.length * 100;
+        neutral = neutral / ratings.length * 100;
+        dissatisfied = dissatisfied / ratings.length * 100;
+
+        setServiceSatisfactionRate({ satisfied, neutral, dissatisfied });
+    } 
 
     const countDocuments = async () => {
         try {
@@ -93,11 +112,22 @@ const Dashboard = () => {
             const dishCount = toNumber(countData?.dishes);
             const drinkCount = toNumber(countData?.drinks);
             const venueCount = toNumber(countData?.venues);
+            const reservationStatusesCount = countData?.reservations
+            const setOfRatings = countData?.ratings;
+            const monthlyReservation = countData?.months;
+            const monthlyUserAccount = countData?.monthlyUserAccount;
+            const venuePopularity = countData?.venuePopularity;
 
             setUsers(userCount);
             setDishes(dishCount);
             setDrinks(drinkCount);
             setVenues(venueCount);
+
+            setReservations(reservationStatusesCount);
+            satisfactionComputation(setOfRatings);
+            setMonthlyComparison(monthlyReservation);
+            setMonthlyAccount(monthlyUserAccount);
+            setPopularVenues(venuePopularity);
         } catch(error) {
             console.log(error);
         }
@@ -108,7 +138,7 @@ const Dashboard = () => {
     useEffect(() => countDocuments, []);
 
     return (
-        <section className="p-4 bg-gray-100 min-h-screen">
+        <section className="p-4 bg-neutral-100 min-h-screen">
             { loading && <Loading customStyle="size-full" /> }
             <h1 className="text-3xl font-bold mb-4">Dashboard</h1>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
