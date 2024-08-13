@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Loading from '@/components/Loading';
 import { useEffect, useState, Fragment } from 'react';
 import { Prompt, PromptRating, PromptTextBox, ErrorModal } from '@/components/Modal';
 import { deleteWithJSON, sendForm } from '@/utils/send';
@@ -55,6 +56,8 @@ const Card = ({ reservationData={}, rejectionReason='', removeItself, additional
     const [ errorPromptMessage, setErrorPromptMessage ] = useState('');
     const [ serviceRate, setServiceRate ] = useState(0); // rating point
 
+    const [ loading, setLoading ] = useState(false);
+
     const cancelReservation = async () => {
         try {
             const dateCreation = reservationData?.dateAsKey;
@@ -77,6 +80,7 @@ const Card = ({ reservationData={}, rejectionReason='', removeItself, additional
 
     return (
         <>
+            {loading && <Loading customStyle="size-full" />}
             <main className="w-full rounded-lg shadow-lg border border-gray-300 divide-y mb-6 overflow-hidden">
                 <section className="h-14 flex items-center justify-between bg-gray-800 px-4 text-sm">
                     <h2 className="font-headings text-white font-semibold">{ eventFormat.hasOwnProperty(event) && eventFormat[event] }</h2>
@@ -293,6 +297,7 @@ const Card = ({ reservationData={}, rejectionReason='', removeItself, additional
                     message="Please leave a positive and honest message to help us improve our service for current and future customers."
                     callback={ async (form) => {
                         try {
+                            setLoading(true);
                             const formData = new FormData(form);
                             formData.append('id', id);
                             formData.append('point-rating', serviceRate);
@@ -304,6 +309,7 @@ const Card = ({ reservationData={}, rejectionReason='', removeItself, additional
                         }
 
                         setServiceRate(0);
+                        setLoading(false);
                     }} 
                     onClose={() => setPromptRating(false)}
                 />
