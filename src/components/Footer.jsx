@@ -1,11 +1,11 @@
 import Link from 'next/link';
 import LogoWhite from '@/components/LogoWhite';
-import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin } from 'react-icons/fa';
+//import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin } from 'react-icons/fa';
 
 const Footer = () => {
     return (
         <footer className="w-full bg-gray-900 text-white py-10 px-page-x relative z-footer mt-10">
-            <div className="container mx-auto flex flex-wrap justify-between items-start gap-y-10">
+            {/*<div className="container mx-auto flex flex-wrap justify-between items-start gap-y-10">
                 <div className="w-full sm:w-[30%]">
                     <Link href="/">
                         <span><LogoWhite className="w-full" /></span>
@@ -106,11 +106,11 @@ const Footer = () => {
                         </button>
                     </form>
                 */}
-                </div>
+            {/*                </div>
             </div>
             <div className="mt-10 text-center text-neutral-500">
                 <p>&copy; {new Date().getFullYear()} Paras Sarap Catering. All rights reserved.</p>
-            </div>
+            </div> */}
         </footer>
     );
 };

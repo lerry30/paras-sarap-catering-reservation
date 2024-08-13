@@ -5,6 +5,10 @@ mongoose.Promise = global.Promise;
 connectToDatabase();
 
 const policySchema = new Schema({
+    noofpreparationdays: { 
+        type: Number,
+        required: true
+    },
     timelimitedserviceinhours: {
         type: Number,
         required: true
