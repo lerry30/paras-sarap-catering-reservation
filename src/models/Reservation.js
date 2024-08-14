@@ -15,6 +15,21 @@ const reservationSchema = new Schema({
         required: true,
     },
 
+    theme: {
+        name: {
+            type: String,
+            required: true
+        },
+        description: {
+            type: String,
+            required: true
+        },
+        filename: {
+            type: String,
+            required: true
+        },
+    },
+
     venue: {},
 
     menu: {
@@ -62,5 +77,5 @@ const reservationSchema = new Schema({
     timestamps: true
 });
 
-const Reservation = mongoose.models.Reservation || mongoose.model('Reservation', reservationSchema);
+const Reservation = mongoose?.models?.Reservation || mongoose.model('Reservation', reservationSchema);
 export default Reservation;

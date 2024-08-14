@@ -46,11 +46,17 @@ export const POST = async (request) => {
     try {
         const jsonRequest = await request.json();
         const event = String(jsonRequest?.event).toLowerCase().trim();
+        const theme = jsonRequest?.theme;
         const venue = jsonRequest?.venue;
         const menu = jsonRequest?.menu;
         const date = jsonRequest?.date;
         const noOfGuest = toNumber(jsonRequest?.noofguest);
-        
+
+        // theme
+        const themeName = String(theme?.name).trim();
+        const themeDescription = String(theme?.description).trim();
+        const themeImage = String(theme?.filename).trim();
+
         // venue
         const street = venue?.address?.street?.trim();
         const barangay = venue?.address?.barangay?.trim().toUpperCase();
@@ -78,6 +84,11 @@ export const POST = async (request) => {
         const data = {
             userId: userId,
             event,
+            theme: {
+                name: themeName,
+                description: themeDescription,
+                filename: themeImage
+            },
             venue: {
                 name: venue?.name || '',
                 description: venue?.description || '',

@@ -1,0 +1,23 @@
+import { create } from 'zustand';
+import { kidthemes as localStorageName } from '@/utils/localStorageNames';
+
+export const zKidTheme = create(set => ({
+    id: '',
+    name: '',
+    description: '',
+    filename: '',
+
+    init: () => {
+        try {
+            set(state => !state.id ? JSON.parse(localStorage.getItem(localStorageName)) || {} : state);
+        } catch(error) {}
+    },  
+
+    saveKidThemeData: ({ id, name, description, filename }) => {
+        if(!id || !name || !description || !filename) return false;
+        const data = { id, name, description, filename };
+        localStorage.setItem(localStorageName, JSON.stringify(data));
+        set(data);
+        return true;
+    },
+}));

@@ -37,9 +37,7 @@ const SignUpPage = () => {
         setLoading(true);
 
         const invalidFields = emptySignUpFields(name.firstname, name.lastname, emailAddress, password);
-        for(const [ field, message ] of Object.entries(invalidFields)) {
-            setInvalidFieldsValue(prev => ({ ...prev, [field]: message }));
-        }
+        setInvalidFieldsValue(invalidFields);
 
         if(Object.values(invalidFields).length === 0) {
             try {

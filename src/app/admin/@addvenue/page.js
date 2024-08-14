@@ -36,8 +36,7 @@ const AddVenue = () => {
 
         const { street, region, province, municipality, barangay } = selectedAddress;
         const invalidFields = emptyVenueFields(venueName, description, file, region, province, municipality, barangay, street);
-        for(const [field, message] of Object.entries(invalidFields))
-            setInvalidFieldsValue(prev => ({ ...prev, [field]: message }));
+        setInvalidFieldsValue({ ...invalidFields });
 
         if(!price) setInvalidFieldsValue(prev => ({ ...prev, price: 'Enter a numerical value greater than zero for the price' }));
         if(!maximumSeatingCapacity) setInvalidFieldsValue(prev => ({ ...prev, maximumSeatingCapacity: 'Enter a numerical value greater than zero for the maximum seating capacity' }));

@@ -69,5 +69,5 @@ const venueSchema = new Schema({
     timestamps: true
 });
 
-const Venue = mongoose.models.Venue || mongoose.model('Venue', venueSchema);
+const Venue = mongoose?.models?.Venue || mongoose.model('Venue', venueSchema);
 export default Venue;

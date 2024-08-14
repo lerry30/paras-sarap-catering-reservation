@@ -38,8 +38,7 @@ const AddMenu = () => {
         setLoading(true);
 
         const invalidFields = emptyMenuFields(menuName, description, Object.keys(dishMenu), Object.keys(drinkMenu));
-        for(const [field, message] of Object.entries(invalidFields))
-            setInvalidFieldsValue(prev => ({ ...prev, [field]: message }));
+        setInvalidFieldsValue({ ...invalidFields });
 
         if(Object.values(invalidFields).length === 0) {
             try {

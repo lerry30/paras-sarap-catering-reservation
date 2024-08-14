@@ -40,5 +40,5 @@ const dishSchema = new Schema({
     timestamps: true
 });
 
-const Dish = mongoose.models.Dish || mongoose.model('Dish', dishSchema);
+const Dish = mongoose?.models?.Dish || mongoose.model('Dish', dishSchema);
 export default Dish;

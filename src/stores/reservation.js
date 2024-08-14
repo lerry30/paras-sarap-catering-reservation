@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { reservation as localStorageName } from '@/utils/localStorageNames';
 
 export const zReservation = create(set => ({
+    thems: {},
     venue: {},
     menu: {},
     schedule: {},
@@ -11,6 +12,14 @@ export const zReservation = create(set => ({
         try {
             set(state => JSON.parse(localStorage.getItem(localStorageName)) || {});
         } catch(error) {}
+    },
+
+    saveThemeData: (data) => {
+        set(state => {
+            const nData = { ...state, theme: data };
+            localStorage.setItem(localStorageName, JSON.stringify(nData));
+            return nData;
+        });
     },
 
     saveVenueData: (data) => {

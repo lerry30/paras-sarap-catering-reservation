@@ -24,10 +24,10 @@ const ASidebar = () => {
                 <Option href="/admin?display=drinks" className="!rounded-full px-4">Drinks</Option>
             </ParentOption>
             <ParentOption text="Themes" className="px-4">
-                <Option href="/" className="!rounded-full px-4">Wedding</Option>
-                <Option href="/" className="!rounded-full px-4">Debut</Option>
-                <Option href="/" className="!rounded-full px-4">Kids</Option>
-                <Option href="/" className="!rounded-full px-4">Private</Option>
+                <Option href="/admin?display=weddingthemes" className="!rounded-full px-4">Wedding</Option>
+                <Option href="/admin?display=debutthemes" className="!rounded-full px-4">Debut</Option>
+                <Option href="/admin?display=kidthemes" className="!rounded-full px-4">Kids</Option>
+                <Option href="/admin?display=privatethemes" className="!rounded-full px-4">Private</Option>
             </ParentOption>
         </section>
     );

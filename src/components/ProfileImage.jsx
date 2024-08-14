@@ -23,7 +23,7 @@ const ProfileImage = ({ image=undefined, className='', size=40 }) => {
         )
     }
     
-    return <CircleUserRound size={ size } strokeWidth={1} stroke="black" className={ `${ className }` } />
+    return <CircleUserRound size={ size } strokeWidth={1} stroke="#222" className={ `${ className }` } />
 }
 
 export default ProfileImage;

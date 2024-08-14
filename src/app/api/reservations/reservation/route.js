@@ -67,6 +67,7 @@ export const GET = async (request) => {
             const reservationData = {
                 id: reservationKey,
                 event: reservation.event,
+                theme: reservation.theme,
                 venue: reservation.venue,
                 menu: reservation.menu,
                 date: reservation.date,

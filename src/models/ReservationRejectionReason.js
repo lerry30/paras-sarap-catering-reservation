@@ -19,5 +19,5 @@ const reservationRejectionReasonSchema = new Schema({
     timestamps: true
 });
 
-const reservationRejectionReason = mongoose.models.reservationRejectionReason || mongoose.model('reservationRejectionReason', reservationRejectionReasonSchema);
+const reservationRejectionReason = mongoose?.models?.reservationRejectionReason || mongoose.model('reservationRejectionReason', reservationRejectionReasonSchema);
 export default reservationRejectionReason;

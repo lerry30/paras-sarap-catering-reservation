@@ -14,6 +14,7 @@ import { reservation, reservationcache, menu as menucache } from '@/utils/localS
 
 const ReviewBudget = () => {
     // State declarations
+    const [theme, setTheme] = useState({});
     const [venue, setVenue] = useState({});
     const [menu, setMenu] = useState({});
     const [schedule, setSchedule] = useState({});
@@ -65,6 +66,7 @@ const ReviewBudget = () => {
         try {
             const data = {
                 event: String(service).toLowerCase().trim(),
+                theme,
                 venue,
                 menu: {
                     name: menu?.menu,
@@ -136,11 +138,13 @@ const ReviewBudget = () => {
 
     // useEffect to load initial data
     useEffect(() => {
+        const sTheme = zReservation.getState()?.theme;
         const sVenue = zReservation.getState()?.venue;
         const sMenu = zReservation.getState()?.menu;
         const sSchedule = zReservation.getState()?.schedule;
         const sNoOfGuest = zReservation.getState()?.noOfGuest;
 
+        setTheme(sTheme);
         setVenue(sVenue);
         setMenu(sMenu);
         setSchedule(sSchedule);
@@ -165,6 +169,35 @@ const ReviewBudget = () => {
             <Breadcrumbs step={ 5 }></Breadcrumbs>
             <div className="flex flex-col md:flex-row md:pr-[calc(24vw-8px)]">
                 <main className="flex flex-col gap-10 divide-y-[1px] px-page-x pt-[var(--nav-height)] pb-4 flex-1">
+                    <section className="flex flex-col gap-4 py-2">
+                        <h1 className="font-headings font-semibold text-lg">Theme</h1>
+                        <div className="flex flex-col md:flex-row gap-6">
+                            {theme?.filename && (
+                                <div className="w-[200px] aspect-square">
+                                    <Image
+                                        src={theme.filename}
+                                        alt={theme?.name || ''}
+                                        width={200}
+                                        height={200}
+                                        sizes="100%"
+                                        style={{
+                                            width: '100%',
+                                            height: '100%',
+                                            minWidth: '200px',
+                                            objectFit: 'cover',
+                                            transformOrigin: 'center',
+                                            borderRadius: '4px',
+                                        }}
+                                        priority
+                                    />
+                                </div>
+                            )}
+                            <div>
+                                {theme?.name && <h2 className="font-headings font-semibold">{theme?.name}</h2>}
+                                {theme?.description && <p className="font-paragraphs text-neutral-500 text-sm">{theme?.description}</p>}
+                            </div>
+                        </div>
+                    </section>
                     <section className="flex flex-col gap-4 py-2">
                         <h1 className="font-headings font-semibold text-lg">Venue</h1>
                         <div className="flex flex-col md:flex-row gap-6">

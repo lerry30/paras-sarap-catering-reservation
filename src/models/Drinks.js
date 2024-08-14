@@ -35,5 +35,5 @@ const drinkSchema = new Schema({
     timestamps: true
 });
 
-const Drink = mongoose.models.Drink || mongoose.model('Drink', drinkSchema);
+const Drink = mongoose?.models?.Drink || mongoose.model('Drink', drinkSchema);
 export default Drink;

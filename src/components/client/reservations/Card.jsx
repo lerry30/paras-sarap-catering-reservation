@@ -11,6 +11,12 @@ const Card = ({ reservationData={}, rejectionReason='', removeItself, additional
 
     const id = reservationData?.id;
 
+    console.log(reservationData?.theme);
+
+    const themeName = reservationData?.theme?.name || '';
+    const themeDescription = reservationData?.theme?.description || '';
+    const themeFileName = reservationData?.theme?.filename || '';
+
     // Venue details
     const venueName = reservationData?.venue?.name || '';
     const venueDescription = reservationData?.venue?.description || '';
@@ -87,6 +93,35 @@ const Card = ({ reservationData={}, rejectionReason='', removeItself, additional
                     <div className="flex font-paragraphs text-white">
                         <h2 className="font-semibold">Reserved At:&nbsp;&nbsp;</h2>
                         <span>{dateFormatter.format(new Date(reservedAt))}</span>
+                    </div>
+                </section>
+                <section className="p-6 bg-gray-50">
+                    <h1 className="font-headings font-semibold text-xl mb-2">Theme</h1>
+                    <div className="flex gap-6">
+                        {themeFileName && (
+                            <div className="size-[200px]">
+                                <Image
+                                    src={themeFileName}
+                                    alt={themeName || ''}
+                                    width={200}
+                                    height={200}
+                                    sizes="100%"
+                                    style={{
+                                        width: '100%',
+                                        height: '100%',
+                                        minWidth: '200px',
+                                        minHeight: '200px',
+                                        objectFit: 'cover',
+                                        borderRadius: '8px',
+                                    }}
+                                    priority
+                                />
+                            </div>
+                        )}
+                        <div>
+                            <h2 className="font-headings font-semibold text-lg">{themeName}</h2>
+                            <p className="font-paragraphs text-gray-600 text-sm mb-2">{themeDescription}</p>
+                        </div>
                     </div>
                 </section>
                 <section className="p-6 bg-gray-50">

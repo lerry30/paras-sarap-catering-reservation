@@ -25,8 +25,7 @@ const AddDrink = () => {
         setLoading(true);
 
         const invalidFields = emptyDrinkFields(drinkName, description, file);
-        for(const [field, message] of Object.entries(invalidFields))
-            setInvalidFieldsValue(prev => ({ ...prev, [field]: message }));
+        setInvalidFieldsValue({ ...invalidFields });
 
         if(!costPerHead) setInvalidFieldsValue(prev => ({ ...prev, costperhead: 'Enter a numerical value greater than zero for the cost per head' }));
 
