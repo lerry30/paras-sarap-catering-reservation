@@ -13,13 +13,13 @@ const CSidebar = () => {
                 <Option href="/reserve?display=themes&service=kidsparty&set=1&series=1" className="!rounded-full px-4">Kids Party</Option>
                 <Option href="/reserve?display=themes&service=privateparty&set=1&series=1" className="!rounded-full px-4">Private Party</Option>
             </ParentOption>
-            <ParentOption text="Packages" className="px-4">
+           { /* <ParentOption text="Packages" className="px-4">
                 <Option href="" className="!rounded-full px-4">Wedding</Option>
                 <Option href="" className="!rounded-full px-4">Debut</Option>
                 <Option href="" className="!rounded-full px-4">Kids Party</Option>
                 <Option href="" className="!rounded-full px-4">Private Party</Option>
-            </ParentOption>
-            <Option href="/" className="!rounded-full px-4">Contact</Option>
+            </ParentOption> */ }
+            <Option href="/contact" className="!rounded-full px-4">Contact</Option>
         </BurgerMenu>
     );
 }
