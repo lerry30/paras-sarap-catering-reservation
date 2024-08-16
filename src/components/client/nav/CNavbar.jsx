@@ -83,6 +83,12 @@ const CNavbar = () => {
                         <li className="h-nav-item-height flex items-center rounded-sm hover:bg-skin-ten transition-colors">
                             <Link href="/about" className="py-2 px-4 max-h-[40px] hover:text-white">About</Link>
                         </li>
+                        <li className="h-nav-item-height flex items-center rounded-sm hover:bg-skin-ten transition-colors">
+                            <Link href="/contact" className="py-2 px-4 max-h-[40px] hover:text-white">Contact</Link>
+                        </li>
+                        <li className="h-nav-item-height flex items-center rounded-sm hover:bg-skin-ten transition-colors">
+                            <Link href="/faqs" className="py-2 px-4 max-h-[40px] hover:text-white">FAQs</Link>
+                        </li>
                         <li className="h-nav-item-height flex items-center rounded-sm">
                             <Select name="Services" className="py-2 max-h-[40px]">
                                 <Option href="/reserve?display=themes&service=wedding&set=1&series=1">Wedding Service</Option>
