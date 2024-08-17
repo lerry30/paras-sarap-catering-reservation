@@ -87,7 +87,10 @@ const ReservationList = () => {
                     <button onClick={ ev => setDisplayStatus('approved') } className={ `px-2 rounded-lg ${ displayStatus === 'approved' && 'bg-skin-ten text-white' }` }>Approved</button>
                 </div>
                 <div className="px-1">
-                    <button onClick={ ev => setDisplayStatus('rejected') } className={ `px-2 rounded-lg ${ displayStatus === 'rejected' && 'bg-skin-ten text-white' }` }>Rejected</button>
+                    <button onClick={ ev => setDisplayStatus('rejected') } className={ `px-2 rounded-lg ${ displayStatus === 'rejected' && 'bg-red-800/75 text-white' }` }>Rejected</button>
+                </div>
+                <div className="px-1">
+                    <button onClick={ ev => setDisplayStatus('expired') } className={ `px-2 rounded-lg ${ displayStatus === 'expired' && 'bg-red-800 text-white' }` }>Expired</button>
                 </div>
             </div>
         </div>
