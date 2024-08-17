@@ -24,6 +24,7 @@ export const GET = async (request) => {
 
             nReservations.push({ 
                 _id: reservation._id?.toString(), 
+                theme: reservation.theme,
                 event: reservation.event,
                 venue: reservation.venue,
                 menu: reservation.menu,
