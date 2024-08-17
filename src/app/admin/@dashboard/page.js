@@ -135,7 +135,9 @@ const Dashboard = () => {
         setLoading(false);
     }
 
-    useEffect(() => countDocuments(), []);
+    useEffect(() => {
+        countDocuments()
+    }, []);
 
     return (
         <section className="p-4 bg-neutral-100 min-h-screen">
