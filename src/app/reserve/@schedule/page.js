@@ -57,8 +57,8 @@ const Schedules = () => {
     const months = [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ];
     const days = [ 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat' ];
 
-    const noOfUnpickableDaysStartFromNow = 3;
-    const noOfDaysCanSched = 1000 * 60 * 60 * 24 * noOfUnpickableDaysStartFromNow;
+    const noOfUnpickableDaysStartFromNow = useRef(3);
+    const noOfDaysCanSched = useRef(1000 * 60 * 60 * 24 * noOfUnpickableDaysStartFromNow.current);
 
     const setCalNumbers = (year, month) => {
         const firstDay = new Date(year, month, 1);
@@ -152,7 +152,8 @@ const Schedules = () => {
     const setSched = (number) => {
         const dateToString = `${ months[currentMonth] } ${ number }, ${ currentYear }`;
         // getTime() -> to milliseconds
-        const earliestDayCanReserve = today.getTime() + noOfDaysCanSched;
+        console.log(noOfDaysCanSched);
+        const earliestDayCanReserve = today.getTime() + noOfDaysCanSched.current;
         const selectedDate = new Date(dateToString);
         const selectedDateInMilli = selectedDate?.getTime();
 
@@ -231,10 +232,14 @@ const Schedules = () => {
             // cant access the value of additionalHoursOfService eventhough I already set it so the 
             // only way for me to be able to get the value is by directly get it from store
             const additionalServiceTime = toNumber(zReservation.getState()?.schedule?.timeExtend);
+            const noOfPreparationDays = toNumber(response?.data?.noOfPreparationDays); 
 
             setDurationOfServiceInHours(noOfHours + additionalServiceTime);
             setDurationOfServiceInHoursFixed(noOfHours);
             setAdditionalServiceTimeCostPerHour(cost);
+
+            noOfUnpickableDaysStartFromNow.current = noOfPreparationDays;
+            noOfDaysCanSched.current = 1000 * 60 * 60 * 24 * noOfPreparationDays;
         } catch(error) {}
     }
 
@@ -371,7 +376,7 @@ const Schedules = () => {
                                             // unpickable days start from now for preparations
                                             const range = number - today.getDate();
                                             if(currentMonth === (new Date()).getMonth() && currentYear === (new Date()).getFullYear()) {
-                                                if(range > 0 && range <= noOfUnpickableDaysStartFromNow) {
+                                                if(range > 0 && range <= noOfUnpickableDaysStartFromNow.current) {
                                                     return (
                                                         <div key={ index } className="w-full aspect-square overflow-hidden p-1 border-[1px] border-neutral-400 cursor-pointer bg-neutral-400 flex flex-col">
                                                             <span className="text-white font-bold min-w-[50px]">{ number }</span>
