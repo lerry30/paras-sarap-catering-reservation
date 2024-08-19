@@ -18,6 +18,7 @@ import Footer from '@/components/Footer';
 import FixMiniNavBar from '@/components/client/nav/FixMiniNavBar';
 import RatingCard from '@/components/ratings/Card';
 import Carousel from '@/components/Carousel';
+import EquipmentFees from '@/components/EquipmentFees';
 
 import { useLayoutEffect, useState } from 'react';
 import { getData } from '@/utils/send';
@@ -121,12 +122,15 @@ export default function Home() {
                         </div>
                     </div>
                 </section>
-                <section className="w-full flex flex-col gap-4 md:h-[calc(100vh-140px)]">
+                <section className="w-full flex flex-col gap-4 md:h-[calc(100vh-var(--nav-height))]">
                     <h3 className="font-headings w-full text-lg font-semibold mt-[60px] pb-4 border-b-2 border-dotted border-neutral-400">About Us</h3>
                     <p className="font-paragraphs font-thin text-2xl antialiased">Paras Sarap Catering Services started in 2012 as a small business by Mrs. Glecy Reyes Serrano, offering Filipino and street foods. With a focus on quality and customer service, they quickly gained popularity, expanding to accept bulk orders and deliveries for special occasions. Recognized for their delicious food, they entered the catering industry, becoming a renowned name in General Tinio and nearby areas, including Baguio, Pangasinan, and Tarlac.</p>
                     <Link href="/about" className="w-fit rounded-sm border-[1px] border-neutral-600 p-2 sm:mt-[20px]">Learn More</Link>
                 </section>
-                <section className="w-full flex flex-col gap-4 md:h-[calc(100vh-140px)]">
+                <section className="w-full flex flex-col gap-4 md:h-[calc(100vh-var(--nav-height))]">
+                    <EquipmentFees />
+                </section>
+                <section className="w-full flex flex-col gap-4 md:min-h-[calc(100vh-var(--nav-height))]">
                     <h3 className="font-headings w-full text-lg font-semibold leading-none">Services</h3>
                     <p className="font-paragraphs w-full text-neutral-700 font-thin text-3xl">Choose Service</p>
                     <div className="w-full flex justify-between gap-4 mt-4 flex-wrap">
@@ -138,7 +142,7 @@ export default function Home() {
                 </section>
                 {
                     ratings.length > 0 && (
-                        <section className="size-full md:h-[calc(100vh-140px)] bg-neutral-200 rounded-md">
+                        <section className="size-full md:h-[calc(100vh-var(--nav-height))] bg-neutral-200 rounded-md">
                             <h3 className="font-headings w-full text-xl font-semibold pt-[20px] pl-6">Service Feedback and Ratings</h3>
                             <div className="w-full md:h-[400px]">
                                 <Carousel switchWidth={280}>
@@ -150,7 +154,7 @@ export default function Home() {
                         </section>
                     )
                 }                
-                <section className="w-full flex flex-col gap-4 md:h-[calc(100vh-140px)]">
+                <section className="w-full flex flex-col gap-4 md:h-[calc(100vh-var(--nav-height))]">
                     <h3 className="font-headings w-full text-lg font-semibold leading-none">FAQs</h3>
                     <ol className="space-y-8 list-decimal list-inside font-semibold font-headings">
                         <li>
@@ -168,7 +172,7 @@ export default function Home() {
                     </ol>
                     <Link href="/faqs" className="w-fit rounded-sm border-[1px] border-neutral-600 p-2 sm:mt-[20px]">Learn More</Link>
                 </section>
-                <section className="w-full flex flex-col gap-4 md:h-[calc(100vh-140px)]">
+                <section className="w-full flex flex-col gap-4 md:h-[calc(100vh-var(--nav-height))]">
                     <h3 className="font-headings text-xl font-bold">Address</h3>
                     <p className="text-xl font-paragraph font-thin">Brgy. Pob.East, General Tinio, Nueva Ecija, Philippines</p>
                     <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d7706.400373232661!2d120.68929417770994!3d15.037039700000012!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3396f7716d5630db%3A0x5c9111d3027fcb02!2sParas%20Catering%20%26%20Events!5e0!3m2!1sen!2sph!4v1723736844581!5m2!1sen!2sph" className="w-full h-[400px] border-2 border-teal-800" allowFullScreen="" loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
