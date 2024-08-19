@@ -17,7 +17,8 @@ const ReservationList = () => {
 
     const [ formData, setFormData ] = useState({ id: '', status: '' });
 
-    const [ additionalServiceTimeCostPerHour, setAdditionalServiceTimeCostPerHour ] = useState(1000);
+    const [ additionalServiceTimeCostPerHour, setAdditionalServiceTimeCostPerHour ] = useState(0);
+    const [ equipmentFees, setEquipmentFees ] = useState(0);
 
     const changeReservationStatus = (id, status) => {
         setFormData({ id, status });
@@ -63,8 +64,10 @@ const ReservationList = () => {
     const getAdditionalServiceTimeCost = async () => {
         try {
             const response = await getData('/api/policies/reservation');
-            const cost = toNumber(response?.data?.additionalServiceTimeCostPerHour) || 1000;
-            setAdditionalServiceTimeCostPerHour(cost);
+            const costOfAdditionalTime = toNumber(response?.data?.additionalServiceTimeCostPerHour) || 1000;
+            const rentalEquipmentCost = toNumber(response?.data?.rentalEquipmentFees);
+            setAdditionalServiceTimeCostPerHour(costOfAdditionalTime);
+            setEquipmentFees(rentalEquipmentCost);
         } catch(error) {}
     }
 
@@ -116,6 +119,7 @@ const ReservationList = () => {
                                     tab={ displayStatus } 
                                     changeReservationStatus={ changeReservationStatus } 
                                     additionalTimeRate={ additionalServiceTimeCostPerHour }
+                                    equipmentFees={equipmentFees}
                                 />
                             })
                         }
