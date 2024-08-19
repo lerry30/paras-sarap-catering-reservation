@@ -8,8 +8,9 @@ export const GET = async () => {
         const durationOfServiceInHours = policyData?.timelimitedserviceinhours || 4;
         const additionalServiceTimeCostPerHour = policyData?.additionalservicetimecostperhour || 1000;
         const noOfPreparationDays = policyData?.noofpreparationdays || 3;
+        const rentalEquipmentFees = policyData?.rentalequipmentfees || 0;
 
-        const data = { durationOfServiceInHours, additionalServiceTimeCostPerHour, noOfPreparationDays };
+        const data = { durationOfServiceInHours, additionalServiceTimeCostPerHour, noOfPreparationDays, rentalEquipmentFees };
         return NextResponse.json({ message: '', data }, { status: 200 });
     } catch(error) {
         console.log('Fetch limited time for service error: \n', error);
@@ -23,13 +24,15 @@ export const PUT = async (request) => {
         const duration = toNumber(form.get('service-duration'));
         const extraTimeCost = toNumber(form.get('additional-time-cost'));
         const preparationDays = toNumber(form.get('reservation-preparation'));
+        const equipmentFees = toNumber(form.get('rental-equipment-fees'));
 
         const policyData = await Policy.findOne({}); // just get the first one
         await Policy.findByIdAndUpdate(String(policyData?._id), 
             { 
                 timelimitedserviceinhours: duration, 
                 additionalservicetimecostperhour: extraTimeCost, 
-                noofpreparationdays: preparationDays 
+                noofpreparationdays: preparationDays,
+                rentalequipmentfees: equipmentFees,
             });
 
         return NextResponse.json({ message: '', success: true }, { status: 200 });
