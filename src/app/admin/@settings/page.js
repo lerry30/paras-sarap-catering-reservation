@@ -10,6 +10,7 @@ const Settings = () => {
     const [ durationOfServiceInHours, setDurationOfServiceInHours ] = useState(0);
     const [ additionalServiceTimeCostPerHour, setAdditionalServiceTimeCostPerHour ] = useState(0); 
     const [ noOfPreparationDays, setNoOfPreparationDays ] = useState(0);
+    const [ rentalEquipmentFees, setRentalEquipmentFees ] = useState(0);
 
     const [ change, setChange ] = useState(false);
     const [ actionRequired, setActionRequired ] = useState(false);
@@ -19,6 +20,7 @@ const Settings = () => {
     const oldDuration = useRef(0);
     const oldExtraTime = useRef(0);
     const oldPrep = useRef(0);
+    const oldEquip = useRef(0);
 
     const page = useRef(null);
     const redirectTo = useRef('');
@@ -32,23 +34,18 @@ const Settings = () => {
             setDurationOfServiceInHours(configs?.durationOfServiceInHours); 
             setAdditionalServiceTimeCostPerHour(configs?.additionalServiceTimeCostPerHour); 
             setNoOfPreparationDays(configs?.noOfPreparationDays);
+            setRentalEquipmentFees(configs?.rentalEquipmentFees);
 
             oldDuration.current = configs?.durationOfServiceInHours; 
             oldExtraTime.current = configs?.additionalServiceTimeCostPerHour; 
             oldPrep.current = configs?.noOfPreparationDays;
+            oldEquip.current = configs?.rentalEquipmentFees;
         } catch(error) {}
     }
 
     useLayoutEffect(() => {
-        getConfigurationValues()
+        getConfigurationValues();
     }, []);
-
-    const changeDurationOfService = (duration) => {
-        const nDuration = toNumber(duration);
-        if(nDuration < 0) return;
-        setDurationOfServiceInHours(nDuration);
-        setChange(true);
-    }
 
     const changeExtraTimeCost = (cost) => {
         const nCost = cost.replace(/[^0-9.]/g, '');
@@ -56,10 +53,10 @@ const Settings = () => {
         setChange(true);
     }
 
-    const changeNoOfPreparationDays = (days) => {
-        const nDays = toNumber(days);
-        if(nDays < 0) return;
-        setNoOfPreparationDays(nDays);
+    const validateUserInput = (value, func) => {
+        const nValue = toNumber(value);
+        if(nValue < 0) return;
+        func(nValue);
         setChange(true);
     }
 
@@ -67,6 +64,7 @@ const Settings = () => {
         setDurationOfServiceInHours(oldDuration.current);
         setAdditionalServiceTimeCostPerHour(oldExtraTime.current);
         setNoOfPreparationDays(oldPrep.current);
+        setRentalEquipmentFees(oldEquip.current);
         setChange(false);
     }
 
@@ -80,6 +78,7 @@ const Settings = () => {
                 oldDuration.current = durationOfServiceInHours;
                 oldExtraTime.current = additionalServiceTimeCostPerHour;
                 oldPrep.current = noOfPreparationDays;
+                oldEquip.current = rentalEquipmentFees;
             }
         } catch(error) {}
         setLoading(false);
@@ -128,7 +127,7 @@ const Settings = () => {
                 }} className="flex flex-col gap-4 pt-4">
                 <div className="flex flex-col gap-2">
                     <label htmlFor="service-duration" className="font-paragraphs text-lg">Service Duration (in Hours):</label>
-                    <input name="service-duration" id="service-duration" value={ durationOfServiceInHours } onChange={ ev => changeDurationOfService(ev.target.value) } className="p-2 rounded-md border-[1px] border-neutral-500" />
+                    <input name="service-duration" id="service-duration" value={ durationOfServiceInHours } onChange={ ev => validateUserInput(ev.target.value, setDurationOfServiceInHours) } className="p-2 rounded-md border-[1px] border-neutral-500" />
                 </div>
                 <div className="flex flex-col gap-2">
                     <label htmlFor="additional-time-cost" className="font-paragraphs text-lg">Extra Service Time <strong className="bg-blue-200 rounded-full px-1">Cost</strong> (Per Hour):</label>
@@ -136,7 +135,11 @@ const Settings = () => {
                 </div>
                 <div className="flex flex-col gap-2">
                     <label htmlFor="reservation-preparation" className="font-paragraphs text-lg">Preparation Time (in Days):</label>
-                    <input name="reservation-preparation" id="reservation-preparation" value={ noOfPreparationDays } onChange={ ev => changeNoOfPreparationDays(ev.target.value) } className="p-2 rounded-md border-[1px] border-neutral-500" />
+                    <input name="reservation-preparation" id="reservation-preparation" value={ noOfPreparationDays } onChange={ ev => validateUserInput(ev.target.value, setNoOfPreparationDays) } className="p-2 rounded-md border-[1px] border-neutral-500" />
+                </div> 
+                <div className="flex flex-col gap-2">
+                    <label htmlFor="rental-equipment-fees" className="font-paragraphs text-lg">Rental Equipment Fees Per Guest (Tables, Chairs & Tents):</label>
+                    <input name="rental-equipment-fees" id="rental-equipment-fees" value={ rentalEquipmentFees } onChange={ ev => validateUserInput(ev.target.value, setRentalEquipmentFees) } className="p-2 rounded-md border-[1px] border-neutral-500" />
                 </div> 
                 <div className="flex gap-2">
                     <button type="submit" disabled={!change} className="button text-white" style={{ opacity: change ? '1' : '0.8' }}>Done</button>
