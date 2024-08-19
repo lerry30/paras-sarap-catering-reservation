@@ -9,6 +9,10 @@ const policySchema = new Schema({
         type: Number,
         required: true
     },
+    rentalequipmentfees: {
+        type: Number,
+        required: true
+    },
     timelimitedserviceinhours: {
         type: Number,
         required: true
