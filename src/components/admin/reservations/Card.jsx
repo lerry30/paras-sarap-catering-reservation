@@ -3,8 +3,9 @@ import { toNumber } from '@/utils/number';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import ProfileImage from '@/components/ProfileImage';
+import EquipmentFees from '@/components/EquipmentFees';
 
-const Card = ({ reservationData={}, changeReservationStatus, tab='pending', additionalTimeRate }) => {
+const Card = ({ reservationData={}, changeReservationStatus, tab='pending', additionalTimeRate, equipmentFees }) => {
     const id = reservationData?._id;
     // user
     const firstName = reservationData?.user?.firstname || '';
@@ -27,6 +28,8 @@ const Card = ({ reservationData={}, changeReservationStatus, tab='pending', addi
     const municipality = reservationData?.venue?.address?.municipality || '';
     const province = reservationData?.venue?.address?.province || '';
     const fullAddress = `${ street }, ${ barangay }, ${ municipality }, ${ province }`;
+
+    const tablesNChairsProvided = !!reservationData?.venue?.tablesnchairsprovided;
 
     // menu
     const menuName = reservationData?.menu?.name || '';
@@ -56,8 +59,8 @@ const Card = ({ reservationData={}, changeReservationStatus, tab='pending', addi
         const totalPriceOfDishesPerServed = listOfDishes.reduce((initVal, dish) => (initVal + dish.costperhead), 0);
         const totalPriceOfDrinksPerServed = listOfDrinks.reduce((initVal, drink) => (initVal + drink.costperhead), 0);
 
-        console.log(totalPriceOfDishesPerServed, totalPriceOfDrinksPerServed);
-        const totalAmout = (totalPriceOfDishesPerServed + totalPriceOfDrinksPerServed) * noOfGuest + venuePrice + costOfAdditionalService;
+        const rentalEquipmentFees = toNumber(equipmentFees)
+        const totalAmout = (totalPriceOfDishesPerServed + totalPriceOfDrinksPerServed + rentalEquipmentFees) * noOfGuest + venuePrice + costOfAdditionalService;
         setTotal(totalAmout);
     }, []);
 
@@ -237,6 +240,12 @@ const Card = ({ reservationData={}, changeReservationStatus, tab='pending', addi
                     </div>
                 </div>
             </section>
+            { !tablesNChairsProvided && (
+                    <section className="flex flex-col py-2">
+                        <EquipmentFees />
+                    </section>
+                )
+            }
             <section className="flex flex-col py-2">
                 <h1 className="font-headings font-semibold text-lg">Date</h1>
 
