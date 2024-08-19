@@ -64,6 +64,7 @@ export const POST = async (request) => {
         const municipality = venue?.address?.municipality?.trim().toUpperCase();
         const province = venue?.address?.province?.trim().toUpperCase();
         const region = venue?.address?.region?.trim().toUpperCase();
+        const tablesNChairsProvided = !!venue?.tablesnchairsprovided;
 
         const isValidAddress = addressAll[region]?.province[province]?.municipality[municipality]?.barangay?.includes(barangay);
         if(!isValidAddress) return Response.json({ message: 'Invalid Address', errorData: 'error' }, { status: 400 });
@@ -103,6 +104,7 @@ export const POST = async (request) => {
                 filename: venue?.filename || '',
                 maximumSeatingCapacity: venue?.maximumSeatingCapacity || 0,
                 price: venue?.price || 0,
+                tablesnchairsprovided: tablesNChairsProvided,
             },
             menu: {
                 name: menu?.name || '',
