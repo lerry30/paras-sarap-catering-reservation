@@ -4,6 +4,7 @@ import Loading from '@/components/Loading';
 import ErrorField from '@/components/ErrorField';
 import Image from 'next/image';
 import Breadcrumbs from '@/components/client/nav/Breadcrumbs';
+import EquipmentFees from '@/components/EquipmentFees';
 import { useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { zReservation } from '@/stores/reservation';
@@ -30,13 +31,13 @@ const ReviewBudget = () => {
     const [invalidFieldsValue, setInvalidFieldsValue] = useState({});
     const [displaySummary, setDisplaySummary] = useState(false);
 
-    const [ additionalServiceTimeCost, setAdditionalServiceTimeCost ] = useState(1000);
+    const [ additionalServiceTimeCost, setAdditionalServiceTimeCost ] = useState(0);
+    const [ costOfTablesNChairsPerGuest, setCostOfTablesNChairsPerGuest ] = useState(0);
 
     // Constants
     const services = { wedding: true, debut: true, kidsparty: true, privateparty: true };
     const pesoFormatter = new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' });
     const dateFormatter = new Intl.DateTimeFormat('en-PH', { month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true });
-    const costOfTablesNChairsPerGuest = 20;
 
     // Hooks
     const searchParams = useSearchParams();
@@ -114,8 +115,8 @@ const ReviewBudget = () => {
         const drinksCostPerGuestServed = listOfDrinks.reduce((holder, drink) => holder + (drink?.status !== 'available' ? 0 : (drink?.costperhead || 0)), 0);
         const venuePrice = venue?.price || 0;
         const totalCostForTableNChairs = venue?.tablesnchairsprovided ? 0 : costOfTablesNChairsPerGuest;
-        //const totalPaymentPerGuest = (dishesCostPerGuestServed + drinksCostPerGuestServed + totalCostForTableNChairs) * noOfGuest;
-        const totalPaymentPerGuest = (dishesCostPerGuestServed + drinksCostPerGuestServed) * noOfGuest;
+        const totalPaymentPerGuest = (dishesCostPerGuestServed + drinksCostPerGuestServed + totalCostForTableNChairs) * noOfGuest;
+        //const totalPaymentPerGuest = (dishesCostPerGuestServed + drinksCostPerGuestServed) * noOfGuest;
         const total = totalPaymentPerGuest + (noOfGuest ? (venuePrice + additionalCostForServiceTime) : 0) ;
         setTotalPayment(total);
     };
@@ -130,10 +131,14 @@ const ReviewBudget = () => {
 
     const getCostOfAdditionalServiceTime = async () => {
         try {
-            const response = await getData('/api/policies/reservation/servicetime');
-            const cost = toNumber(response?.data?.additionalServiceTimeCostPerHour);
-            setAdditionalServiceTimeCost(cost);
-        } catch(error) {}
+            const response = await getData('/api/policies/reservation');
+            const additionalTimeCost = toNumber(response?.data?.additionalServiceTimeCostPerHour);
+            const costForTablesChairsTents = toNumber(response?.data?.rentalEquipmentFees);
+            setAdditionalServiceTimeCost(additionalTimeCost);
+            setCostOfTablesNChairsPerGuest(costForTablesChairsTents);
+        } catch(error) {
+            console.log(error);
+        }
     }
 
     // useEffect to load initial data
@@ -157,6 +162,8 @@ const ReviewBudget = () => {
 
         setListOfDishes(listOfDishes);
         setListOfDrinks(listOfDrinks);
+
+        getCostOfAdditionalServiceTime();
 
         const serviceParam = searchParams.get('service');
         if (!services.hasOwnProperty(serviceParam)) router.push('/');
@@ -337,6 +344,12 @@ const ReviewBudget = () => {
                             </div>
                         )}
                     </section>
+                    { !venue?.tablesnchairsprovided && (
+                            <section className="flex flex-col gap-2 py-2">
+                                <EquipmentFees />
+                            </section>
+                        )
+                    }
                 </main>
                 {/* ------------------------------------Summarize-------------------------------- */}
                 <aside className="md:fixed md:right-0 md:top-[calc(var(--nav-height)*2-16px)] md:bottom-0 w-full md:w-1/4 flex flex-col gap-4 p-4 bg-gray-100 border-[1px] border-l-neutral-300">
@@ -375,9 +388,12 @@ const ReviewBudget = () => {
                             <h3 className="font-headings">Total Payment: </h3>
                             <span className="font-paragraphs font-semibold">{pesoFormatter.format(totalPayment)}</span>
                         </div>
-                        <p className="font-paragraphs text-sm bg-blue-500/40 text-blue-900 p-4 rounded-lg">
-                            The cost is { costOfTablesNChairsPerGuest } pesos per guest for table and chair rental service.
-                        </p>
+                        { !venue?.tablesnchairsprovided && (
+                                <p className="font-paragraphs text-sm bg-blue-500/40 text-blue-900 p-4 rounded-lg">
+                                    The cost is { costOfTablesNChairsPerGuest } pesos per guest for table and chair rental service.
+                                </p>
+                            )
+                        }
                     </div>
                     <div className="flex flex-col gap-2">
                         {/* {
