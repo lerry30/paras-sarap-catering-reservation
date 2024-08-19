@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Loading from '@/components/Loading';
+import EquipmentFees from '@/components/EquipmentFees';
 import { useEffect, useState, Fragment } from 'react';
 import { Prompt, PromptRating, PromptTextBox, ErrorModal } from '@/components/Modal';
 import { deleteWithJSON, sendForm } from '@/utils/send';
@@ -10,8 +11,6 @@ const Card = ({ reservationData={}, rejectionReason='', removeItself, additional
     const eventFormat = { wedding: 'Wedding', debut: 'Debut', kidsparty: 'Kids Party', privateparty: 'Private Party' };
 
     const id = reservationData?.id;
-
-    console.log(reservationData?.theme);
 
     const themeName = reservationData?.theme?.name || '';
     const themeDescription = reservationData?.theme?.description || '';
@@ -28,6 +27,8 @@ const Card = ({ reservationData={}, rejectionReason='', removeItself, additional
     const municipality = reservationData?.venue?.address?.municipality || '';
     const province = reservationData?.venue?.address?.province || '';
     const fullAddress = `${street}, ${barangay}, ${municipality}, ${province}`;
+
+    const tablesNChairsProvided = !!reservationData?.venue?.tablesnchairsprovided;
 
     // Menu details
     const menuName = reservationData?.menu?.name || '';
@@ -251,6 +252,12 @@ const Card = ({ reservationData={}, rejectionReason='', removeItself, additional
                         </div>
                     )}
                 </section>
+                { !tablesNChairsProvided && (
+                        <section className="p-6 bg-gray-50">
+                            <EquipmentFees />
+                        </section>
+                    )
+                }
                 <section className="p-6 bg-white">
                     <div className="font-paragraphs text-sm">
                         <label htmlFor="additionalServiceTime">Additional Service Time:</label>
