@@ -7,10 +7,10 @@ import { getData } from '@/utils/send';
 import { toNumber } from '@/utils/number';
 
 import { useState, useEffect } from 'react';
-//import { Bar, Doughnut, Line } from 'react-chartjs-2';
-//import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement, BarElement } from 'chart.js';
+import { Bar, Doughnut, Line } from 'react-chartjs-2';
+import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement, BarElement } from 'chart.js';
 
-//ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement, BarElement);
+ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement, BarElement);
 
 const Dashboard = () => {
     const [reservations, setReservations] = useState({ pending: 10, approved: 50, rejected: 5, expired: 3 });
@@ -185,6 +185,6 @@ const Dashboard = () => {
     );
 }
 
-//export default Dashboard;
-const DashboardDumb = () => <></>
-export default DashboardDumb;
+export default Dashboard;
+//const DashboardDumb = () => <></>
+//export default DashboardDumb;
